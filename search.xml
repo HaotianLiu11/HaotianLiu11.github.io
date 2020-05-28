@@ -1,46 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>HEXO+BUTTERFLY搭建骚气且实用的个人网站</title>
-    <url>/2020/05/27/HEXO-BUTTERFLY%E6%90%AD%E5%BB%BA%E9%AA%9A%E6%B0%94%E4%B8%94%E5%AE%9E%E7%94%A8%E7%9A%84%E4%B8%AA%E4%BA%BA%E7%BD%91%E7%AB%99/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>YOU CAN DRINK ALL YOU LIKE, BUT IN THE MORNING YOU GET HEADACHE WITH THE SAME PROBLEMS.</p>
-</blockquote>
-<hr>
-<h2 id="引子"><a href="#引子" class="headerlink" title="引子"></a>引子</h2><p>最近狂刷<code>codeforces</code>，但是逐渐发现自身一个问题，那就是刷过的题虽然在当天感觉很明白，但是隔一天，隔两天，就发现自己再遇到此题时又是一翻鏖战，这就是说明自己做过的题吸收的效率不够高，于是我就打算做一道题总结一道题。那么问题来了，在哪里总结呢？</p>
-<p>首先排除的是微信公众号，众所周知，微信公众号只能是自己分享东西的平台，而在这上面总结知识点就会引出很多问题，其一，每篇文章都要排版，其二，我的粉丝未必合此文章的胃口，其三，每天只能发布一篇文章，大大限制了自己的总结内容与时间分配。</p>
-<p>那么诸如<code>csdn</code>、博客园、掘金、知乎这种东西呢？也有很多不方便的地方，比如文章左右侧的广告，实在影响人的心情，此外还有审核等等的制约，思前想后，我决定自己开辟一个个人网站。</p>
-<p>当然不能从无到有手动开辟，自己能力有限，而且我的目的也是总结，总不能让自己以后把大把的时间浪费到维护网站上面去。于是我听从了大佬的建议，采用<code>hexo+github</code>的方式，<code>hexo</code>开辟网站，托管到<code>github</code>上面去。</p>
-<p>花里胡哨的页面也是最吸引我的原因之一，我采用了<code>butterfly</code>的主题，绝对美炸天！</p>
-<h2 id="过程"><a href="#过程" class="headerlink" title="过程"></a>过程</h2><p>过程当然是心酸+心酸+心酸，心态险些被搞没。至于搭建网站的教程，实话实说，看了n多篇技术总结，都号称史上最全，到最后还是觉得看官方文档最省事。</p>
-<p>当然自己也找到了一些好的文章，在此列出来希望对大家有帮助：</p>
-<p><code>hexo</code>安装文章：</p>
-<ul>
-<li><a href="https://www.jianshu.com/p/a1a4ebf0e5fc" target="_blank" rel="noopener">Hexo+Butterfly+Github+Coding搭建个人博客</a></li>
-<li><a href="https://hexo.io/" target="_blank" rel="noopener">hexo官方文档</a></li>
-</ul>
-<p><code>butterfly</code>主题系列文章：</p>
-<ol>
-<li><a href="https://jerryc.me/posts/21cfbf15/" target="_blank" rel="noopener">hexo-theme-butterfly 安装文档(一)快速开始</a></li>
-<li><a href="https://jerryc.me/posts/dc584b87/" target="_blank" rel="noopener">hexo-theme-butterfly 安装文档(二)主题页面</a></li>
-<li><a href="https://jerryc.me/posts/4aa8abbe/" target="_blank" rel="noopener">hexo-theme-butterfly 安装文档(三)主题配置</a></li>
-<li><a href="https://jerryc.me/posts/98d20436/" target="_blank" rel="noopener">hexo-theme-butterfly 安装文档(四)主题问答、打赏名单</a></li>
-<li><a href="https://jerryc.me/posts/198a4240/" target="_blank" rel="noopener">hexo-theme-butterfly 安装文档(五)更新日誌</a></li>
-</ol>
-<h2 id="收益"><a href="#收益" class="headerlink" title="收益"></a>收益</h2><p>没日没夜的折腾了两天，总能从其中学到什么：其一，当然是收获了又骚又实用的好网站；其二，学会了<code>git</code>+<code>github</code>的基本使用，常见的<code>git</code>命令也记得很熟；其三，收获了一种精神——永不放弃，哪有什么一帆风顺，加油，骚年！</p>
-<h2 id="不足"><a href="#不足" class="headerlink" title="不足"></a>不足</h2><p>自己的网站弄的也不是很成熟，还有很多功能没有上线，比如日历、赞赏等，自己没有买域名，只是托管到<code>github</code>上。</p>
-<h2 id="欢迎"><a href="#欢迎" class="headerlink" title="欢迎"></a>欢迎</h2><p><a href="https://haotianliu11.github.io/" target="_blank" rel="noopener">我的个人网站</a></p>
-<hr>
-<p><img src="https://imgkr.cn-bj.ufileos.com/148c824d-4eb8-48d3-9825-51625347b0f0.png" alt=""></p>
-]]></content>
-      <categories>
-        <category>博客搭建历程</category>
-      </categories>
-      <tags>
-        <tag>微信公众号文章——随笔</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>0x01位运算</title>
     <url>/2020/05/28/%E4%BD%8D%E8%BF%90%E7%AE%97/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="0x01-位-运-算"><a href="#0x01-位-运-算" class="headerlink" title="0x01 位 运 算"></a>0x01 位 运 算</h1><h2 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h2><ol>
@@ -115,6 +75,65 @@
       </categories>
       <tags>
         <tag>ACM</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>CODEFORCES 800 1360A.Minimal Square</title>
+    <url>/2020/05/28/CODEFORCES1360A/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="1360A-Minimal-Square"><a href="#1360A-Minimal-Square" class="headerlink" title="1360A.Minimal Square"></a>1360A.Minimal Square</h1><h2 id="原题链接"><a href="#原题链接" class="headerlink" title="原题链接"></a>原题链接</h2><p><a href="http://codeforces.com/problemset/problem/1360/A" target="_blank" rel="noopener">1360A.Minimal Square</a></p>
+<h2 id="题目大意"><a href="#题目大意" class="headerlink" title="题目大意"></a>题目大意</h2><p>第一行输入测试数目</p>
+<p>从第二行开始依次输入每个测试样例的<code>a</code>和<code>b</code></p>
+<p><strong>描述</strong>：<code>a</code>代表长，<code>b</code>代表宽，要求输出一个正方形的最小面积，这个正方形把两个相同的长方形(样例输入构成的长方形)覆盖，且这两个长方形不重合，每个长方形的边与正方形平行</p>
+<h2 id="解题思路"><a href="#解题思路" class="headerlink" title="解题思路"></a>解题思路</h2><p>求出长和宽的最小值乘以<code>2</code>，之后将所得的值与长和宽比较得出的最大值作为目标正方形的边长，再输出面积</p>
+<h2 id="解题代码"><a href="#解题代码" class="headerlink" title="解题代码"></a>解题代码</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;bits&#x2F;stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">int main() &#123;</span><br><span class="line">    int t;</span><br><span class="line">    scanf(&quot;%d&quot;, &amp;t);</span><br><span class="line">    while (t--) &#123;</span><br><span class="line">        int a, b;</span><br><span class="line">        scanf(&quot;%d%d&quot;, &amp;a, &amp;b);</span><br><span class="line">        int temp &#x3D; min(a, b);</span><br><span class="line">        int side &#x3D; 2 * temp;</span><br><span class="line">        int s &#x3D; pow(max(side, max(a, b)), 2);</span><br><span class="line">        printf(&quot;%d\n&quot;, s);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://ae01.alicdn.com/kf/He2534bd81da14f7cac54ae321362c2e1p.jpg" alt=""></p>
+]]></content>
+      <categories>
+        <category>CODEFORCES</category>
+      </categories>
+      <tags>
+        <tag>CODEFORCES800</tag>
+        <tag>acm/math</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>HEXO+BUTTERFLY搭建骚气且实用的个人网站</title>
+    <url>/2020/05/27/HEXO-BUTTERFLY%E6%90%AD%E5%BB%BA%E9%AA%9A%E6%B0%94%E4%B8%94%E5%AE%9E%E7%94%A8%E7%9A%84%E4%B8%AA%E4%BA%BA%E7%BD%91%E7%AB%99/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>YOU CAN DRINK ALL YOU LIKE, BUT IN THE MORNING YOU GET HEADACHE WITH THE SAME PROBLEMS.</p>
+</blockquote>
+<hr>
+<h2 id="引子"><a href="#引子" class="headerlink" title="引子"></a>引子</h2><p>最近狂刷<code>codeforces</code>，但是逐渐发现自身一个问题，那就是刷过的题虽然在当天感觉很明白，但是隔一天，隔两天，就发现自己再遇到此题时又是一翻鏖战，这就是说明自己做过的题吸收的效率不够高，于是我就打算做一道题总结一道题。那么问题来了，在哪里总结呢？</p>
+<p>首先排除的是微信公众号，众所周知，微信公众号只能是自己分享东西的平台，而在这上面总结知识点就会引出很多问题，其一，每篇文章都要排版，其二，我的粉丝未必合此文章的胃口，其三，每天只能发布一篇文章，大大限制了自己的总结内容与时间分配。</p>
+<p>那么诸如<code>csdn</code>、博客园、掘金、知乎这种东西呢？也有很多不方便的地方，比如文章左右侧的广告，实在影响人的心情，此外还有审核等等的制约，思前想后，我决定自己开辟一个个人网站。</p>
+<p>当然不能从无到有手动开辟，自己能力有限，而且我的目的也是总结，总不能让自己以后把大把的时间浪费到维护网站上面去。于是我听从了大佬的建议，采用<code>hexo+github</code>的方式，<code>hexo</code>开辟网站，托管到<code>github</code>上面去。</p>
+<p>花里胡哨的页面也是最吸引我的原因之一，我采用了<code>butterfly</code>的主题，绝对美炸天！</p>
+<h2 id="过程"><a href="#过程" class="headerlink" title="过程"></a>过程</h2><p>过程当然是心酸+心酸+心酸，心态险些被搞没。至于搭建网站的教程，实话实说，看了n多篇技术总结，都号称史上最全，到最后还是觉得看官方文档最省事。</p>
+<p>当然自己也找到了一些好的文章，在此列出来希望对大家有帮助：</p>
+<p><code>hexo</code>安装文章：</p>
+<ul>
+<li><a href="https://www.jianshu.com/p/a1a4ebf0e5fc" target="_blank" rel="noopener">Hexo+Butterfly+Github+Coding搭建个人博客</a></li>
+<li><a href="https://hexo.io/" target="_blank" rel="noopener">hexo官方文档</a></li>
+</ul>
+<p><code>butterfly</code>主题系列文章：</p>
+<ol>
+<li><a href="https://jerryc.me/posts/21cfbf15/" target="_blank" rel="noopener">hexo-theme-butterfly 安装文档(一)快速开始</a></li>
+<li><a href="https://jerryc.me/posts/dc584b87/" target="_blank" rel="noopener">hexo-theme-butterfly 安装文档(二)主题页面</a></li>
+<li><a href="https://jerryc.me/posts/4aa8abbe/" target="_blank" rel="noopener">hexo-theme-butterfly 安装文档(三)主题配置</a></li>
+<li><a href="https://jerryc.me/posts/98d20436/" target="_blank" rel="noopener">hexo-theme-butterfly 安装文档(四)主题问答、打赏名单</a></li>
+<li><a href="https://jerryc.me/posts/198a4240/" target="_blank" rel="noopener">hexo-theme-butterfly 安装文档(五)更新日誌</a></li>
+</ol>
+<h2 id="收益"><a href="#收益" class="headerlink" title="收益"></a>收益</h2><p>没日没夜的折腾了两天，总能从其中学到什么：其一，当然是收获了又骚又实用的好网站；其二，学会了<code>git</code>+<code>github</code>的基本使用，常见的<code>git</code>命令也记得很熟；其三，收获了一种精神——永不放弃，哪有什么一帆风顺，加油，骚年！</p>
+<h2 id="不足"><a href="#不足" class="headerlink" title="不足"></a>不足</h2><p>自己的网站弄的也不是很成熟，还有很多功能没有上线，比如日历、赞赏等，自己没有买域名，只是托管到<code>github</code>上。</p>
+<h2 id="欢迎"><a href="#欢迎" class="headerlink" title="欢迎"></a>欢迎</h2><p><a href="https://haotianliu11.github.io/" target="_blank" rel="noopener">我的个人网站</a></p>
+<hr>
+<p><img src="https://imgkr.cn-bj.ufileos.com/148c824d-4eb8-48d3-9825-51625347b0f0.png" alt=""></p>
+]]></content>
+      <categories>
+        <category>博客搭建历程</category>
+      </categories>
+      <tags>
+        <tag>微信公众号文章——随笔</tag>
       </tags>
   </entry>
 </search>

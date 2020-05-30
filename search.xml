@@ -1,41 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>0x01位运算例题</title>
-    <url>/2020/05/29/0x01%E4%BD%8D%E8%BF%90%E7%AE%97%E4%BE%8B%E9%A2%98/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="0x01位运算例题"><a href="#0x01位运算例题" class="headerlink" title="0x01位运算例题"></a>0x01位运算例题</h1><blockquote>
-<p>点击每道题题目即可获取原题链接</p>
-</blockquote>
-<h2 id="a-b"><a href="#a-b" class="headerlink" title="a^b"></a><a href="https://www.acwing.com/problem/content/91/" target="_blank" rel="noopener">a^b</a></h2><h3 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h3><p><code>long long</code>可以表示的最大值为<code>922 3372 0368 5477 5807</code><br><code>unsigned long long</code>可以表示的最大值为<code>1844 6744 0737 0955 1615</code>  </p>
-<p>由此观之<code>a^b</code>大于<code>ULL</code>类型可以表示的最大值，所以要用快速幂的思想来求解这道题。</p>
-<p><img src="https://ae01.alicdn.com/kf/H4fabba6e8a6644e88cb9ee4fe512f4ecH.jpg" alt=""><br>且取模的性质如下</p>
-<ul>
-<li>(a + b) % p = (a % p + b % p) % p</li>
-<li>(a - b) % p = (a % p - b % p) % p </li>
-<li>(a <em> b) % p = (a % p </em> b % p) % p </li>
-<li>a ^ b % p = ((a % p)^b) % p </li>
-</ul>
-<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;bits&#x2F;stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">int power(int a, int b, int c) &#123;</span><br><span class="line">    int ans &#x3D; 1 % c;</span><br><span class="line">    for (; b; b &gt;&gt;&#x3D; 1) &#123;</span><br><span class="line">        if (b &amp; 1) ans &#x3D; (long long)ans * a % c;</span><br><span class="line">        a &#x3D; (long long)a * a % c;</span><br><span class="line">    &#125;</span><br><span class="line">    return ans;</span><br><span class="line">&#125;</span><br><span class="line">int main() &#123;</span><br><span class="line">    int a, b, p;</span><br><span class="line">    scanf(&quot;%d%d%d&quot;, &amp;a, &amp;b, &amp;p);</span><br><span class="line">    int ans &#x3D; power(a, b, p);</span><br><span class="line">    printf(&quot;%d&quot;, ans);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="复杂度"><a href="#复杂度" class="headerlink" title="复杂度"></a>复杂度</h3><p>我们可以用<code>b&amp;1</code>运算表示<code>b</code>的二进制下的最低位，并用<code>b&gt;&gt;1</code>来舍去最低位。在递归的过程中把<code>&gt;&gt;</code>和<code>&amp;</code>结合，其时间复杂度为<code>O(logb)</code></p>
-<h2 id="64位整数乘法"><a href="#64位整数乘法" class="headerlink" title="64位整数乘法"></a><a href="https://www.acwing.com/problem/content/92/" target="_blank" rel="noopener">64位整数乘法</a></h2><h3 id="代码-1"><a href="#代码-1" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;bits&#x2F;stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">typedef long long LL;</span><br><span class="line">LL power(LL a, LL b, LL c) &#123;</span><br><span class="line">    LL ans &#x3D; 0;</span><br><span class="line">    for (; b; b &gt;&gt;&#x3D; 1) &#123;</span><br><span class="line">        if (b &amp; 1) ans &#x3D; (ans + a) % c;</span><br><span class="line">        a &#x3D; a * 2 % c;</span><br><span class="line">    &#125;</span><br><span class="line">    return ans;</span><br><span class="line">&#125;</span><br><span class="line">int main() &#123;</span><br><span class="line">    LL a, b, p;</span><br><span class="line">    scanf(&quot;%lld%lld%lld&quot;, &amp;a, &amp;b, &amp;p);</span><br><span class="line">    LL ans &#x3D; power(a, b, p);</span><br><span class="line">    printf(&quot;%lld&quot;, ans);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="复杂度-1"><a href="#复杂度-1" class="headerlink" title="复杂度"></a>复杂度</h3><p>我们可以用<code>b&amp;1</code>运算表示<code>b</code>的二进制下的最低位，并用<code>b&gt;&gt;1</code>来舍去最低位。在递归的过程中把<code>&gt;&gt;</code>和<code>&amp;</code>结合，其时间复杂度为<code>O(logb)</code>，与上一题不同的是位数问题，但是每次<code>%p</code>之后都能保证不超过<code>2*10^18</code>，在<code>long long</code>的范围内</p>
-<h2 id="最短Hamilton路径"><a href="#最短Hamilton路径" class="headerlink" title="最短Hamilton路径"></a><a href="https://www.acwing.com/problem/content/93/" target="_blank" rel="noopener">最短Hamilton路径</a></h2><h3 id="分析-1"><a href="#分析-1" class="headerlink" title="分析"></a>分析</h3><p>我们可以采用朴素算法,其时间复杂度为<code>O(n*n!)</code>，<code>n!</code>为枚举<code>n</code>个点的全排列，<code>n</code>代表枚举路径的长度求得结果，这个算法的时间复杂度太高，不符合。而我们可以用二进制状态压缩<code>DP</code>来把时间复杂度优化到<code>O((n^2)*(2^n))</code>,我们用<code>F[i,j]</code>表示点被经过的状态对应二进制数<code>i</code>，且目前处于点<code>j</code>的最短路径   </p>
-<p>在起点时<code>F[1,0]=0</code>，即目前处于点<code>0</code>且只经过了点<code>0</code>的最短路径为<code>0</code>。为方便起见，我们将数组中其他元素设为无穷大，最终目的是求<code>F[(1&lt;&lt;n),n-1]</code>的值，即经过所有点且最终处于<code>n-1</code>的最短路径</p>
-<p>在任意时刻，有公式<code>F[i,j]=min(F[i,j],F[i^(1&lt;&lt;j),k]+weight[k,j])</code>，根据分析可得<code>k</code>一定是倒数第二个经过的点。我们枚举<code>k</code>，当<code>k</code>对应在<code>i</code>的二进制为<code>1</code>时，我们讨论这种情况并比较</p>
-<h3 id="代码-2"><a href="#代码-2" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;bits&#x2F;stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">const int N &#x3D; 20, M &#x3D; 1 &lt;&lt; 20;</span><br><span class="line">int weight[N][N], F[M][N];</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">    int n;</span><br><span class="line">    scanf(&quot;%d&quot;, &amp;n);</span><br><span class="line">    for (int i &#x3D; 0; i &lt; n; i++)</span><br><span class="line">        for (int j &#x3D; 0; j &lt; n; j++)</span><br><span class="line">            scanf(&quot;%d&quot;, &amp;weight[i][j]);</span><br><span class="line"></span><br><span class="line">    memset(F, 0x3f, sizeof F);</span><br><span class="line">    F[1][0] &#x3D; 0;</span><br><span class="line">    for (int i &#x3D; 1; i &lt; 1 &lt;&lt; n; i++)</span><br><span class="line">        for (int j &#x3D; 0; j &lt; n; j++)</span><br><span class="line">            if (i &gt;&gt; j &amp; 1)</span><br><span class="line">                for (int k &#x3D; 0; k &lt; n; k++)</span><br><span class="line">                    if ((i ^ 1 &lt;&lt; j) &gt;&gt; k &amp; 1)</span><br><span class="line">                        F[i][j] &#x3D; min(F[i][j], F[i ^ 1 &lt;&lt; j][k] + weight[k][j]);</span><br><span class="line"></span><br><span class="line">    printf(&quot;%d&quot;, F[(1 &lt;&lt; n) - 1][n - 1]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>还差一题，未完待续</p>
-</blockquote>
-<p><img src="https://ae01.alicdn.com/kf/Hdd96bb61417945ca90a15b8b5b98b5a1g.jpg" alt=""></p>
-]]></content>
-      <categories>
-        <category>算法竞赛进阶指南</category>
-      </categories>
-      <tags>
-        <tag>ACM</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>0x01位运算</title>
     <url>/2020/05/28/0x01%E4%BD%8D%E8%BF%90%E7%AE%97/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="0x01-位-运-算"><a href="#0x01-位-运-算" class="headerlink" title="0x01 位 运 算"></a>0x01 位 运 算</h1><h2 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h2><ol>
@@ -93,6 +58,41 @@
       </tags>
   </entry>
   <entry>
+    <title>0x01位运算例题</title>
+    <url>/2020/05/29/0x01%E4%BD%8D%E8%BF%90%E7%AE%97%E4%BE%8B%E9%A2%98/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="0x01位运算例题"><a href="#0x01位运算例题" class="headerlink" title="0x01位运算例题"></a>0x01位运算例题</h1><blockquote>
+<p>点击每道题题目即可获取原题链接</p>
+</blockquote>
+<h2 id="a-b"><a href="#a-b" class="headerlink" title="a^b"></a><a href="https://www.acwing.com/problem/content/91/" target="_blank" rel="noopener">a^b</a></h2><h3 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h3><p><code>long long</code>可以表示的最大值为<code>922 3372 0368 5477 5807</code><br><code>unsigned long long</code>可以表示的最大值为<code>1844 6744 0737 0955 1615</code>  </p>
+<p>由此观之<code>a^b</code>大于<code>ULL</code>类型可以表示的最大值，所以要用快速幂的思想来求解这道题。</p>
+<p><img src="https://ae01.alicdn.com/kf/H4fabba6e8a6644e88cb9ee4fe512f4ecH.jpg" alt=""><br>且取模的性质如下</p>
+<ul>
+<li>(a + b) % p = (a % p + b % p) % p</li>
+<li>(a - b) % p = (a % p - b % p) % p </li>
+<li>(a <em> b) % p = (a % p </em> b % p) % p </li>
+<li>a ^ b % p = ((a % p)^b) % p </li>
+</ul>
+<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;bits&#x2F;stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">int power(int a, int b, int c) &#123;</span><br><span class="line">    int ans &#x3D; 1 % c;</span><br><span class="line">    for (; b; b &gt;&gt;&#x3D; 1) &#123;</span><br><span class="line">        if (b &amp; 1) ans &#x3D; (long long)ans * a % c;</span><br><span class="line">        a &#x3D; (long long)a * a % c;</span><br><span class="line">    &#125;</span><br><span class="line">    return ans;</span><br><span class="line">&#125;</span><br><span class="line">int main() &#123;</span><br><span class="line">    int a, b, p;</span><br><span class="line">    scanf(&quot;%d%d%d&quot;, &amp;a, &amp;b, &amp;p);</span><br><span class="line">    int ans &#x3D; power(a, b, p);</span><br><span class="line">    printf(&quot;%d&quot;, ans);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="复杂度"><a href="#复杂度" class="headerlink" title="复杂度"></a>复杂度</h3><p>我们可以用<code>b&amp;1</code>运算表示<code>b</code>的二进制下的最低位，并用<code>b&gt;&gt;1</code>来舍去最低位。在递归的过程中把<code>&gt;&gt;</code>和<code>&amp;</code>结合，其时间复杂度为<code>O(logb)</code></p>
+<h2 id="64位整数乘法"><a href="#64位整数乘法" class="headerlink" title="64位整数乘法"></a><a href="https://www.acwing.com/problem/content/92/" target="_blank" rel="noopener">64位整数乘法</a></h2><h3 id="代码-1"><a href="#代码-1" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;bits&#x2F;stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">typedef long long LL;</span><br><span class="line">LL power(LL a, LL b, LL c) &#123;</span><br><span class="line">    LL ans &#x3D; 0;</span><br><span class="line">    for (; b; b &gt;&gt;&#x3D; 1) &#123;</span><br><span class="line">        if (b &amp; 1) ans &#x3D; (ans + a) % c;</span><br><span class="line">        a &#x3D; a * 2 % c;</span><br><span class="line">    &#125;</span><br><span class="line">    return ans;</span><br><span class="line">&#125;</span><br><span class="line">int main() &#123;</span><br><span class="line">    LL a, b, p;</span><br><span class="line">    scanf(&quot;%lld%lld%lld&quot;, &amp;a, &amp;b, &amp;p);</span><br><span class="line">    LL ans &#x3D; power(a, b, p);</span><br><span class="line">    printf(&quot;%lld&quot;, ans);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="复杂度-1"><a href="#复杂度-1" class="headerlink" title="复杂度"></a>复杂度</h3><p>我们可以用<code>b&amp;1</code>运算表示<code>b</code>的二进制下的最低位，并用<code>b&gt;&gt;1</code>来舍去最低位。在递归的过程中把<code>&gt;&gt;</code>和<code>&amp;</code>结合，其时间复杂度为<code>O(logb)</code>，与上一题不同的是位数问题，但是每次<code>%p</code>之后都能保证不超过<code>2*10^18</code>，在<code>long long</code>的范围内</p>
+<h2 id="最短Hamilton路径"><a href="#最短Hamilton路径" class="headerlink" title="最短Hamilton路径"></a><a href="https://www.acwing.com/problem/content/93/" target="_blank" rel="noopener">最短Hamilton路径</a></h2><h3 id="分析-1"><a href="#分析-1" class="headerlink" title="分析"></a>分析</h3><p>我们可以采用朴素算法,其时间复杂度为<code>O(n*n!)</code>，<code>n!</code>为枚举<code>n</code>个点的全排列，<code>n</code>代表枚举路径的长度求得结果，这个算法的时间复杂度太高，不符合。而我们可以用二进制状态压缩<code>DP</code>来把时间复杂度优化到<code>O((n^2)*(2^n))</code>,我们用<code>F[i,j]</code>表示点被经过的状态对应二进制数<code>i</code>，且目前处于点<code>j</code>的最短路径   </p>
+<p>在起点时<code>F[1,0]=0</code>，即目前处于点<code>0</code>且只经过了点<code>0</code>的最短路径为<code>0</code>。为方便起见，我们将数组中其他元素设为无穷大，最终目的是求<code>F[(1&lt;&lt;n),n-1]</code>的值，即经过所有点且最终处于<code>n-1</code>的最短路径</p>
+<p>在任意时刻，有公式<code>F[i,j]=min(F[i,j],F[i^(1&lt;&lt;j),k]+weight[k,j])</code>，根据分析可得<code>k</code>一定是倒数第二个经过的点。我们枚举<code>k</code>，当<code>k</code>对应在<code>i</code>的二进制为<code>1</code>时，我们讨论这种情况并比较</p>
+<h3 id="代码-2"><a href="#代码-2" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;bits&#x2F;stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">const int N &#x3D; 20, M &#x3D; 1 &lt;&lt; 20;</span><br><span class="line">int weight[N][N], F[M][N];</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">    int n;</span><br><span class="line">    scanf(&quot;%d&quot;, &amp;n);</span><br><span class="line">    for (int i &#x3D; 0; i &lt; n; i++)</span><br><span class="line">        for (int j &#x3D; 0; j &lt; n; j++)</span><br><span class="line">            scanf(&quot;%d&quot;, &amp;weight[i][j]);</span><br><span class="line"></span><br><span class="line">    memset(F, 0x3f, sizeof F);</span><br><span class="line">    F[1][0] &#x3D; 0;</span><br><span class="line">    for (int i &#x3D; 1; i &lt; 1 &lt;&lt; n; i++)</span><br><span class="line">        for (int j &#x3D; 0; j &lt; n; j++)</span><br><span class="line">            if (i &gt;&gt; j &amp; 1)</span><br><span class="line">                for (int k &#x3D; 0; k &lt; n; k++)</span><br><span class="line">                    if ((i ^ 1 &lt;&lt; j) &gt;&gt; k &amp; 1)</span><br><span class="line">                        F[i][j] &#x3D; min(F[i][j], F[i ^ 1 &lt;&lt; j][k] + weight[k][j]);</span><br><span class="line"></span><br><span class="line">    printf(&quot;%d&quot;, F[(1 &lt;&lt; n) - 1][n - 1]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>还差一题，未完待续</p>
+</blockquote>
+<p><img src="https://ae01.alicdn.com/kf/Hdd96bb61417945ca90a15b8b5b98b5a1g.jpg" alt=""></p>
+]]></content>
+      <categories>
+        <category>算法竞赛进阶指南</category>
+      </categories>
+      <tags>
+        <tag>ACM</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>CODEFORCES 800 1360A.Minimal Square</title>
     <url>/2020/05/28/CODEFORCES1360A/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="1360A-Minimal-Square"><a href="#1360A-Minimal-Square" class="headerlink" title="1360A.Minimal Square"></a>1360A.Minimal Square</h1><h2 id="原题链接"><a href="#原题链接" class="headerlink" title="原题链接"></a>原题链接</h2><p><a href="http://codeforces.com/problemset/problem/1360/A" target="_blank" rel="noopener">1360A.Minimal Square</a></p>
@@ -109,6 +109,46 @@
       <tags>
         <tag>CODEFORCES800</tag>
         <tag>acm/math</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>HEXO+BUTTERFLY搭建骚气且实用的个人网站</title>
+    <url>/2020/05/27/HEXO-BUTTERFLY%E6%90%AD%E5%BB%BA%E9%AA%9A%E6%B0%94%E4%B8%94%E5%AE%9E%E7%94%A8%E7%9A%84%E4%B8%AA%E4%BA%BA%E7%BD%91%E7%AB%99/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>YOU CAN DRINK ALL YOU LIKE, BUT IN THE MORNING YOU GET HEADACHE WITH THE SAME PROBLEMS.</p>
+</blockquote>
+<hr>
+<h2 id="引子"><a href="#引子" class="headerlink" title="引子"></a>引子</h2><p>最近狂刷<code>codeforces</code>，但是逐渐发现自身一个问题，那就是刷过的题虽然在当天感觉很明白，但是隔一天，隔两天，就发现自己再遇到此题时又是一翻鏖战，这就是说明自己做过的题吸收的效率不够高，于是我就打算做一道题总结一道题。那么问题来了，在哪里总结呢？</p>
+<p>首先排除的是微信公众号，众所周知，微信公众号只能是自己分享东西的平台，而在这上面总结知识点就会引出很多问题，其一，每篇文章都要排版，其二，我的粉丝未必合此文章的胃口，其三，每天只能发布一篇文章，大大限制了自己的总结内容与时间分配。</p>
+<p>那么诸如<code>csdn</code>、博客园、掘金、知乎这种东西呢？也有很多不方便的地方，比如文章左右侧的广告，实在影响人的心情，此外还有审核等等的制约，思前想后，我决定自己开辟一个个人网站。</p>
+<p>当然不能从无到有手动开辟，自己能力有限，而且我的目的也是总结，总不能让自己以后把大把的时间浪费到维护网站上面去。于是我听从了大佬的建议，采用<code>hexo+github</code>的方式，<code>hexo</code>开辟网站，托管到<code>github</code>上面去。</p>
+<p>花里胡哨的页面也是最吸引我的原因之一，我采用了<code>butterfly</code>的主题，绝对美炸天！</p>
+<h2 id="过程"><a href="#过程" class="headerlink" title="过程"></a>过程</h2><p>过程当然是心酸+心酸+心酸，心态险些被搞没。至于搭建网站的教程，实话实说，看了n多篇技术总结，都号称史上最全，到最后还是觉得看官方文档最省事。</p>
+<p>当然自己也找到了一些好的文章，在此列出来希望对大家有帮助：</p>
+<p><code>hexo</code>安装文章：</p>
+<ul>
+<li><a href="https://www.jianshu.com/p/a1a4ebf0e5fc" target="_blank" rel="noopener">Hexo+Butterfly+Github+Coding搭建个人博客</a></li>
+<li><a href="https://hexo.io/" target="_blank" rel="noopener">hexo官方文档</a></li>
+</ul>
+<p><code>butterfly</code>主题系列文章：</p>
+<ol>
+<li><a href="https://jerryc.me/posts/21cfbf15/" target="_blank" rel="noopener">hexo-theme-butterfly 安装文档(一)快速开始</a></li>
+<li><a href="https://jerryc.me/posts/dc584b87/" target="_blank" rel="noopener">hexo-theme-butterfly 安装文档(二)主题页面</a></li>
+<li><a href="https://jerryc.me/posts/4aa8abbe/" target="_blank" rel="noopener">hexo-theme-butterfly 安装文档(三)主题配置</a></li>
+<li><a href="https://jerryc.me/posts/98d20436/" target="_blank" rel="noopener">hexo-theme-butterfly 安装文档(四)主题问答、打赏名单</a></li>
+<li><a href="https://jerryc.me/posts/198a4240/" target="_blank" rel="noopener">hexo-theme-butterfly 安装文档(五)更新日誌</a></li>
+</ol>
+<h2 id="收益"><a href="#收益" class="headerlink" title="收益"></a>收益</h2><p>没日没夜的折腾了两天，总能从其中学到什么：其一，当然是收获了又骚又实用的好网站；其二，学会了<code>git</code>+<code>github</code>的基本使用，常见的<code>git</code>命令也记得很熟；其三，收获了一种精神——永不放弃，哪有什么一帆风顺，加油，骚年！</p>
+<h2 id="不足"><a href="#不足" class="headerlink" title="不足"></a>不足</h2><p>自己的网站弄的也不是很成熟，还有很多功能没有上线，比如日历、赞赏等，自己没有买域名，只是托管到<code>github</code>上。</p>
+<h2 id="欢迎"><a href="#欢迎" class="headerlink" title="欢迎"></a>欢迎</h2><p><a href="https://haotianliu11.github.io/" target="_blank" rel="noopener">我的个人网站</a></p>
+<hr>
+<p><img src="https://imgkr.cn-bj.ufileos.com/148c824d-4eb8-48d3-9825-51625347b0f0.png" alt=""></p>
+]]></content>
+      <categories>
+        <category>博客搭建历程</category>
+      </categories>
+      <tags>
+        <tag>微信公众号文章——随笔</tag>
       </tags>
   </entry>
   <entry>
@@ -215,46 +255,6 @@
       </categories>
       <tags>
         <tag>C/C++常用API</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>HEXO+BUTTERFLY搭建骚气且实用的个人网站</title>
-    <url>/2020/05/27/HEXO-BUTTERFLY%E6%90%AD%E5%BB%BA%E9%AA%9A%E6%B0%94%E4%B8%94%E5%AE%9E%E7%94%A8%E7%9A%84%E4%B8%AA%E4%BA%BA%E7%BD%91%E7%AB%99/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>YOU CAN DRINK ALL YOU LIKE, BUT IN THE MORNING YOU GET HEADACHE WITH THE SAME PROBLEMS.</p>
-</blockquote>
-<hr>
-<h2 id="引子"><a href="#引子" class="headerlink" title="引子"></a>引子</h2><p>最近狂刷<code>codeforces</code>，但是逐渐发现自身一个问题，那就是刷过的题虽然在当天感觉很明白，但是隔一天，隔两天，就发现自己再遇到此题时又是一翻鏖战，这就是说明自己做过的题吸收的效率不够高，于是我就打算做一道题总结一道题。那么问题来了，在哪里总结呢？</p>
-<p>首先排除的是微信公众号，众所周知，微信公众号只能是自己分享东西的平台，而在这上面总结知识点就会引出很多问题，其一，每篇文章都要排版，其二，我的粉丝未必合此文章的胃口，其三，每天只能发布一篇文章，大大限制了自己的总结内容与时间分配。</p>
-<p>那么诸如<code>csdn</code>、博客园、掘金、知乎这种东西呢？也有很多不方便的地方，比如文章左右侧的广告，实在影响人的心情，此外还有审核等等的制约，思前想后，我决定自己开辟一个个人网站。</p>
-<p>当然不能从无到有手动开辟，自己能力有限，而且我的目的也是总结，总不能让自己以后把大把的时间浪费到维护网站上面去。于是我听从了大佬的建议，采用<code>hexo+github</code>的方式，<code>hexo</code>开辟网站，托管到<code>github</code>上面去。</p>
-<p>花里胡哨的页面也是最吸引我的原因之一，我采用了<code>butterfly</code>的主题，绝对美炸天！</p>
-<h2 id="过程"><a href="#过程" class="headerlink" title="过程"></a>过程</h2><p>过程当然是心酸+心酸+心酸，心态险些被搞没。至于搭建网站的教程，实话实说，看了n多篇技术总结，都号称史上最全，到最后还是觉得看官方文档最省事。</p>
-<p>当然自己也找到了一些好的文章，在此列出来希望对大家有帮助：</p>
-<p><code>hexo</code>安装文章：</p>
-<ul>
-<li><a href="https://www.jianshu.com/p/a1a4ebf0e5fc" target="_blank" rel="noopener">Hexo+Butterfly+Github+Coding搭建个人博客</a></li>
-<li><a href="https://hexo.io/" target="_blank" rel="noopener">hexo官方文档</a></li>
-</ul>
-<p><code>butterfly</code>主题系列文章：</p>
-<ol>
-<li><a href="https://jerryc.me/posts/21cfbf15/" target="_blank" rel="noopener">hexo-theme-butterfly 安装文档(一)快速开始</a></li>
-<li><a href="https://jerryc.me/posts/dc584b87/" target="_blank" rel="noopener">hexo-theme-butterfly 安装文档(二)主题页面</a></li>
-<li><a href="https://jerryc.me/posts/4aa8abbe/" target="_blank" rel="noopener">hexo-theme-butterfly 安装文档(三)主题配置</a></li>
-<li><a href="https://jerryc.me/posts/98d20436/" target="_blank" rel="noopener">hexo-theme-butterfly 安装文档(四)主题问答、打赏名单</a></li>
-<li><a href="https://jerryc.me/posts/198a4240/" target="_blank" rel="noopener">hexo-theme-butterfly 安装文档(五)更新日誌</a></li>
-</ol>
-<h2 id="收益"><a href="#收益" class="headerlink" title="收益"></a>收益</h2><p>没日没夜的折腾了两天，总能从其中学到什么：其一，当然是收获了又骚又实用的好网站；其二，学会了<code>git</code>+<code>github</code>的基本使用，常见的<code>git</code>命令也记得很熟；其三，收获了一种精神——永不放弃，哪有什么一帆风顺，加油，骚年！</p>
-<h2 id="不足"><a href="#不足" class="headerlink" title="不足"></a>不足</h2><p>自己的网站弄的也不是很成熟，还有很多功能没有上线，比如日历、赞赏等，自己没有买域名，只是托管到<code>github</code>上。</p>
-<h2 id="欢迎"><a href="#欢迎" class="headerlink" title="欢迎"></a>欢迎</h2><p><a href="https://haotianliu11.github.io/" target="_blank" rel="noopener">我的个人网站</a></p>
-<hr>
-<p><img src="https://imgkr.cn-bj.ufileos.com/148c824d-4eb8-48d3-9825-51625347b0f0.png" alt=""></p>
-]]></content>
-      <categories>
-        <category>博客搭建历程</category>
-      </categories>
-      <tags>
-        <tag>微信公众号文章——随笔</tag>
       </tags>
   </entry>
   <entry>

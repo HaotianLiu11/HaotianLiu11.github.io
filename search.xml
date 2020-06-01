@@ -93,40 +93,6 @@
       </tags>
   </entry>
   <entry>
-    <title>API之stringstream用法</title>
-    <url>/2020/05/30/API%E4%B9%8Bstringstream%E7%94%A8%E6%B3%95/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="API之stringstream用法"><a href="#API之stringstream用法" class="headerlink" title="API之stringstream用法"></a>API之stringstream用法</h1><p>本文主要介绍 C++ 中 stringstream 类的常见用法。</p>
-<h2 id="1-概述"><a href="#1-概述" class="headerlink" title="1.概述"></a>1.概述</h2><p><code>&lt;sstream&gt;</code>定义了三个类：<code>istringstream</code>、<code>ostringstream</code>和<code>stringstream</code>，分别用来进行流的输入、输出和输入输出操作。本文以<code>stringstream</code>为主，介绍流的输入和输出操作</p>
-<p><code>&lt;sstream&gt;</code>主要用来进行数据类型转换，由于<code>&lt;sstream&gt;</code>使用<code>string</code>对象来代替字符数组（<code>snprintf</code>方式），就避免缓冲区溢出的危险；而且，因为传入参数和目标对象的类型会被自动推导出来，所以不存在错误的格式化符的问题。简单说，相比c库的数据类型转换而言，<code>&lt;sstream&gt;</code>更加安全、自动和直接</p>
-<h2 id="2-代码示例"><a href="#2-代码示例" class="headerlink" title="2.代码示例"></a>2.代码示例</h2><h3 id="2-1数据类型转换"><a href="#2-1数据类型转换" class="headerlink" title="2.1数据类型转换"></a>2.1数据类型转换</h3><p>这里展示一个代码示例，该示例介绍了将<code>int</code>类型转换为<code>string</code>类型的过程。示例代码（<code>stringstream_test1.cpp</code>）如下：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line">#include &lt;iostream&gt;</span><br><span class="line">#include &lt;sstream&gt;</span><br><span class="line">#include &lt;string&gt;</span><br><span class="line"></span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">    stringstream sstream;</span><br><span class="line">    string strResult;</span><br><span class="line">    int nValue &#x3D; 1000;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 将int类型的值放入输入流中</span><br><span class="line">    sstream &lt;&lt; nValue;</span><br><span class="line">    &#x2F;&#x2F; 从sstream中抽取前面插入的int类型的值，赋给string类型</span><br><span class="line">    sstream &gt;&gt; strResult;</span><br><span class="line"></span><br><span class="line">    cout &lt;&lt; &quot;[cout]strResult is: &quot; &lt;&lt; strResult &lt;&lt; endl;</span><br><span class="line">    printf(&quot;[printf]strResult is: %s\n&quot;, strResult.c_str());</span><br><span class="line"></span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>结果如下：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[cout]strResult is: 1000   </span><br><span class="line">[printf]strResult is: 1000</span><br></pre></td></tr></table></figure></p>
-<h3 id="2-2多个字符串拼接"><a href="#2-2多个字符串拼接" class="headerlink" title="2.2多个字符串拼接"></a>2.2多个字符串拼接</h3><p>本示例介绍在<code>stringstream</code>中存放多个字符串，实现多个字符串拼接的目的（其实完全可以使用 <code>string</code>类实现），同时，介绍<code>stringstream</code>的清空方法。示例代码（<code>stringstream_test2.cpp</code>）如下：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;iostream&gt;</span><br><span class="line">#include &lt;sstream&gt;</span><br><span class="line">#include &lt;string&gt;</span><br><span class="line"></span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">    stringstream sstream;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 将多个字符串放入 sstream 中</span><br><span class="line">    sstream &lt;&lt; &quot;first&quot;</span><br><span class="line">            &lt;&lt; &quot; &quot;</span><br><span class="line">            &lt;&lt; &quot;string,&quot;;</span><br><span class="line">    sstream &lt;&lt; &quot; second string&quot;;</span><br><span class="line">    cout &lt;&lt; &quot;strResult is: &quot; &lt;&lt; sstream.str() &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 清空 sstream</span><br><span class="line">    sstream.str(&quot;&quot;);</span><br><span class="line">    sstream &lt;&lt; &quot;third string&quot;;</span><br><span class="line">    cout &lt;&lt; &quot;After clear, strResult is: &quot; &lt;&lt; sstream.str() &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>结果如下：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">strResult is: first string, second string</span><br><span class="line">After clear, strResult is: third string</span><br></pre></td></tr></table></figure></p>
-<p>从上述代码执行结果能够知道：</p>
-<ul>
-<li>可以使用<code>str()</code>方法，将<code>stringstream</code>类型转换为<code>string</code>类型</li>
-<li>可以将多个字符串放入<code>stringstream</code>中，实现字符串的拼接目的</li>
-<li>如果想清空<code>stringstream</code>，必须使用<code>sstream.str(&quot;&quot;)</code>; 方式:<code>clear()</code>方法适用于进行多次数据类型转换的场景。详见示例<code>2.3</code></li>
-</ul>
-<h3 id="2-3stringstream的清空"><a href="#2-3stringstream的清空" class="headerlink" title="2.3stringstream的清空"></a>2.3stringstream的清空</h3><p>清空<code>stringstream</code>有两种方法：<code>clear()</code>方法以及<code>str(&quot;&quot;)</code>方法，这两种方法有不同的使用场景。<code>str(&quot;&quot;)</code>方法的使用场景，在上面的示例中已经介绍了，这里介绍<code>clear()</code>方法的使用场景。示例代码（<code>stringstream_test3.cpp</code>）如下：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;iostream&gt;</span><br><span class="line">#include &lt;sstream&gt;</span><br><span class="line"></span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">    stringstream sstream;</span><br><span class="line">    int first, second;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 插入字符串</span><br><span class="line">    sstream &lt;&lt; &quot;456&quot;;</span><br><span class="line">    &#x2F;&#x2F; 转换为int类型</span><br><span class="line">    sstream &gt;&gt; first;</span><br><span class="line">    cout &lt;&lt; first &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 在进行多次类型转换前，必须先运行clear()</span><br><span class="line">    sstream.clear();</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 插入bool值</span><br><span class="line">    sstream &lt;&lt; true;</span><br><span class="line">    &#x2F;&#x2F; 转换为int类型</span><br><span class="line">    sstream &gt;&gt; second;</span><br><span class="line">    cout &lt;&lt; second &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>结果如下：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">456</span><br><span class="line">1</span><br></pre></td></tr></table></figure></p>
-<p>注意：在本示例涉及的场景下（多次数据类型转换），必须使用<code>clear()</code>方法清空<code>stringstream</code>，不使用<code>clear()</code>方法或使用<code>str(&quot;&quot;)</code>方法，都不能得到数据类型转换的正确结果。下图分别是未使用<code>clear()</code>方法、使用<code>str(&quot;&quot;)</code>方法时的运行结果：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">456</span><br><span class="line">4197008</span><br><span class="line"></span><br><span class="line">456</span><br><span class="line">0</span><br></pre></td></tr></table></figure>
-<h3 id="2-4测试"><a href="#2-4测试" class="headerlink" title="2.4测试"></a>2.4测试</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;iostream&gt;</span><br><span class="line">#include &lt;sstream&gt;</span><br><span class="line">#include &lt;string&gt;</span><br><span class="line"></span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">    stringstream sstream;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 将多个字符串放入 sstream 中</span><br><span class="line">    sstream &lt;&lt; &quot;firstiiii&quot;</span><br><span class="line">            &lt;&lt; &quot; &quot;</span><br><span class="line">            &lt;&lt; &quot;string,&quot;;</span><br><span class="line">    sstream &lt;&lt; &quot; second string&quot;;</span><br><span class="line">    string a, b;</span><br><span class="line">    sstream &gt;&gt; a;</span><br><span class="line">    cout &lt;&lt; &quot;strResult is: &quot; &lt;&lt; a &lt;&lt; endl;</span><br><span class="line">    sstream &gt;&gt; a;</span><br><span class="line">    cout &lt;&lt; &quot;strResult is: &quot; &lt;&lt; a &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; sstream.str();</span><br><span class="line"></span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>结果如下：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">strResult is: firstiiii</span><br><span class="line">strResult is: string,</span><br><span class="line">firstiiii string, second string</span><br></pre></td></tr></table></figure><br>由此可知，我们可以用它来分割字符串中的单词</p>
-<h2 id="3-例题"><a href="#3-例题" class="headerlink" title="3.例题"></a>3.例题</h2><p><a href="https://leetcode-cn.com/problems/check-if-a-word-occurs-as-a-prefix-of-any-word-in-a-sentence/" target="_blank" rel="noopener">LEETCODE1455. 检查单词是否为句中其他单词的前缀</a></p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">   public:</span><br><span class="line">    int isPrefixOfWord(string sentence, string searchWord) &#123;</span><br><span class="line">        stringstream ssin(sentence);</span><br><span class="line"></span><br><span class="line">        string word;</span><br><span class="line">        for (int i &#x3D; 1; ssin &gt;&gt; word; i++)</span><br><span class="line">            if (word.substr(0, searchWord.size()) &#x3D;&#x3D; searchWord)</span><br><span class="line">                return i;</span><br><span class="line">        return -1;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p><img src="https://ae01.alicdn.com/kf/H0b4d4cb9ed5441f7b122f043b18076c9H.jpg" alt=""></p>
-]]></content>
-      <categories>
-        <category>C/C++常用API</category>
-      </categories>
-      <tags>
-        <tag>C/C++常用API</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>0x02递推与递归</title>
     <url>/2020/05/30/0x02%E9%80%92%E6%8E%A8%E4%B8%8E%E9%80%92%E5%BD%92/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="0x02递推与递归"><a href="#0x02递推与递归" class="headerlink" title="0x02递推与递归"></a>0x02递推与递归</h1><h2 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h2><p>一个实际问题的各种可能情况构成的集合通常称为“状态空间”，而程序的运行则是对状态空间的遍历</p>
@@ -199,6 +165,33 @@
       </tags>
   </entry>
   <entry>
+    <title>0x04二分</title>
+    <url>/2020/05/31/0x04%E4%BA%8C%E5%88%86/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="0x04二分"><a href="#0x04二分" class="headerlink" title="0x04二分"></a>0x04二分</h1><h2 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h2><p>二分的基础的用法是在单调序列或单调函数中进行查找，因此当问题的答案具有单调性时，就可以通过二分把求解问题转换为判定（根据复杂度理论，判定的难度小于求解），进一步地，我们还可以扩展到通过三分法去解决单峰函数的极值以及相关问题</p>
+<p>对于整数域上的二分，需要注意中止边界、左右区间取舍时的开闭情况，避免漏掉答案或者造成死循环；对于实数域上的二分，需要注意精度问题</p>
+<h2 id="整数集合上的二分"><a href="#整数集合上的二分" class="headerlink" title="整数集合上的二分"></a>整数集合上的二分</h2><p>本文章的写法保证最终答案处于闭区间<code>[l,r]</code>以内，循环以<code>l=r</code>结束，每次二分的中间值<code>mid</code>会归属于左半段与右半段二者之一</p>
+<p><strong>模板如下</strong>：</p>
+<p>在单调递增序列<code>a</code>中查找<code>&gt;=x</code>的数中最小的一个（<code>x</code>或<code>x</code>的后继）<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">while (l &lt; r) &#123;</span><br><span class="line">    int mid &#x3D; (l + r) &gt;&gt; 1;</span><br><span class="line">    if (a[mid] &gt;&#x3D; x) r &#x3D; mid; else l &#x3D; mid + 1;</span><br><span class="line">&#125;</span><br><span class="line">return a[l];</span><br></pre></td></tr></table></figure><br>在单调递增序列<code>a</code>中查找<code>&lt;=x</code>的数中最大的一个（<code>x</code>或<code>x</code>的前驱）<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">while (l &lt; r) &#123;</span><br><span class="line">    int mid &#x3D; (l + r + 1) &gt;&gt; 1;</span><br><span class="line">    if (a[mid] &lt;&#x3D; x) l &#x3D; mid; else r &#x3D; mid - 1;</span><br><span class="line">&#125;</span><br><span class="line">return a[l];</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>如上面两段代码所示，这种二分写法可能会有两种形式：<br>1.缩小范围时，<code>r=mid</code>， <code>l=mid+1</code>，取中间值时，<code>mid=(l+r)&gt;&gt;1</code><br>2.缩小范围时，<code>l=mid</code>， <code>r=mid-1</code>，取中间值时，<code>mid=(l+r+1)&gt;&gt;1</code><br>如果不对<code>mid</code>的取法加以区分，假如第二段代码也采用<code>mid=(l+r)&gt;&gt;1</code>，那么当<code>r-l</code>等于<code>1</code>时，就有<code>mid=(l+r)&gt;&gt;1=l</code>，接下来若进入<code>l=mid</code>分支，可行区间未缩小，造成死循环；若进入<code>r=mid-1</code>分支，造成<code>l&gt;r</code>，循环不能以<code>l=r</code>结束；相反若<code>mid=(l+r+1)&gt;&gt;1</code> ，则第二段代码则正确得到结果。因此对两个形式采用配套的<code>mid</code>取法是必要的。此外还要注意：我们在二分实现中采用了右移运算符<code>&gt;&gt;1</code>，而不是整数除法<code>/2</code>。这是因为右移运算是向下取整，而整数除法是向<code>0</code>取整，在二分值域包含负数时后者不能正常工作。</p>
+</blockquote>
+<p><strong>我用一个例题来体现这两个模板的差别</strong>：<br><a href="https://www.acwing.com/problem/content/791/" target="_blank" rel="noopener">ACWING789.数的范围</a><br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;bits&#x2F;stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">const int MAXN &#x3D; 1e5 + 10;</span><br><span class="line">int nums[MAXN];</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">    int n, q;</span><br><span class="line">    scanf(&quot;%d%d&quot;, &amp;n, &amp;q);</span><br><span class="line">    for (int i &#x3D; 0; i &lt; n; i++) &#123;</span><br><span class="line">        scanf(&quot;%d&quot;, &amp;nums[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    while (q--) &#123;</span><br><span class="line">        int l &#x3D; 0, r &#x3D; n - 1;</span><br><span class="line">        int x;</span><br><span class="line">        scanf(&quot;%d&quot;, &amp;x);</span><br><span class="line">        while (l &lt; r) &#123;</span><br><span class="line">            int mid &#x3D; (l + r) &gt;&gt; 1;</span><br><span class="line">            if (nums[mid] &gt;&#x3D; x) r &#x3D; mid; else l &#x3D; mid + 1;</span><br><span class="line">        &#125;</span><br><span class="line">        if (nums[l] !&#x3D; x) printf(&quot;-1 -1\n&quot;);</span><br><span class="line">        else &#123;</span><br><span class="line">            cout &lt;&lt; l &lt;&lt; &quot; &quot;;</span><br><span class="line">            int l &#x3D; 0, r &#x3D; n - 1;</span><br><span class="line">            while (l &lt; r) &#123;</span><br><span class="line">                int mid &#x3D; (l + r + 1) &gt;&gt; 1;</span><br><span class="line">                if (nums[mid] &lt;&#x3D; x) l &#x3D; mid; else r &#x3D; mid - 1;</span><br><span class="line">            &#125;  </span><br><span class="line">            cout &lt;&lt; l &lt;&lt; endl;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>可以看出这两个模板的另一个区别：当目标值不止一个时，第一个模板是取到左边，也就是在单调递增序列<code>a</code>中查找<code>&gt;=x</code>的数中最小的一个；第二个模板是取到右边，也就是在单调递增序列<code>a</code>中查找<code>&lt;=x</code>的数中最大的一个；当目标值只有只有一个时，两个模板的结果没有差别  </p>
+<p>仔细分析这两种<code>mid</code>的取法，我们还发现：<code>mid=(l+r)&gt;&gt;1</code>不会取到<code>r</code>这个值，<code>mid=(l+r+1)&gt;&gt;1</code>不会取到<code>l</code>这个值，我们可以利用这一性质来处理无解的情况，把最初的二分区间分别扩大为<code>[1,n+1]</code>和<code>[0,n]</code>，把<code>a</code>数组的一个越界下标包含进来。如果最后二分终止于扩大后的这个越界下标上，则说明目标值不在<code>a</code>中；当然我们也可以直接看最终求得的<code>l</code>下标在<code>a</code>数组中对应的值是否为目标值  </p>
+<p>二分的终止条件就是<code>l==r</code>，该值就是答案所在位置</p>
+<p><code>C++STL</code>的<code>lower_bound</code>和<code>upper_bound</code>函数实现了在一个序列中二分查找某个整数<code>x</code>的后继</p>
+<blockquote>
+<p>未完待续</p>
+</blockquote>
+<p><img src="https://s1.ax1x.com/2020/05/31/t1moIH.jpg" alt=""></p>
+]]></content>
+      <categories>
+        <category>算法竞赛进阶指南</category>
+      </categories>
+      <tags>
+        <tag>ACM</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>CODEFORCES 800 1360B.Honest Coach</title>
     <url>/2020/05/30/CODEFORCES1360B/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="1360B-Honest-Coach"><a href="#1360B-Honest-Coach" class="headerlink" title="1360B.Honest Coach"></a>1360B.Honest Coach</h1><h2 id="原题链接"><a href="#原题链接" class="headerlink" title="原题链接"></a>原题链接</h2><p><a href="https://codeforces.com/problemset/problem/1360/B?csrf_token=6ef612f8a17a9c506cca94a69af1a61e" target="_blank" rel="noopener">1360B.Honest Coach</a></p>
@@ -257,43 +250,24 @@
       </tags>
   </entry>
   <entry>
-    <title>HEXO+BUTTERFLY搭建骚气且实用的个人网站</title>
-    <url>/2020/05/27/HEXO-BUTTERFLY%E6%90%AD%E5%BB%BA%E9%AA%9A%E6%B0%94%E4%B8%94%E5%AE%9E%E7%94%A8%E7%9A%84%E4%B8%AA%E4%BA%BA%E7%BD%91%E7%AB%99/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>YOU CAN DRINK ALL YOU LIKE, BUT IN THE MORNING YOU GET HEADACHE WITH THE SAME PROBLEMS.</p>
-</blockquote>
-<hr>
-<h2 id="引子"><a href="#引子" class="headerlink" title="引子"></a>引子</h2><p>最近狂刷<code>codeforces</code>，但是逐渐发现自身一个问题，那就是刷过的题虽然在当天感觉很明白，但是隔一天，隔两天，就发现自己再遇到此题时又是一翻鏖战，这就是说明自己做过的题吸收的效率不够高，于是我就打算做一道题总结一道题。那么问题来了，在哪里总结呢？</p>
-<p>首先排除的是微信公众号，众所周知，微信公众号只能是自己分享东西的平台，而在这上面总结知识点就会引出很多问题，其一，每篇文章都要排版，其二，我的粉丝未必合此文章的胃口，其三，每天只能发布一篇文章，大大限制了自己的总结内容与时间分配。</p>
-<p>那么诸如<code>csdn</code>、博客园、掘金、知乎这种东西呢？也有很多不方便的地方，比如文章左右侧的广告，实在影响人的心情，此外还有审核等等的制约，思前想后，我决定自己开辟一个个人网站。</p>
-<p>当然不能从无到有手动开辟，自己能力有限，而且我的目的也是总结，总不能让自己以后把大把的时间浪费到维护网站上面去。于是我听从了大佬的建议，采用<code>hexo+github</code>的方式，<code>hexo</code>开辟网站，托管到<code>github</code>上面去。</p>
-<p>花里胡哨的页面也是最吸引我的原因之一，我采用了<code>butterfly</code>的主题，绝对美炸天！</p>
-<h2 id="过程"><a href="#过程" class="headerlink" title="过程"></a>过程</h2><p>过程当然是心酸+心酸+心酸，心态险些被搞没。至于搭建网站的教程，实话实说，看了n多篇技术总结，都号称史上最全，到最后还是觉得看官方文档最省事。</p>
-<p>当然自己也找到了一些好的文章，在此列出来希望对大家有帮助：</p>
-<p><code>hexo</code>安装文章：</p>
-<ul>
-<li><a href="https://www.jianshu.com/p/a1a4ebf0e5fc" target="_blank" rel="noopener">Hexo+Butterfly+Github+Coding搭建个人博客</a></li>
-<li><a href="https://hexo.io/" target="_blank" rel="noopener">hexo官方文档</a></li>
-</ul>
-<p><code>butterfly</code>主题系列文章：</p>
-<ol>
-<li><a href="https://jerryc.me/posts/21cfbf15/" target="_blank" rel="noopener">hexo-theme-butterfly 安装文档(一)快速开始</a></li>
-<li><a href="https://jerryc.me/posts/dc584b87/" target="_blank" rel="noopener">hexo-theme-butterfly 安装文档(二)主题页面</a></li>
-<li><a href="https://jerryc.me/posts/4aa8abbe/" target="_blank" rel="noopener">hexo-theme-butterfly 安装文档(三)主题配置</a></li>
-<li><a href="https://jerryc.me/posts/98d20436/" target="_blank" rel="noopener">hexo-theme-butterfly 安装文档(四)主题问答、打赏名单</a></li>
-<li><a href="https://jerryc.me/posts/198a4240/" target="_blank" rel="noopener">hexo-theme-butterfly 安装文档(五)更新日誌</a></li>
-</ol>
-<h2 id="收益"><a href="#收益" class="headerlink" title="收益"></a>收益</h2><p>没日没夜的折腾了两天，总能从其中学到什么：其一，当然是收获了又骚又实用的好网站；其二，学会了<code>git</code>+<code>github</code>的基本使用，常见的<code>git</code>命令也记得很熟；其三，收获了一种精神——永不放弃，哪有什么一帆风顺，加油，骚年！</p>
-<h2 id="不足"><a href="#不足" class="headerlink" title="不足"></a>不足</h2><p>自己的网站弄的也不是很成熟，还有很多功能没有上线，比如日历、赞赏等，自己没有买域名，只是托管到<code>github</code>上。</p>
-<h2 id="欢迎"><a href="#欢迎" class="headerlink" title="欢迎"></a>欢迎</h2><p><a href="https://haotianliu11.github.io/" target="_blank" rel="noopener">我的个人网站</a></p>
-<hr>
-<p><img src="https://imgkr.cn-bj.ufileos.com/148c824d-4eb8-48d3-9825-51625347b0f0.png" alt=""></p>
+    <title>CODEFORCES 1100 1360C.Similar Pairs</title>
+    <url>/2020/05/31/CODEFORCES1360C/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="1360C-Similar-Pairs"><a href="#1360C-Similar-Pairs" class="headerlink" title="1360C.Similar Pairs"></a>1360C.Similar Pairs</h1><h2 id="原题链接"><a href="#原题链接" class="headerlink" title="原题链接"></a>原题链接</h2><p><a href="https://codeforces.com/problemset/problem/1360/C" target="_blank" rel="noopener">1360C.Similar Pairs</a></p>
+<h2 id="题目大意"><a href="#题目大意" class="headerlink" title="题目大意"></a>题目大意</h2><p>第一行输入测试数目</p>
+<p>之后每两行为一组测试：  </p>
+<p>第二行输入每组测试的元素个数  </p>
+<p>第三行输入每组的元素  </p>
+<p><strong>描述</strong>：当两个数奇偶相同或者绝对值相差<code>1</code>则称这两个数为<code>1</code>组，每次测试给你偶数个数，问所有元素是否有与它配对的数</p>
+<h2 id="解题思路"><a href="#解题思路" class="headerlink" title="解题思路"></a>解题思路</h2><p>因为一共有偶数个数，所以当奇数元素个数为偶数时，偶数元素个数也一定为偶数，则一定可以两两配对；如果奇数元素个数和偶数元素个数都为奇数时，检查是否存在一个奇数和一个偶数相减的绝对值为<code>1</code>的情况，如果存在这种情况，则一定可以两两配对，如果不存在，则不能两两配对</p>
+<h2 id="解题代码"><a href="#解题代码" class="headerlink" title="解题代码"></a>解题代码</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;bits&#x2F;stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">int nums[55];</span><br><span class="line">int main() &#123;</span><br><span class="line">    int t;</span><br><span class="line">    scanf(&quot;%d&quot;, &amp;t);</span><br><span class="line">    while (t--) &#123;</span><br><span class="line">        memset(nums, 0, sizeof nums);</span><br><span class="line">        int n;</span><br><span class="line">        scanf(&quot;%d&quot;, &amp;n);</span><br><span class="line">        int sum &#x3D; 0;</span><br><span class="line">        for (int i &#x3D; 0; i &lt; n; i++) &#123;</span><br><span class="line">            scanf(&quot;%d&quot;, &amp;nums[i]);</span><br><span class="line">            if (nums[i] % 2)</span><br><span class="line">                sum++;</span><br><span class="line">        &#125;</span><br><span class="line">        if (sum % 2 &#x3D;&#x3D; 0) printf(&quot;YES\n&quot;);</span><br><span class="line">        else &#123;</span><br><span class="line">            sort(nums, nums+n);</span><br><span class="line">            int flag &#x3D; 0;</span><br><span class="line">            for (int i &#x3D; 1; i &lt; n; i++) &#123;</span><br><span class="line">                if (abs(nums[i] - nums[i - 1] &#x3D;&#x3D; 1)) &#123;</span><br><span class="line">                    printf(&quot;YES\n&quot;);</span><br><span class="line">                    flag &#x3D; 1;</span><br><span class="line">                    break;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            if (flag &#x3D;&#x3D; 0)</span><br><span class="line">                printf(&quot;NO\n&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://s1.ax1x.com/2020/05/31/t1moIH.jpg" alt=""></p>
 ]]></content>
       <categories>
-        <category>博客搭建历程</category>
+        <category>CODEFORCES</category>
       </categories>
       <tags>
-        <tag>微信公众号文章——随笔</tag>
+        <tag>acm/greedy</tag>
+        <tag>CODEFORCES1100</tag>
       </tags>
   </entry>
   <entry>
@@ -341,51 +315,197 @@
       </tags>
   </entry>
   <entry>
-    <title>0x04二分</title>
-    <url>/2020/05/31/0x04%E4%BA%8C%E5%88%86/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="0x04二分"><a href="#0x04二分" class="headerlink" title="0x04二分"></a>0x04二分</h1><h2 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h2><p>二分的基础的用法是在单调序列或单调函数中进行查找，因此当问题的答案具有单调性时，就可以通过二分把求解问题转换为判定（根据复杂度理论，判定的难度小于求解），进一步地，我们还可以扩展到通过三分法去解决单峰函数的极值以及相关问题</p>
-<p>对于整数域上的二分，需要注意中止边界、左右区间取舍时的开闭情况，避免漏掉答案或者造成死循环；对于实数域上的二分，需要注意精度问题</p>
-<h2 id="整数集合上的二分"><a href="#整数集合上的二分" class="headerlink" title="整数集合上的二分"></a>整数集合上的二分</h2><p>本文章的写法保证最终答案处于闭区间<code>[l,r]</code>以内，循环以<code>l=r</code>结束，每次二分的中间值<code>mid</code>会归属于左半段与右半段二者之一</p>
-<p><strong>模板如下</strong>：</p>
-<p>在单调递增序列<code>a</code>中查找<code>&gt;=x</code>的数中最小的一个（<code>x</code>或<code>x</code>的后继）<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">while (l &lt; r) &#123;</span><br><span class="line">    int mid &#x3D; (l + r) &gt;&gt; 1;</span><br><span class="line">    if (a[mid] &gt;&#x3D; x) r &#x3D; mid; else l &#x3D; mid + 1;</span><br><span class="line">&#125;</span><br><span class="line">return a[l];</span><br></pre></td></tr></table></figure><br>在单调递增序列<code>a</code>中查找<code>&lt;=x</code>的数中最大的一个（<code>x</code>或<code>x</code>的前驱）<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">while (l &lt; r) &#123;</span><br><span class="line">    int mid &#x3D; (l + r + 1) &gt;&gt; 1;</span><br><span class="line">    if (a[mid] &lt;&#x3D; x) l &#x3D; mid; else r &#x3D; mid - 1;</span><br><span class="line">&#125;</span><br><span class="line">return a[l];</span><br></pre></td></tr></table></figure></p>
-<blockquote>
-<p>如上面两段代码所示，这种二分写法可能会有两种形式：<br>1.缩小范围时，<code>r=mid</code>， <code>l=mid+1</code>，取中间值时，<code>mid=(l+r)&gt;&gt;1</code><br>2.缩小范围时，<code>l=mid</code>， <code>r=mid-1</code>，取中间值时，<code>mid=(l+r+1)&gt;&gt;1</code><br>如果不对<code>mid</code>的取法加以区分，假如第二段代码也采用<code>mid=(l+r)&gt;&gt;1</code>，那么当<code>r-l</code>等于<code>1</code>时，就有<code>mid=(l+r)&gt;&gt;1=l</code>，接下来若进入<code>l=mid</code>分支，可行区间未缩小，造成死循环；若进入<code>r=mid-1</code>分支，造成<code>l&gt;r</code>，循环不能以<code>l=r</code>结束；相反若<code>mid=(l+r+1)&gt;&gt;1</code> ，则第二段代码则正确得到结果。因此对两个形式采用配套的<code>mid</code>取法是必要的。此外还要注意：我们在二分实现中采用了右移运算符<code>&gt;&gt;1</code>，而不是整数除法<code>/2</code>。这是因为右移运算是向下取整，而整数除法是向<code>0</code>取整，在二分值域包含负数时后者不能正常工作。</p>
-</blockquote>
-<p><strong>我用一个例题来体现这两个模板的差别</strong>：<br><a href="https://www.acwing.com/problem/content/791/" target="_blank" rel="noopener">ACWING789.数的范围</a><br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;bits&#x2F;stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">const int MAXN &#x3D; 1e5 + 10;</span><br><span class="line">int nums[MAXN];</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">    int n, q;</span><br><span class="line">    scanf(&quot;%d%d&quot;, &amp;n, &amp;q);</span><br><span class="line">    for (int i &#x3D; 0; i &lt; n; i++) &#123;</span><br><span class="line">        scanf(&quot;%d&quot;, &amp;nums[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    while (q--) &#123;</span><br><span class="line">        int l &#x3D; 0, r &#x3D; n - 1;</span><br><span class="line">        int x;</span><br><span class="line">        scanf(&quot;%d&quot;, &amp;x);</span><br><span class="line">        while (l &lt; r) &#123;</span><br><span class="line">            int mid &#x3D; (l + r) &gt;&gt; 1;</span><br><span class="line">            if (nums[mid] &gt;&#x3D; x) r &#x3D; mid; else l &#x3D; mid + 1;</span><br><span class="line">        &#125;</span><br><span class="line">        if (nums[l] !&#x3D; x) printf(&quot;-1 -1\n&quot;);</span><br><span class="line">        else &#123;</span><br><span class="line">            cout &lt;&lt; l &lt;&lt; &quot; &quot;;</span><br><span class="line">            int l &#x3D; 0, r &#x3D; n - 1;</span><br><span class="line">            while (l &lt; r) &#123;</span><br><span class="line">                int mid &#x3D; (l + r + 1) &gt;&gt; 1;</span><br><span class="line">                if (nums[mid] &lt;&#x3D; x) l &#x3D; mid; else r &#x3D; mid - 1;</span><br><span class="line">            &#125;  </span><br><span class="line">            cout &lt;&lt; l &lt;&lt; endl;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>可以看出这两个模板的另一个区别：当目标值不止一个时，第一个模板是取到左边，也就是在单调递增序列<code>a</code>中查找<code>&gt;=x</code>的数中最小的一个；第二个模板是取到右边，也就是在单调递增序列<code>a</code>中查找<code>&lt;=x</code>的数中最大的一个；当目标值只有只有一个时，两个模板的结果没有差别  </p>
-<p>仔细分析这两种<code>mid</code>的取法，我们还发现：<code>mid=(l+r)&gt;&gt;1</code>不会取到<code>r</code>这个值，<code>mid=(l+r+1)&gt;&gt;1</code>不会取到<code>l</code>这个值，我们可以利用这一性质来处理无解的情况，把最初的二分区间分别扩大为<code>[1,n+1]</code>和<code>[0,n]</code>，把<code>a</code>数组的一个越界下标包含进来。如果最后二分终止于扩大后的这个越界下标上，则说明目标值不在<code>a</code>中；当然我们也可以直接看最终求得的<code>l</code>下标在<code>a</code>数组中对应的值是否为目标值  </p>
-<p>二分的终止条件就是<code>l==r</code>，该值就是答案所在位置</p>
-<p><code>C++STL</code>的<code>lower_bound</code>和<code>upper_bound</code>函数实现了在一个序列中二分查找某个整数<code>x</code>的后继</p>
-<blockquote>
-<p>未完待续</p>
-</blockquote>
-<p><img src="https://s1.ax1x.com/2020/05/31/t1moIH.jpg" alt=""></p>
+    <title>API之stringstream用法</title>
+    <url>/2020/05/30/API%E4%B9%8Bstringstream%E7%94%A8%E6%B3%95/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="API之stringstream用法"><a href="#API之stringstream用法" class="headerlink" title="API之stringstream用法"></a>API之stringstream用法</h1><p>本文主要介绍 C++ 中 stringstream 类的常见用法。</p>
+<h2 id="1-概述"><a href="#1-概述" class="headerlink" title="1.概述"></a>1.概述</h2><p><code>&lt;sstream&gt;</code>定义了三个类：<code>istringstream</code>、<code>ostringstream</code>和<code>stringstream</code>，分别用来进行流的输入、输出和输入输出操作。本文以<code>stringstream</code>为主，介绍流的输入和输出操作</p>
+<p><code>&lt;sstream&gt;</code>主要用来进行数据类型转换，由于<code>&lt;sstream&gt;</code>使用<code>string</code>对象来代替字符数组（<code>snprintf</code>方式），就避免缓冲区溢出的危险；而且，因为传入参数和目标对象的类型会被自动推导出来，所以不存在错误的格式化符的问题。简单说，相比c库的数据类型转换而言，<code>&lt;sstream&gt;</code>更加安全、自动和直接</p>
+<h2 id="2-代码示例"><a href="#2-代码示例" class="headerlink" title="2.代码示例"></a>2.代码示例</h2><h3 id="2-1数据类型转换"><a href="#2-1数据类型转换" class="headerlink" title="2.1数据类型转换"></a>2.1数据类型转换</h3><p>这里展示一个代码示例，该示例介绍了将<code>int</code>类型转换为<code>string</code>类型的过程。示例代码（<code>stringstream_test1.cpp</code>）如下：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line">#include &lt;iostream&gt;</span><br><span class="line">#include &lt;sstream&gt;</span><br><span class="line">#include &lt;string&gt;</span><br><span class="line"></span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">    stringstream sstream;</span><br><span class="line">    string strResult;</span><br><span class="line">    int nValue &#x3D; 1000;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 将int类型的值放入输入流中</span><br><span class="line">    sstream &lt;&lt; nValue;</span><br><span class="line">    &#x2F;&#x2F; 从sstream中抽取前面插入的int类型的值，赋给string类型</span><br><span class="line">    sstream &gt;&gt; strResult;</span><br><span class="line"></span><br><span class="line">    cout &lt;&lt; &quot;[cout]strResult is: &quot; &lt;&lt; strResult &lt;&lt; endl;</span><br><span class="line">    printf(&quot;[printf]strResult is: %s\n&quot;, strResult.c_str());</span><br><span class="line"></span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>结果如下：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[cout]strResult is: 1000   </span><br><span class="line">[printf]strResult is: 1000</span><br></pre></td></tr></table></figure></p>
+<h3 id="2-2多个字符串拼接"><a href="#2-2多个字符串拼接" class="headerlink" title="2.2多个字符串拼接"></a>2.2多个字符串拼接</h3><p>本示例介绍在<code>stringstream</code>中存放多个字符串，实现多个字符串拼接的目的（其实完全可以使用 <code>string</code>类实现），同时，介绍<code>stringstream</code>的清空方法。示例代码（<code>stringstream_test2.cpp</code>）如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;iostream&gt;</span><br><span class="line">#include &lt;sstream&gt;</span><br><span class="line">#include &lt;string&gt;</span><br><span class="line"></span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">    stringstream sstream;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 将多个字符串放入 sstream 中</span><br><span class="line">    sstream &lt;&lt; &quot;first&quot;</span><br><span class="line">            &lt;&lt; &quot; &quot;</span><br><span class="line">            &lt;&lt; &quot;string,&quot;;</span><br><span class="line">    sstream &lt;&lt; &quot; second string&quot;;</span><br><span class="line">    cout &lt;&lt; &quot;strResult is: &quot; &lt;&lt; sstream.str() &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 清空 sstream</span><br><span class="line">    sstream.str(&quot;&quot;);</span><br><span class="line">    sstream &lt;&lt; &quot;third string&quot;;</span><br><span class="line">    cout &lt;&lt; &quot;After clear, strResult is: &quot; &lt;&lt; sstream.str() &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>结果如下：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">strResult is: first string, second string</span><br><span class="line">After clear, strResult is: third string</span><br></pre></td></tr></table></figure></p>
+<p>从上述代码执行结果能够知道：</p>
+<ul>
+<li>可以使用<code>str()</code>方法，将<code>stringstream</code>类型转换为<code>string</code>类型</li>
+<li>可以将多个字符串放入<code>stringstream</code>中，实现字符串的拼接目的</li>
+<li>如果想清空<code>stringstream</code>，必须使用<code>sstream.str(&quot;&quot;)</code>; 方式:<code>clear()</code>方法适用于进行多次数据类型转换的场景。详见示例<code>2.3</code></li>
+</ul>
+<h3 id="2-3stringstream的清空"><a href="#2-3stringstream的清空" class="headerlink" title="2.3stringstream的清空"></a>2.3stringstream的清空</h3><p>清空<code>stringstream</code>有两种方法：<code>clear()</code>方法以及<code>str(&quot;&quot;)</code>方法，这两种方法有不同的使用场景。<code>str(&quot;&quot;)</code>方法的使用场景，在上面的示例中已经介绍了，这里介绍<code>clear()</code>方法的使用场景。示例代码（<code>stringstream_test3.cpp</code>）如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;iostream&gt;</span><br><span class="line">#include &lt;sstream&gt;</span><br><span class="line"></span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">    stringstream sstream;</span><br><span class="line">    int first, second;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 插入字符串</span><br><span class="line">    sstream &lt;&lt; &quot;456&quot;;</span><br><span class="line">    &#x2F;&#x2F; 转换为int类型</span><br><span class="line">    sstream &gt;&gt; first;</span><br><span class="line">    cout &lt;&lt; first &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 在进行多次类型转换前，必须先运行clear()</span><br><span class="line">    sstream.clear();</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 插入bool值</span><br><span class="line">    sstream &lt;&lt; true;</span><br><span class="line">    &#x2F;&#x2F; 转换为int类型</span><br><span class="line">    sstream &gt;&gt; second;</span><br><span class="line">    cout &lt;&lt; second &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>结果如下：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">456</span><br><span class="line">1</span><br></pre></td></tr></table></figure></p>
+<p>注意：在本示例涉及的场景下（多次数据类型转换），必须使用<code>clear()</code>方法清空<code>stringstream</code>，不使用<code>clear()</code>方法或使用<code>str(&quot;&quot;)</code>方法，都不能得到数据类型转换的正确结果。下图分别是未使用<code>clear()</code>方法、使用<code>str(&quot;&quot;)</code>方法时的运行结果：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">456</span><br><span class="line">4197008</span><br><span class="line"></span><br><span class="line">456</span><br><span class="line">0</span><br></pre></td></tr></table></figure>
+<h3 id="2-4测试"><a href="#2-4测试" class="headerlink" title="2.4测试"></a>2.4测试</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;iostream&gt;</span><br><span class="line">#include &lt;sstream&gt;</span><br><span class="line">#include &lt;string&gt;</span><br><span class="line"></span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">    stringstream sstream;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 将多个字符串放入 sstream 中</span><br><span class="line">    sstream &lt;&lt; &quot;firstiiii&quot;</span><br><span class="line">            &lt;&lt; &quot; &quot;</span><br><span class="line">            &lt;&lt; &quot;string,&quot;;</span><br><span class="line">    sstream &lt;&lt; &quot; second string&quot;;</span><br><span class="line">    string a, b;</span><br><span class="line">    sstream &gt;&gt; a;</span><br><span class="line">    cout &lt;&lt; &quot;strResult is: &quot; &lt;&lt; a &lt;&lt; endl;</span><br><span class="line">    sstream &gt;&gt; a;</span><br><span class="line">    cout &lt;&lt; &quot;strResult is: &quot; &lt;&lt; a &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; sstream.str();</span><br><span class="line"></span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>结果如下：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">strResult is: firstiiii</span><br><span class="line">strResult is: string,</span><br><span class="line">firstiiii string, second string</span><br></pre></td></tr></table></figure><br>由此可知，我们可以用它来分割字符串中的单词</p>
+<h2 id="3-例题"><a href="#3-例题" class="headerlink" title="3.例题"></a>3.例题</h2><p><a href="https://leetcode-cn.com/problems/check-if-a-word-occurs-as-a-prefix-of-any-word-in-a-sentence/" target="_blank" rel="noopener">LEETCODE1455. 检查单词是否为句中其他单词的前缀</a></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">   public:</span><br><span class="line">    int isPrefixOfWord(string sentence, string searchWord) &#123;</span><br><span class="line">        stringstream ssin(sentence);</span><br><span class="line"></span><br><span class="line">        string word;</span><br><span class="line">        for (int i &#x3D; 1; ssin &gt;&gt; word; i++)</span><br><span class="line">            if (word.substr(0, searchWord.size()) &#x3D;&#x3D; searchWord)</span><br><span class="line">                return i;</span><br><span class="line">        return -1;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p><img src="https://ae01.alicdn.com/kf/H0b4d4cb9ed5441f7b122f043b18076c9H.jpg" alt=""></p>
 ]]></content>
       <categories>
-        <category>算法竞赛进阶指南</category>
+        <category>C/C++常用API</category>
       </categories>
       <tags>
-        <tag>ACM</tag>
+        <tag>C/C++常用API</tag>
       </tags>
   </entry>
   <entry>
-    <title>CODEFORCES 1100 1360C.Similar Pairs</title>
-    <url>/2020/05/31/CODEFORCES1360C/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="1360C-Similar-Pairs"><a href="#1360C-Similar-Pairs" class="headerlink" title="1360C.Similar Pairs"></a>1360C.Similar Pairs</h1><h2 id="原题链接"><a href="#原题链接" class="headerlink" title="原题链接"></a>原题链接</h2><p><a href="https://codeforces.com/problemset/problem/1360/C" target="_blank" rel="noopener">1360C.Similar Pairs</a></p>
-<h2 id="题目大意"><a href="#题目大意" class="headerlink" title="题目大意"></a>题目大意</h2><p>第一行输入测试数目</p>
-<p>之后每两行为一组测试：  </p>
-<p>第二行输入每组测试的元素个数  </p>
-<p>第三行输入每组的元素  </p>
-<p><strong>描述</strong>：当两个数奇偶相同或者绝对值相差<code>1</code>则称这两个数为<code>1</code>组，每次测试给你偶数个数，问所有元素是否有与它配对的数</p>
-<h2 id="解题思路"><a href="#解题思路" class="headerlink" title="解题思路"></a>解题思路</h2><p>因为一共有偶数个数，所以当奇数元素个数为偶数时，偶数元素个数也一定为偶数，则一定可以两两配对；如果奇数元素个数和偶数元素个数都为奇数时，检查是否存在一个奇数和一个偶数相减的绝对值为<code>1</code>的情况，如果存在这种情况，则一定可以两两配对，如果不存在，则不能两两配对</p>
-<h2 id="解题代码"><a href="#解题代码" class="headerlink" title="解题代码"></a>解题代码</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;bits&#x2F;stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">int nums[55];</span><br><span class="line">int main() &#123;</span><br><span class="line">    int t;</span><br><span class="line">    scanf(&quot;%d&quot;, &amp;t);</span><br><span class="line">    while (t--) &#123;</span><br><span class="line">        memset(nums, 0, sizeof nums);</span><br><span class="line">        int n;</span><br><span class="line">        scanf(&quot;%d&quot;, &amp;n);</span><br><span class="line">        int sum &#x3D; 0;</span><br><span class="line">        for (int i &#x3D; 0; i &lt; n; i++) &#123;</span><br><span class="line">            scanf(&quot;%d&quot;, &amp;nums[i]);</span><br><span class="line">            if (nums[i] % 2)</span><br><span class="line">                sum++;</span><br><span class="line">        &#125;</span><br><span class="line">        if (sum % 2 &#x3D;&#x3D; 0) printf(&quot;YES\n&quot;);</span><br><span class="line">        else &#123;</span><br><span class="line">            sort(nums, nums+n);</span><br><span class="line">            int flag &#x3D; 0;</span><br><span class="line">            for (int i &#x3D; 1; i &lt; n; i++) &#123;</span><br><span class="line">                if (abs(nums[i] - nums[i - 1] &#x3D;&#x3D; 1)) &#123;</span><br><span class="line">                    printf(&quot;YES\n&quot;);</span><br><span class="line">                    flag &#x3D; 1;</span><br><span class="line">                    break;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            if (flag &#x3D;&#x3D; 0)</span><br><span class="line">                printf(&quot;NO\n&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><img src="https://s1.ax1x.com/2020/05/31/t1moIH.jpg" alt=""></p>
+    <title>HEXO+BUTTERFLY搭建骚气且实用的个人网站</title>
+    <url>/2020/05/27/HEXO-BUTTERFLY%E6%90%AD%E5%BB%BA%E9%AA%9A%E6%B0%94%E4%B8%94%E5%AE%9E%E7%94%A8%E7%9A%84%E4%B8%AA%E4%BA%BA%E7%BD%91%E7%AB%99/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>YOU CAN DRINK ALL YOU LIKE, BUT IN THE MORNING YOU GET HEADACHE WITH THE SAME PROBLEMS.</p>
+</blockquote>
+<hr>
+<h2 id="引子"><a href="#引子" class="headerlink" title="引子"></a>引子</h2><p>最近狂刷<code>codeforces</code>，但是逐渐发现自身一个问题，那就是刷过的题虽然在当天感觉很明白，但是隔一天，隔两天，就发现自己再遇到此题时又是一翻鏖战，这就是说明自己做过的题吸收的效率不够高，于是我就打算做一道题总结一道题。那么问题来了，在哪里总结呢？</p>
+<p>首先排除的是微信公众号，众所周知，微信公众号只能是自己分享东西的平台，而在这上面总结知识点就会引出很多问题，其一，每篇文章都要排版，其二，我的粉丝未必合此文章的胃口，其三，每天只能发布一篇文章，大大限制了自己的总结内容与时间分配。</p>
+<p>那么诸如<code>csdn</code>、博客园、掘金、知乎这种东西呢？也有很多不方便的地方，比如文章左右侧的广告，实在影响人的心情，此外还有审核等等的制约，思前想后，我决定自己开辟一个个人网站。</p>
+<p>当然不能从无到有手动开辟，自己能力有限，而且我的目的也是总结，总不能让自己以后把大把的时间浪费到维护网站上面去。于是我听从了大佬的建议，采用<code>hexo+github</code>的方式，<code>hexo</code>开辟网站，托管到<code>github</code>上面去。</p>
+<p>花里胡哨的页面也是最吸引我的原因之一，我采用了<code>butterfly</code>的主题，绝对美炸天！</p>
+<h2 id="过程"><a href="#过程" class="headerlink" title="过程"></a>过程</h2><p>过程当然是心酸+心酸+心酸，心态险些被搞没。至于搭建网站的教程，实话实说，看了n多篇技术总结，都号称史上最全，到最后还是觉得看官方文档最省事。</p>
+<p>当然自己也找到了一些好的文章，在此列出来希望对大家有帮助：</p>
+<p><code>hexo</code>安装文章：</p>
+<ul>
+<li><a href="https://www.jianshu.com/p/a1a4ebf0e5fc" target="_blank" rel="noopener">Hexo+Butterfly+Github+Coding搭建个人博客</a></li>
+<li><a href="https://hexo.io/" target="_blank" rel="noopener">hexo官方文档</a></li>
+</ul>
+<p><code>butterfly</code>主题系列文章：</p>
+<ol>
+<li><a href="https://jerryc.me/posts/21cfbf15/" target="_blank" rel="noopener">hexo-theme-butterfly 安装文档(一)快速开始</a></li>
+<li><a href="https://jerryc.me/posts/dc584b87/" target="_blank" rel="noopener">hexo-theme-butterfly 安装文档(二)主题页面</a></li>
+<li><a href="https://jerryc.me/posts/4aa8abbe/" target="_blank" rel="noopener">hexo-theme-butterfly 安装文档(三)主题配置</a></li>
+<li><a href="https://jerryc.me/posts/98d20436/" target="_blank" rel="noopener">hexo-theme-butterfly 安装文档(四)主题问答、打赏名单</a></li>
+<li><a href="https://jerryc.me/posts/198a4240/" target="_blank" rel="noopener">hexo-theme-butterfly 安装文档(五)更新日誌</a></li>
+</ol>
+<h2 id="收益"><a href="#收益" class="headerlink" title="收益"></a>收益</h2><p>没日没夜的折腾了两天，总能从其中学到什么：其一，当然是收获了又骚又实用的好网站；其二，学会了<code>git</code>+<code>github</code>的基本使用，常见的<code>git</code>命令也记得很熟；其三，收获了一种精神——永不放弃，哪有什么一帆风顺，加油，骚年！</p>
+<h2 id="不足"><a href="#不足" class="headerlink" title="不足"></a>不足</h2><p>自己的网站弄的也不是很成熟，还有很多功能没有上线，比如日历、赞赏等，自己没有买域名，只是托管到<code>github</code>上。</p>
+<h2 id="欢迎"><a href="#欢迎" class="headerlink" title="欢迎"></a>欢迎</h2><p><a href="https://haotianliu11.github.io/" target="_blank" rel="noopener">我的个人网站</a></p>
+<hr>
+<p><img src="https://imgkr.cn-bj.ufileos.com/148c824d-4eb8-48d3-9825-51625347b0f0.png" alt=""></p>
 ]]></content>
       <categories>
-        <category>CODEFORCES</category>
+        <category>博客搭建历程</category>
       </categories>
       <tags>
-        <tag>acm/greedy</tag>
-        <tag>CODEFORCES1100</tag>
+        <tag>微信公众号文章——随笔</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>python基础总结——mosh版本</title>
+    <url>/2020/06/01/python%E5%9F%BA%E7%A1%80%E6%80%BB%E7%BB%93%E2%80%94%E2%80%94mosh%E7%89%88%E6%9C%AC/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="PYTHON视频讲解-MOSH-总结"><a href="#PYTHON视频讲解-MOSH-总结" class="headerlink" title="PYTHON视频讲解(MOSH)总结"></a>PYTHON视频讲解(MOSH)总结</h1><h2 id="和C-C-的区别"><a href="#和C-C-的区别" class="headerlink" title="和C/C++的区别"></a>和C/C++的区别</h2><ol>
+<li><p><code>python</code>的<code>print</code>是一个函数，其中代表换行的参数默认换行，所以每次执行一次<code>print</code>都会自动换行</p>
+</li>
+<li><p><code>python</code>的<code>bool</code>值是<code>False</code>和<code>True</code>，首字母大写，而<code>C/C++</code>的<code>bool</code>类型值是<code>false</code>和<code>true</code>，首字母小写  </p>
+</li>
+<li><p><code>python</code>的输出函数是<code>print</code>，而<code>C</code>的输出语句是<code>printf</code></p>
+</li>
+<li><p><code>python</code>的输入语句是<code>input()</code>，这个函数把括号内的东西输出，并接受输入的值，所以可以有如下写法<code>name = input(&quot;what&#39;s your name&quot;)</code></p>
+</li>
+<li><p><code>input</code>把接收的值转化为字符串</p>
+</li>
+<li><p><code>10/3 = 3.333</code>，这与<code>C/C++</code>不同<br><code>10//3 = 3</code>，这与<code>C/C++</code>相同<br><code>3**2 = 9</code>，<code>C/C++</code>中没有此用法</p>
+</li>
+<li><p><code>C++</code>中的类与<code>python</code>中的类有一点区别<br>假设都定义了<code>School</code>这个类  </p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">C++:</span><br><span class="line">School one;</span><br><span class="line"></span><br><span class="line">python:</span><br><span class="line">one &#x3D; School()</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h2 id="基础语法"><a href="#基础语法" class="headerlink" title="基础语法"></a>基础语法</h2><ol>
+<li><p><code>type</code>(变量) 打印变量的类型  </p>
+</li>
+<li><p>三个引号<code>&#39;&#39;&#39; &#39;&#39;&#39;</code>，三引号中间的变量可以换行，此外还有双引号和单引号</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">程序：</span><br><span class="line">email &#x3D; &#39;&#39;&#39;</span><br><span class="line">Hello!</span><br><span class="line">This is Fu JANG &#39;s blog.</span><br><span class="line">Welcome to u.</span><br><span class="line">&#39;&#39;&#39;</span><br><span class="line">print(email)</span><br><span class="line"></span><br><span class="line">结果：</span><br><span class="line">Hello!</span><br><span class="line">This is Fu JANG &#39;s blog.</span><br><span class="line">Welcome to u.</span><br><span class="line"></span><br><span class="line">进程已结束,退出代码0</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>对于第二点的代码（三引号）<code>email[0]</code>就是<code>H</code>，<code>email[-1]</code>就是<code>换行符</code>，<code>email[-2]</code>就是<code>.</code>，而对于以下的代码：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">程序：</span><br><span class="line">email &#x3D; &#39;Hello&#39;</span><br><span class="line">print(email[-1])</span><br><span class="line"></span><br><span class="line">结果：</span><br><span class="line">o</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>[0:3]</code>左闭右开<br><code>[0:]</code> 0到末尾<br><code>[:3]</code>与第一个等效<br><code>[:]</code> 全部</p>
+</li>
+<li><p><code>f&#39;{变量名}’</code>  占位符，程序会用对应变量的值去填充大括号  </p>
+</li>
+<li><p><code>len()</code>  返回字符串的长度</p>
+</li>
+<li><p><code>.upper()</code>把字符串中字母全部转 为大写，但不改变原字符串<br><code>.lower()</code>把字符串中字母全部转为小写，但不改变原字符串<br><code>.title()</code>把字符串中单词首字母字母全部转为大写，但不改变原字符串<br> <code>.find(&#39;&#39;)</code>找到这个字符在字符串中的第一个索引<br> 若<code>&#39;&#39;</code>中为一串字符，则返回第一个字符的索引<br> 若<code>&#39;&#39;</code>中的字符在字符串中不存在，则返回<code>-1</code><br> <code>.replace(&#39;原&#39;, &#39;新&#39;)</code> 若字符串中没有原字符，则不替换</p>
+</li>
+<li><p><code>&#39; &#39; in 变量</code> 返回一个布尔值，代表该字符是否在此变量中  </p>
+</li>
+<li><p><code>round()</code>四舍五入<br><code>abs()</code>取绝对值</p>
+</li>
+<li><p>引用模块</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">程序：</span><br><span class="line">import math</span><br><span class="line">print(math.ceil(2.9)) 封</span><br><span class="line">print(math.floor(2.9)) 底</span><br><span class="line"></span><br><span class="line">结果：</span><br><span class="line">3</span><br><span class="line">2</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>if</code>语句：<br><code>if:</code><br><code>elif:</code><br><code>else:</code>  </p>
+</li>
+<li><p>逻辑运算符：<br><code>and or not</code>   </p>
+</li>
+<li><p><code>while</code>循环，当条件不符合时，执行<code>else</code>，<code>break</code>的程序不执行<code>else</code><br><code>while:</code><br><code>else:</code>  </p>
+</li>
+<li><p><code>range(10)</code> <code>0</code>到<code>9</code><br><code>range(5,10)</code> <code>5</code>到<code>9</code><br><code>range(5,10,2)</code> <code>5,7,9</code></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">代码：</span><br><span class="line">for item in range(10):</span><br><span class="line">	print(item)</span><br><span class="line"></span><br><span class="line">结果：</span><br><span class="line">0</span><br><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>列表：方括号</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[1,2,3]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>二维列表</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[</span><br><span class="line">	[1,2,3],</span><br><span class="line">	[4,5,6],</span><br><span class="line">	[7,8,9]</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>列表定义的方法<br><code>.append()</code> 在最后面插入<br> <code>.insert(0,10)</code> 在索引为0的位置加10<br> <code>.remove(5)</code> 删除第一个5<br> <code>.clear()</code> 清空列表<br> <code>.pop()</code> 删最后<br> <code>.index(5)</code> 传第一个5的索引<br> <code>.count(5)</code> 传5的个数<br> <code>.sort()</code> 不返回值，从小到大排序<br> <code>.reverse()</code> 从大到小排序<br> <code>.copy()</code> 复制</p>
+</li>
+<li><p><code>(,,)</code> 元组 不可变<br><code>.count()</code> 计数<br><code>.index()</code> 传索引  </p>
+</li>
+<li><p>压缩属性</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">m &#x3D; (1,2,3)</span><br><span class="line">x, y, z &#x3D; m</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>字典</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">程序：</span><br><span class="line">customer &#x3D; &#123;</span><br><span class="line">    &quot;name&quot; : &quot;FuJANG&quot;,</span><br><span class="line">    &quot;sex&quot; : &quot;man&quot;,</span><br><span class="line">    &quot;address&quot; : &quot;China&quot;,</span><br><span class="line">    &quot;age&quot; : 6,</span><br><span class="line">    &quot;is_handsome&quot; : True</span><br><span class="line">&#125;</span><br><span class="line">print(customer[&quot;name&quot;])</span><br><span class="line"></span><br><span class="line">结果：</span><br><span class="line">FuJANG</span><br><span class="line"></span><br><span class="line">进程已结束,退出代码0</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>字典定义的方法<br><code>.get(&quot; &quot;)</code> 若键不存在则返回<code>None</code><br><code>.get(&quot;key&quot;, &quot;value&quot;)</code> 提供一个默认的值，并不修改字典，当在字典中对应的<code>key</code>存在时，默认值无效<br>可用此形式更改、添加字典<code>[&quot; &quot;] = &quot; &quot;</code></p>
+</li>
+<li><p>表示形式<br>列表<code>[ , , ]</code><br>元组<code>( , , )</code><br>字典<code>{  , , }</code>  </p>
+</li>
+</ol>
+<ol>
+<li><p><code>abc = &quot;字符串”</code><br><code>for ch in abc:</code>遍历字符串中的所有字符<br><code>abc.split(&quot;空格&quot;)</code> 根据空格分割字符串中的单词并储存在一个列表中</p>
+</li>
+<li><p>定义一个函数<br>每个函数后最好加上两个空行（标准格式），先定义函数后才可引用，<code>()</code>中可以加参数，如<code>(name)</code>,调用时需要传一个值如<code>(&quot;Mosh&quot;)</code>，关键字参数一般放在最后<br>没有<code>return</code>的函数默认返回<code>None</code><br>当<code>return x, y</code>时，<code>python</code>把<code>x, y</code>解释为一个元组<code>(x, y)</code></p>
+</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">def 函数名():</span><br><span class="line">	内容</span><br></pre></td></tr></table></figure>
+<ol>
+<li>用<code>try...expect</code>来处理异常错误</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">try：</span><br><span class="line">	×××</span><br><span class="line">expect 错误类型:</span><br><span class="line">	×××</span><br></pre></td></tr></table></figure>
+<ol>
+<li><code>class</code>定义一个类，首字母大写，不用下划线<br> <code>def</code>定义一个函数，首字母小写，用下划线链接  </li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">class Point:</span><br><span class="line">	def ×××(self, ×××):</span><br><span class="line">		×××</span><br><span class="line"></span><br><span class="line">	def ×××</span><br><span class="line"></span><br><span class="line">用类声明对象</span><br><span class="line">point1 &#x3D; Point()</span><br><span class="line">调用定义的方法</span><br><span class="line">point1.×××()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">可以在程序的任何位置设置属性，属性没有必要一定在类里定义</span><br><span class="line">point1.属性名 &#x3D; 10</span><br></pre></td></tr></table></figure>
+<ol>
+<li><p><code>python</code>中的构造函数</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">class Point:</span><br><span class="line">	def __init__(self, x, y):</span><br><span class="line">		self.x &#x3D; x</span><br><span class="line">		self.y &#x3D; y</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">point1 &#x3D; Point(10, 20)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>继承：当一个类中没有任何东西时，为了规范格式，通常加一个<code>pass</code></p>
+</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">class Normal:</span><br><span class="line">	def walk(self):</span><br><span class="line">		×××</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">class Dog(Normal):</span><br><span class="line">	pass</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">class Cat(Normal):</span><br><span class="line">	def bark(self):</span><br><span class="line">		print(&quot;×××&quot;)</span><br></pre></td></tr></table></figure>
+<ol>
+<li>调用模块</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import hello</span><br><span class="line">hello.×××()</span><br><span class="line"></span><br><span class="line">from hello import ×××</span><br><span class="line">×××()</span><br><span class="line"></span><br><span class="line">import hello as he</span><br><span class="line">he.×××()</span><br></pre></td></tr></table></figure>
+<ol>
+<li>建立一个包</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">① New → Directory → __init__.py</span><br><span class="line">② New → Python Package</span><br><span class="line"></span><br><span class="line">import 包.文件</span><br><span class="line">包.文件.函数()</span><br><span class="line"></span><br><span class="line">from 包.文件 import 函数</span><br><span class="line">函数()</span><br><span class="line"></span><br><span class="line">from 包 import 文件</span><br><span class="line">文件.函数()</span><br></pre></td></tr></table></figure>
+<ol>
+<li>内置模块的调用举例</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># randint 为闭区间</span><br><span class="line">import random</span><br><span class="line">random.random() 随机跳出一个0和1间的数字</span><br><span class="line">random.randint(10, 20) 10到20间的一个整数值</span><br><span class="line">random.choice(numbers) 假如numbers是一个列表，则随机跳出列表中的一个元素</span><br></pre></td></tr></table></figure>
+<ol>
+<li>内置模块与下载模块<br><code>python</code>中有内置模块，当找不到想使用的模块时，可以去<code>pypi.org</code>寻找相应的模块下载命令，然后在终端上用命令下载相应的模块</li>
+</ol>
+]]></content>
+      <categories>
+        <category>PYTHON</category>
+      </categories>
+      <tags>
+        <tag>PYTHON</tag>
       </tags>
   </entry>
 </search>

@@ -1,41 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>0x01位运算例题</title>
-    <url>/2020/05/29/0x01%E4%BD%8D%E8%BF%90%E7%AE%97%E4%BE%8B%E9%A2%98/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="0x01位运算例题"><a href="#0x01位运算例题" class="headerlink" title="0x01位运算例题"></a>0x01位运算例题</h1><blockquote>
-<p>点击每道题题目即可获取原题链接</p>
-</blockquote>
-<h2 id="a-b"><a href="#a-b" class="headerlink" title="a^b"></a><a href="https://www.acwing.com/problem/content/91/" target="_blank" rel="noopener">a^b</a></h2><h3 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h3><p><code>long long</code>可以表示的最大值为<code>922 3372 0368 5477 5807</code><br><code>unsigned long long</code>可以表示的最大值为<code>1844 6744 0737 0955 1615</code>  </p>
-<p>由此观之<code>a^b</code>大于<code>ULL</code>类型可以表示的最大值，所以要用快速幂的思想来求解这道题。</p>
-<p><img src="https://ae01.alicdn.com/kf/H4fabba6e8a6644e88cb9ee4fe512f4ecH.jpg" alt=""><br>且取模的性质如下</p>
-<ul>
-<li>(a + b) % p = (a % p + b % p) % p</li>
-<li>(a - b) % p = (a % p - b % p) % p </li>
-<li>(a <em> b) % p = (a % p </em> b % p) % p </li>
-<li>a ^ b % p = ((a % p)^b) % p </li>
-</ul>
-<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;bits&#x2F;stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">int power(int a, int b, int c) &#123;</span><br><span class="line">    int ans &#x3D; 1 % c;</span><br><span class="line">    for (; b; b &gt;&gt;&#x3D; 1) &#123;</span><br><span class="line">        if (b &amp; 1) ans &#x3D; (long long)ans * a % c;</span><br><span class="line">        a &#x3D; (long long)a * a % c;</span><br><span class="line">    &#125;</span><br><span class="line">    return ans;</span><br><span class="line">&#125;</span><br><span class="line">int main() &#123;</span><br><span class="line">    int a, b, p;</span><br><span class="line">    scanf(&quot;%d%d%d&quot;, &amp;a, &amp;b, &amp;p);</span><br><span class="line">    int ans &#x3D; power(a, b, p);</span><br><span class="line">    printf(&quot;%d&quot;, ans);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="复杂度"><a href="#复杂度" class="headerlink" title="复杂度"></a>复杂度</h3><p>我们可以用<code>b&amp;1</code>运算表示<code>b</code>的二进制下的最低位，并用<code>b&gt;&gt;1</code>来舍去最低位。在递归的过程中把<code>&gt;&gt;</code>和<code>&amp;</code>结合，其时间复杂度为<code>O(logb)</code></p>
-<h2 id="64位整数乘法"><a href="#64位整数乘法" class="headerlink" title="64位整数乘法"></a><a href="https://www.acwing.com/problem/content/92/" target="_blank" rel="noopener">64位整数乘法</a></h2><h3 id="代码-1"><a href="#代码-1" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;bits&#x2F;stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">typedef long long LL;</span><br><span class="line">LL power(LL a, LL b, LL c) &#123;</span><br><span class="line">    LL ans &#x3D; 0;</span><br><span class="line">    for (; b; b &gt;&gt;&#x3D; 1) &#123;</span><br><span class="line">        if (b &amp; 1) ans &#x3D; (ans + a) % c;</span><br><span class="line">        a &#x3D; a * 2 % c;</span><br><span class="line">    &#125;</span><br><span class="line">    return ans;</span><br><span class="line">&#125;</span><br><span class="line">int main() &#123;</span><br><span class="line">    LL a, b, p;</span><br><span class="line">    scanf(&quot;%lld%lld%lld&quot;, &amp;a, &amp;b, &amp;p);</span><br><span class="line">    LL ans &#x3D; power(a, b, p);</span><br><span class="line">    printf(&quot;%lld&quot;, ans);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="复杂度-1"><a href="#复杂度-1" class="headerlink" title="复杂度"></a>复杂度</h3><p>我们可以用<code>b&amp;1</code>运算表示<code>b</code>的二进制下的最低位，并用<code>b&gt;&gt;1</code>来舍去最低位。在递归的过程中把<code>&gt;&gt;</code>和<code>&amp;</code>结合，其时间复杂度为<code>O(logb)</code>，与上一题不同的是位数问题，但是每次<code>%p</code>之后都能保证不超过<code>2*10^18</code>，在<code>long long</code>的范围内</p>
-<h2 id="最短Hamilton路径"><a href="#最短Hamilton路径" class="headerlink" title="最短Hamilton路径"></a><a href="https://www.acwing.com/problem/content/93/" target="_blank" rel="noopener">最短Hamilton路径</a></h2><h3 id="分析-1"><a href="#分析-1" class="headerlink" title="分析"></a>分析</h3><p>我们可以采用朴素算法,其时间复杂度为<code>O(n*n!)</code>，<code>n!</code>为枚举<code>n</code>个点的全排列，<code>n</code>代表枚举路径的长度求得结果，这个算法的时间复杂度太高，不符合。而我们可以用二进制状态压缩<code>DP</code>来把时间复杂度优化到<code>O((n^2)*(2^n))</code>,我们用<code>F[i,j]</code>表示点被经过的状态对应二进制数<code>i</code>，且目前处于点<code>j</code>的最短路径   </p>
-<p>在起点时<code>F[1,0]=0</code>，即目前处于点<code>0</code>且只经过了点<code>0</code>的最短路径为<code>0</code>。为方便起见，我们将数组中其他元素设为无穷大，最终目的是求<code>F[(1&lt;&lt;n),n-1]</code>的值，即经过所有点且最终处于<code>n-1</code>的最短路径</p>
-<p>在任意时刻，有公式<code>F[i,j]=min(F[i,j],F[i^(1&lt;&lt;j),k]+weight[k,j])</code>，根据分析可得<code>k</code>一定是倒数第二个经过的点。我们枚举<code>k</code>，当<code>k</code>对应在<code>i</code>的二进制为<code>1</code>时，我们讨论这种情况并比较</p>
-<h3 id="代码-2"><a href="#代码-2" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;bits&#x2F;stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">const int N &#x3D; 20, M &#x3D; 1 &lt;&lt; 20;</span><br><span class="line">int weight[N][N], F[M][N];</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">    int n;</span><br><span class="line">    scanf(&quot;%d&quot;, &amp;n);</span><br><span class="line">    for (int i &#x3D; 0; i &lt; n; i++)</span><br><span class="line">        for (int j &#x3D; 0; j &lt; n; j++)</span><br><span class="line">            scanf(&quot;%d&quot;, &amp;weight[i][j]);</span><br><span class="line"></span><br><span class="line">    memset(F, 0x3f, sizeof F);</span><br><span class="line">    F[1][0] &#x3D; 0;</span><br><span class="line">    for (int i &#x3D; 1; i &lt; 1 &lt;&lt; n; i++)</span><br><span class="line">        for (int j &#x3D; 0; j &lt; n; j++)</span><br><span class="line">            if (i &gt;&gt; j &amp; 1)</span><br><span class="line">                for (int k &#x3D; 0; k &lt; n; k++)</span><br><span class="line">                    if ((i ^ 1 &lt;&lt; j) &gt;&gt; k &amp; 1)</span><br><span class="line">                        F[i][j] &#x3D; min(F[i][j], F[i ^ 1 &lt;&lt; j][k] + weight[k][j]);</span><br><span class="line"></span><br><span class="line">    printf(&quot;%d&quot;, F[(1 &lt;&lt; n) - 1][n - 1]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>还差一题，未完待续</p>
-</blockquote>
-<p><img src="https://ae01.alicdn.com/kf/Hdd96bb61417945ca90a15b8b5b98b5a1g.jpg" alt=""></p>
-]]></content>
-      <categories>
-        <category>算法竞赛进阶指南</category>
-      </categories>
-      <tags>
-        <tag>ACM</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>0x01位运算</title>
     <url>/2020/05/28/0x01%E4%BD%8D%E8%BF%90%E7%AE%97/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="0x01-位-运-算"><a href="#0x01-位-运-算" class="headerlink" title="0x01 位 运 算"></a>0x01 位 运 算</h1><h2 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h2><ol>
@@ -165,41 +130,38 @@
       </tags>
   </entry>
   <entry>
-    <title>CODEFORCES 800 1360B.Honest Coach</title>
-    <url>/2020/05/30/CODEFORCES1360B/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="1360B-Honest-Coach"><a href="#1360B-Honest-Coach" class="headerlink" title="1360B.Honest Coach"></a>1360B.Honest Coach</h1><h2 id="原题链接"><a href="#原题链接" class="headerlink" title="原题链接"></a>原题链接</h2><p><a href="https://codeforces.com/problemset/problem/1360/B?csrf_token=6ef612f8a17a9c506cca94a69af1a61e" target="_blank" rel="noopener">1360B.Honest Coach</a></p>
-<h2 id="题目大意"><a href="#题目大意" class="headerlink" title="题目大意"></a>题目大意</h2><p>第一行输入测试数目</p>
-<p>第二行输入队员个数</p>
-<p><strong>描述</strong>：把队员分成两队，每队最少为<code>1</code>人，求<code>abs</code>|第一个队的最大值减去第二个队的最小值|最小</p>
-<h2 id="解题思路"><a href="#解题思路" class="headerlink" title="解题思路"></a>解题思路</h2><p>贪心的思想，先排序，再贪心</p>
-<h2 id="解题代码"><a href="#解题代码" class="headerlink" title="解题代码"></a>解题代码</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line">#include &lt;algorithm&gt;</span><br><span class="line">#include &lt;iostream&gt;</span><br><span class="line">#include &lt;vector&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">int main() &#123;</span><br><span class="line">    int t;</span><br><span class="line">    scanf(&quot;%d&quot;, &amp;t);</span><br><span class="line">    while (t--) &#123;</span><br><span class="line">        int n;</span><br><span class="line">        scanf(&quot;%d&quot;, &amp;n);</span><br><span class="line">        vector&lt;int&gt; nums(n);</span><br><span class="line"></span><br><span class="line">        for (auto &amp;x : nums) &#123;</span><br><span class="line">            scanf(&quot;%d&quot;, &amp;x);</span><br><span class="line">        &#125;</span><br><span class="line">		    </span><br><span class="line">        sort(nums.begin(), nums.end());</span><br><span class="line">        int result &#x3D; 0x3f3f3f3f;</span><br><span class="line">        for (int i &#x3D; 1; i &lt; n; i++) &#123;</span><br><span class="line">            result &#x3D; min(result, abs(nums[i] - nums[i - 1]));</span><br><span class="line">        &#125;</span><br><span class="line">        printf(&quot;%d\n&quot;, result);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><img src="https://ae01.alicdn.com/kf/He2534bd81da14f7cac54ae321362c2e1p.jpg" alt=""></p>
+    <title>0x01位运算例题</title>
+    <url>/2020/05/29/0x01%E4%BD%8D%E8%BF%90%E7%AE%97%E4%BE%8B%E9%A2%98/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="0x01位运算例题"><a href="#0x01位运算例题" class="headerlink" title="0x01位运算例题"></a>0x01位运算例题</h1><blockquote>
+<p>点击每道题题目即可获取原题链接</p>
+</blockquote>
+<h2 id="a-b"><a href="#a-b" class="headerlink" title="a^b"></a><a href="https://www.acwing.com/problem/content/91/" target="_blank" rel="noopener">a^b</a></h2><h3 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h3><p><code>long long</code>可以表示的最大值为<code>922 3372 0368 5477 5807</code><br><code>unsigned long long</code>可以表示的最大值为<code>1844 6744 0737 0955 1615</code>  </p>
+<p>由此观之<code>a^b</code>大于<code>ULL</code>类型可以表示的最大值，所以要用快速幂的思想来求解这道题。</p>
+<p><img src="https://ae01.alicdn.com/kf/H4fabba6e8a6644e88cb9ee4fe512f4ecH.jpg" alt=""><br>且取模的性质如下</p>
+<ul>
+<li>(a + b) % p = (a % p + b % p) % p</li>
+<li>(a - b) % p = (a % p - b % p) % p </li>
+<li>(a <em> b) % p = (a % p </em> b % p) % p </li>
+<li>a ^ b % p = ((a % p)^b) % p </li>
+</ul>
+<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;bits&#x2F;stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">int power(int a, int b, int c) &#123;</span><br><span class="line">    int ans &#x3D; 1 % c;</span><br><span class="line">    for (; b; b &gt;&gt;&#x3D; 1) &#123;</span><br><span class="line">        if (b &amp; 1) ans &#x3D; (long long)ans * a % c;</span><br><span class="line">        a &#x3D; (long long)a * a % c;</span><br><span class="line">    &#125;</span><br><span class="line">    return ans;</span><br><span class="line">&#125;</span><br><span class="line">int main() &#123;</span><br><span class="line">    int a, b, p;</span><br><span class="line">    scanf(&quot;%d%d%d&quot;, &amp;a, &amp;b, &amp;p);</span><br><span class="line">    int ans &#x3D; power(a, b, p);</span><br><span class="line">    printf(&quot;%d&quot;, ans);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="复杂度"><a href="#复杂度" class="headerlink" title="复杂度"></a>复杂度</h3><p>我们可以用<code>b&amp;1</code>运算表示<code>b</code>的二进制下的最低位，并用<code>b&gt;&gt;1</code>来舍去最低位。在递归的过程中把<code>&gt;&gt;</code>和<code>&amp;</code>结合，其时间复杂度为<code>O(logb)</code></p>
+<h2 id="64位整数乘法"><a href="#64位整数乘法" class="headerlink" title="64位整数乘法"></a><a href="https://www.acwing.com/problem/content/92/" target="_blank" rel="noopener">64位整数乘法</a></h2><h3 id="代码-1"><a href="#代码-1" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;bits&#x2F;stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">typedef long long LL;</span><br><span class="line">LL power(LL a, LL b, LL c) &#123;</span><br><span class="line">    LL ans &#x3D; 0;</span><br><span class="line">    for (; b; b &gt;&gt;&#x3D; 1) &#123;</span><br><span class="line">        if (b &amp; 1) ans &#x3D; (ans + a) % c;</span><br><span class="line">        a &#x3D; a * 2 % c;</span><br><span class="line">    &#125;</span><br><span class="line">    return ans;</span><br><span class="line">&#125;</span><br><span class="line">int main() &#123;</span><br><span class="line">    LL a, b, p;</span><br><span class="line">    scanf(&quot;%lld%lld%lld&quot;, &amp;a, &amp;b, &amp;p);</span><br><span class="line">    LL ans &#x3D; power(a, b, p);</span><br><span class="line">    printf(&quot;%lld&quot;, ans);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="复杂度-1"><a href="#复杂度-1" class="headerlink" title="复杂度"></a>复杂度</h3><p>我们可以用<code>b&amp;1</code>运算表示<code>b</code>的二进制下的最低位，并用<code>b&gt;&gt;1</code>来舍去最低位。在递归的过程中把<code>&gt;&gt;</code>和<code>&amp;</code>结合，其时间复杂度为<code>O(logb)</code>，与上一题不同的是位数问题，但是每次<code>%p</code>之后都能保证不超过<code>2*10^18</code>，在<code>long long</code>的范围内</p>
+<h2 id="最短Hamilton路径"><a href="#最短Hamilton路径" class="headerlink" title="最短Hamilton路径"></a><a href="https://www.acwing.com/problem/content/93/" target="_blank" rel="noopener">最短Hamilton路径</a></h2><h3 id="分析-1"><a href="#分析-1" class="headerlink" title="分析"></a>分析</h3><p>我们可以采用朴素算法,其时间复杂度为<code>O(n*n!)</code>，<code>n!</code>为枚举<code>n</code>个点的全排列，<code>n</code>代表枚举路径的长度求得结果，这个算法的时间复杂度太高，不符合。而我们可以用二进制状态压缩<code>DP</code>来把时间复杂度优化到<code>O((n^2)*(2^n))</code>,我们用<code>F[i,j]</code>表示点被经过的状态对应二进制数<code>i</code>，且目前处于点<code>j</code>的最短路径   </p>
+<p>在起点时<code>F[1,0]=0</code>，即目前处于点<code>0</code>且只经过了点<code>0</code>的最短路径为<code>0</code>。为方便起见，我们将数组中其他元素设为无穷大，最终目的是求<code>F[(1&lt;&lt;n),n-1]</code>的值，即经过所有点且最终处于<code>n-1</code>的最短路径</p>
+<p>在任意时刻，有公式<code>F[i,j]=min(F[i,j],F[i^(1&lt;&lt;j),k]+weight[k,j])</code>，根据分析可得<code>k</code>一定是倒数第二个经过的点。我们枚举<code>k</code>，当<code>k</code>对应在<code>i</code>的二进制为<code>1</code>时，我们讨论这种情况并比较</p>
+<h3 id="代码-2"><a href="#代码-2" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;bits&#x2F;stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">const int N &#x3D; 20, M &#x3D; 1 &lt;&lt; 20;</span><br><span class="line">int weight[N][N], F[M][N];</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">    int n;</span><br><span class="line">    scanf(&quot;%d&quot;, &amp;n);</span><br><span class="line">    for (int i &#x3D; 0; i &lt; n; i++)</span><br><span class="line">        for (int j &#x3D; 0; j &lt; n; j++)</span><br><span class="line">            scanf(&quot;%d&quot;, &amp;weight[i][j]);</span><br><span class="line"></span><br><span class="line">    memset(F, 0x3f, sizeof F);</span><br><span class="line">    F[1][0] &#x3D; 0;</span><br><span class="line">    for (int i &#x3D; 1; i &lt; 1 &lt;&lt; n; i++)</span><br><span class="line">        for (int j &#x3D; 0; j &lt; n; j++)</span><br><span class="line">            if (i &gt;&gt; j &amp; 1)</span><br><span class="line">                for (int k &#x3D; 0; k &lt; n; k++)</span><br><span class="line">                    if ((i ^ 1 &lt;&lt; j) &gt;&gt; k &amp; 1)</span><br><span class="line">                        F[i][j] &#x3D; min(F[i][j], F[i ^ 1 &lt;&lt; j][k] + weight[k][j]);</span><br><span class="line"></span><br><span class="line">    printf(&quot;%d&quot;, F[(1 &lt;&lt; n) - 1][n - 1]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>还差一题，未完待续</p>
+</blockquote>
+<p><img src="https://ae01.alicdn.com/kf/Hdd96bb61417945ca90a15b8b5b98b5a1g.jpg" alt=""></p>
 ]]></content>
       <categories>
-        <category>CODEFORCES</category>
+        <category>算法竞赛进阶指南</category>
       </categories>
       <tags>
-        <tag>CODEFORCES800</tag>
-        <tag>acm/greedy</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>CODEFORCES 800 1360A.Minimal Square</title>
-    <url>/2020/05/28/CODEFORCES1360A/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="1360A-Minimal-Square"><a href="#1360A-Minimal-Square" class="headerlink" title="1360A.Minimal Square"></a>1360A.Minimal Square</h1><h2 id="原题链接"><a href="#原题链接" class="headerlink" title="原题链接"></a>原题链接</h2><p><a href="http://codeforces.com/problemset/problem/1360/A" target="_blank" rel="noopener">1360A.Minimal Square</a></p>
-<h2 id="题目大意"><a href="#题目大意" class="headerlink" title="题目大意"></a>题目大意</h2><p>第一行输入测试数目</p>
-<p>从第二行开始依次输入每个测试样例的<code>a</code>和<code>b</code></p>
-<p><strong>描述</strong>：<code>a</code>代表长，<code>b</code>代表宽，要求输出一个正方形的最小面积，这个正方形把两个相同的长方形(样例输入构成的长方形)覆盖，且这两个长方形不重合，每个长方形的边与正方形平行</p>
-<h2 id="解题思路"><a href="#解题思路" class="headerlink" title="解题思路"></a>解题思路</h2><p>求出长和宽的最小值乘以<code>2</code>，之后将所得的值与长和宽比较得出的最大值作为目标正方形的边长，再输出面积</p>
-<h2 id="解题代码"><a href="#解题代码" class="headerlink" title="解题代码"></a>解题代码</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;bits&#x2F;stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">int main() &#123;</span><br><span class="line">    int t;</span><br><span class="line">    scanf(&quot;%d&quot;, &amp;t);</span><br><span class="line">    while (t--) &#123;</span><br><span class="line">        int a, b;</span><br><span class="line">        scanf(&quot;%d%d&quot;, &amp;a, &amp;b);</span><br><span class="line">        int temp &#x3D; min(a, b);</span><br><span class="line">        int side &#x3D; 2 * temp;</span><br><span class="line">        int s &#x3D; pow(max(side, max(a, b)), 2);</span><br><span class="line">        printf(&quot;%d\n&quot;, s);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><img src="https://ae01.alicdn.com/kf/He2534bd81da14f7cac54ae321362c2e1p.jpg" alt=""></p>
-]]></content>
-      <categories>
-        <category>CODEFORCES</category>
-      </categories>
-      <tags>
-        <tag>CODEFORCES800</tag>
-        <tag>acm/math</tag>
+        <tag>ACM</tag>
       </tags>
   </entry>
   <entry>
@@ -264,24 +226,41 @@
       </tags>
   </entry>
   <entry>
-    <title>CODEFORCES 1100 1360C.Similar Pairs</title>
-    <url>/2020/05/31/CODEFORCES1360C/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="1360C-Similar-Pairs"><a href="#1360C-Similar-Pairs" class="headerlink" title="1360C.Similar Pairs"></a>1360C.Similar Pairs</h1><h2 id="原题链接"><a href="#原题链接" class="headerlink" title="原题链接"></a>原题链接</h2><p><a href="https://codeforces.com/problemset/problem/1360/C" target="_blank" rel="noopener">1360C.Similar Pairs</a></p>
+    <title>CODEFORCES 800 1360A.Minimal Square</title>
+    <url>/2020/05/28/CODEFORCES1360A/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="1360A-Minimal-Square"><a href="#1360A-Minimal-Square" class="headerlink" title="1360A.Minimal Square"></a>1360A.Minimal Square</h1><h2 id="原题链接"><a href="#原题链接" class="headerlink" title="原题链接"></a>原题链接</h2><p><a href="http://codeforces.com/problemset/problem/1360/A" target="_blank" rel="noopener">1360A.Minimal Square</a></p>
 <h2 id="题目大意"><a href="#题目大意" class="headerlink" title="题目大意"></a>题目大意</h2><p>第一行输入测试数目</p>
-<p>之后每两行为一组测试：  </p>
-<p>第二行输入每组测试的元素个数  </p>
-<p>第三行输入每组的元素  </p>
-<p><strong>描述</strong>：当两个数奇偶相同或者绝对值相差<code>1</code>则称这两个数为<code>1</code>组，每次测试给你偶数个数，问所有元素是否有与它配对的数</p>
-<h2 id="解题思路"><a href="#解题思路" class="headerlink" title="解题思路"></a>解题思路</h2><p>因为一共有偶数个数，所以当奇数元素个数为偶数时，偶数元素个数也一定为偶数，则一定可以两两配对；如果奇数元素个数和偶数元素个数都为奇数时，检查是否存在一个奇数和一个偶数相减的绝对值为<code>1</code>的情况，如果存在这种情况，则一定可以两两配对，如果不存在，则不能两两配对</p>
-<h2 id="解题代码"><a href="#解题代码" class="headerlink" title="解题代码"></a>解题代码</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;bits&#x2F;stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">int nums[55];</span><br><span class="line">int main() &#123;</span><br><span class="line">    int t;</span><br><span class="line">    scanf(&quot;%d&quot;, &amp;t);</span><br><span class="line">    while (t--) &#123;</span><br><span class="line">        memset(nums, 0, sizeof nums);</span><br><span class="line">        int n;</span><br><span class="line">        scanf(&quot;%d&quot;, &amp;n);</span><br><span class="line">        int sum &#x3D; 0;</span><br><span class="line">        for (int i &#x3D; 0; i &lt; n; i++) &#123;</span><br><span class="line">            scanf(&quot;%d&quot;, &amp;nums[i]);</span><br><span class="line">            if (nums[i] % 2)</span><br><span class="line">                sum++;</span><br><span class="line">        &#125;</span><br><span class="line">        if (sum % 2 &#x3D;&#x3D; 0) printf(&quot;YES\n&quot;);</span><br><span class="line">        else &#123;</span><br><span class="line">            sort(nums, nums+n);</span><br><span class="line">            int flag &#x3D; 0;</span><br><span class="line">            for (int i &#x3D; 1; i &lt; n; i++) &#123;</span><br><span class="line">                if (abs(nums[i] - nums[i - 1] &#x3D;&#x3D; 1)) &#123;</span><br><span class="line">                    printf(&quot;YES\n&quot;);</span><br><span class="line">                    flag &#x3D; 1;</span><br><span class="line">                    break;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            if (flag &#x3D;&#x3D; 0)</span><br><span class="line">                printf(&quot;NO\n&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><img src="https://s1.ax1x.com/2020/05/31/t1moIH.jpg" alt=""></p>
+<p>从第二行开始依次输入每个测试样例的<code>a</code>和<code>b</code></p>
+<p><strong>描述</strong>：<code>a</code>代表长，<code>b</code>代表宽，要求输出一个正方形的最小面积，这个正方形把两个相同的长方形(样例输入构成的长方形)覆盖，且这两个长方形不重合，每个长方形的边与正方形平行</p>
+<h2 id="解题思路"><a href="#解题思路" class="headerlink" title="解题思路"></a>解题思路</h2><p>求出长和宽的最小值乘以<code>2</code>，之后将所得的值与长和宽比较得出的最大值作为目标正方形的边长，再输出面积</p>
+<h2 id="解题代码"><a href="#解题代码" class="headerlink" title="解题代码"></a>解题代码</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;bits&#x2F;stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">int main() &#123;</span><br><span class="line">    int t;</span><br><span class="line">    scanf(&quot;%d&quot;, &amp;t);</span><br><span class="line">    while (t--) &#123;</span><br><span class="line">        int a, b;</span><br><span class="line">        scanf(&quot;%d%d&quot;, &amp;a, &amp;b);</span><br><span class="line">        int temp &#x3D; min(a, b);</span><br><span class="line">        int side &#x3D; 2 * temp;</span><br><span class="line">        int s &#x3D; pow(max(side, max(a, b)), 2);</span><br><span class="line">        printf(&quot;%d\n&quot;, s);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://ae01.alicdn.com/kf/He2534bd81da14f7cac54ae321362c2e1p.jpg" alt=""></p>
 ]]></content>
       <categories>
         <category>CODEFORCES</category>
       </categories>
       <tags>
+        <tag>CODEFORCES800</tag>
+        <tag>acm/math</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>CODEFORCES 800 1360B.Honest Coach</title>
+    <url>/2020/05/30/CODEFORCES1360B/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="1360B-Honest-Coach"><a href="#1360B-Honest-Coach" class="headerlink" title="1360B.Honest Coach"></a>1360B.Honest Coach</h1><h2 id="原题链接"><a href="#原题链接" class="headerlink" title="原题链接"></a>原题链接</h2><p><a href="https://codeforces.com/problemset/problem/1360/B?csrf_token=6ef612f8a17a9c506cca94a69af1a61e" target="_blank" rel="noopener">1360B.Honest Coach</a></p>
+<h2 id="题目大意"><a href="#题目大意" class="headerlink" title="题目大意"></a>题目大意</h2><p>第一行输入测试数目</p>
+<p>第二行输入队员个数</p>
+<p><strong>描述</strong>：把队员分成两队，每队最少为<code>1</code>人，求<code>abs</code>|第一个队的最大值减去第二个队的最小值|最小</p>
+<h2 id="解题思路"><a href="#解题思路" class="headerlink" title="解题思路"></a>解题思路</h2><p>贪心的思想，先排序，再贪心</p>
+<h2 id="解题代码"><a href="#解题代码" class="headerlink" title="解题代码"></a>解题代码</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line">#include &lt;algorithm&gt;</span><br><span class="line">#include &lt;iostream&gt;</span><br><span class="line">#include &lt;vector&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">int main() &#123;</span><br><span class="line">    int t;</span><br><span class="line">    scanf(&quot;%d&quot;, &amp;t);</span><br><span class="line">    while (t--) &#123;</span><br><span class="line">        int n;</span><br><span class="line">        scanf(&quot;%d&quot;, &amp;n);</span><br><span class="line">        vector&lt;int&gt; nums(n);</span><br><span class="line"></span><br><span class="line">        for (auto &amp;x : nums) &#123;</span><br><span class="line">            scanf(&quot;%d&quot;, &amp;x);</span><br><span class="line">        &#125;</span><br><span class="line">		    </span><br><span class="line">        sort(nums.begin(), nums.end());</span><br><span class="line">        int result &#x3D; 0x3f3f3f3f;</span><br><span class="line">        for (int i &#x3D; 1; i &lt; n; i++) &#123;</span><br><span class="line">            result &#x3D; min(result, abs(nums[i] - nums[i - 1]));</span><br><span class="line">        &#125;</span><br><span class="line">        printf(&quot;%d\n&quot;, result);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://ae01.alicdn.com/kf/He2534bd81da14f7cac54ae321362c2e1p.jpg" alt=""></p>
+]]></content>
+      <categories>
+        <category>CODEFORCES</category>
+      </categories>
+      <tags>
+        <tag>CODEFORCES800</tag>
         <tag>acm/greedy</tag>
-        <tag>CODEFORCES1100</tag>
       </tags>
   </entry>
   <entry>
@@ -302,6 +281,27 @@
       <tags>
         <tag>acm/math</tag>
         <tag>CODEFORCES1300</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>CODEFORCES 1100 1360C.Similar Pairs</title>
+    <url>/2020/05/31/CODEFORCES1360C/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="1360C-Similar-Pairs"><a href="#1360C-Similar-Pairs" class="headerlink" title="1360C.Similar Pairs"></a>1360C.Similar Pairs</h1><h2 id="原题链接"><a href="#原题链接" class="headerlink" title="原题链接"></a>原题链接</h2><p><a href="https://codeforces.com/problemset/problem/1360/C" target="_blank" rel="noopener">1360C.Similar Pairs</a></p>
+<h2 id="题目大意"><a href="#题目大意" class="headerlink" title="题目大意"></a>题目大意</h2><p>第一行输入测试数目</p>
+<p>之后每两行为一组测试：  </p>
+<p>第二行输入每组测试的元素个数  </p>
+<p>第三行输入每组的元素  </p>
+<p><strong>描述</strong>：当两个数奇偶相同或者绝对值相差<code>1</code>则称这两个数为<code>1</code>组，每次测试给你偶数个数，问所有元素是否有与它配对的数</p>
+<h2 id="解题思路"><a href="#解题思路" class="headerlink" title="解题思路"></a>解题思路</h2><p>因为一共有偶数个数，所以当奇数元素个数为偶数时，偶数元素个数也一定为偶数，则一定可以两两配对；如果奇数元素个数和偶数元素个数都为奇数时，检查是否存在一个奇数和一个偶数相减的绝对值为<code>1</code>的情况，如果存在这种情况，则一定可以两两配对，如果不存在，则不能两两配对</p>
+<h2 id="解题代码"><a href="#解题代码" class="headerlink" title="解题代码"></a>解题代码</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;bits&#x2F;stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">int nums[55];</span><br><span class="line">int main() &#123;</span><br><span class="line">    int t;</span><br><span class="line">    scanf(&quot;%d&quot;, &amp;t);</span><br><span class="line">    while (t--) &#123;</span><br><span class="line">        memset(nums, 0, sizeof nums);</span><br><span class="line">        int n;</span><br><span class="line">        scanf(&quot;%d&quot;, &amp;n);</span><br><span class="line">        int sum &#x3D; 0;</span><br><span class="line">        for (int i &#x3D; 0; i &lt; n; i++) &#123;</span><br><span class="line">            scanf(&quot;%d&quot;, &amp;nums[i]);</span><br><span class="line">            if (nums[i] % 2)</span><br><span class="line">                sum++;</span><br><span class="line">        &#125;</span><br><span class="line">        if (sum % 2 &#x3D;&#x3D; 0) printf(&quot;YES\n&quot;);</span><br><span class="line">        else &#123;</span><br><span class="line">            sort(nums, nums+n);</span><br><span class="line">            int flag &#x3D; 0;</span><br><span class="line">            for (int i &#x3D; 1; i &lt; n; i++) &#123;</span><br><span class="line">                if (abs(nums[i] - nums[i - 1] &#x3D;&#x3D; 1)) &#123;</span><br><span class="line">                    printf(&quot;YES\n&quot;);</span><br><span class="line">                    flag &#x3D; 1;</span><br><span class="line">                    break;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            if (flag &#x3D;&#x3D; 0)</span><br><span class="line">                printf(&quot;NO\n&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://s1.ax1x.com/2020/05/31/t1moIH.jpg" alt=""></p>
+]]></content>
+      <categories>
+        <category>CODEFORCES</category>
+      </categories>
+      <tags>
+        <tag>acm/greedy</tag>
+        <tag>CODEFORCES1100</tag>
       </tags>
   </entry>
   <entry>
@@ -345,22 +345,6 @@
       </tags>
   </entry>
   <entry>
-    <title>0x07贪心</title>
-    <url>/2020/06/02/0x07%E8%B4%AA%E5%BF%83/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="0x07贪心"><a href="#0x07贪心" class="headerlink" title="0x07贪心"></a>0x07贪心</h1><h2 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h2><p>贪心是一种在每次决策时采取当前意义下最优策略的算法，因此，使用贪心法要求问题的整体最优性可以由局部最优性导出。贪心算法的正确性需要证明，常见的证明手段有：  </p>
-<ol>
-<li>微扰（邻项交换）<br>证明在任意局面下，任何对局部最优策略的微小改变都会造成整体结果的变差，经常用于以“排序”为贪心策略的证明</li>
-<li>范围缩放<br>证明任何对局部最优策略作用范围的扩展都不会造成整体结果的变差  </li>
-<li>决策包容性<br>证明在任意局面下，做出局部最优策略以后，在问题状态空间中的可达集合包含了作出其他任何决策后的可达集合。换言之，这个局部最优策略的可能性包含其他所有策略提供的可能性  </li>
-<li>反证法</li>
-<li>数学归纳法</li>
-</ol>
-<blockquote>
-<p>我们通过几道例题来介绍贪心算法的应用</p>
-</blockquote>
-<h2 id="ACWING110防晒"><a href="#ACWING110防晒" class="headerlink" title="ACWING110防晒"></a><a href="https://www.acwing.com/problem/content/112/" target="_blank" rel="noopener">ACWING110防晒</a></h2>]]></content>
-  </entry>
-  <entry>
     <title>API之lowerer_bound/upper_bound用法</title>
     <url>/2020/06/02/API%E4%B9%8Blowerer-bound-upper-bound%E7%94%A8%E6%B3%95/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="API之lowerer-bound-upper-bound用法"><a href="#API之lowerer-bound-upper-bound用法" class="headerlink" title="API之lowerer_bound/upper_bound用法"></a>API之lowerer_bound/upper_bound用法</h1><h2 id="lower-bound"><a href="#lower-bound" class="headerlink" title="lower_bound()"></a>lower_bound()</h2><p><code>lower_bound(beg, end, val, comp)</code>  </p>
@@ -396,6 +380,22 @@
       <tags>
         <tag>C/C++常用API</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>0x07贪心</title>
+    <url>/2020/06/02/0x07%E8%B4%AA%E5%BF%83/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="0x07贪心"><a href="#0x07贪心" class="headerlink" title="0x07贪心"></a>0x07贪心</h1><h2 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h2><p>贪心是一种在每次决策时采取当前意义下最优策略的算法，因此，使用贪心法要求问题的整体最优性可以由局部最优性导出。贪心算法的正确性需要证明，常见的证明手段有：  </p>
+<ol>
+<li>微扰（邻项交换）<br>证明在任意局面下，任何对局部最优策略的微小改变都会造成整体结果的变差，经常用于以“排序”为贪心策略的证明</li>
+<li>范围缩放<br>证明任何对局部最优策略作用范围的扩展都不会造成整体结果的变差  </li>
+<li>决策包容性<br>证明在任意局面下，做出局部最优策略以后，在问题状态空间中的可达集合包含了作出其他任何决策后的可达集合。换言之，这个局部最优策略的可能性包含其他所有策略提供的可能性  </li>
+<li>反证法</li>
+<li>数学归纳法</li>
+</ol>
+<blockquote>
+<p>我们通过几道例题来介绍贪心算法的应用</p>
+</blockquote>
+<h2 id="ACWING110防晒"><a href="#ACWING110防晒" class="headerlink" title="ACWING110防晒"></a><a href="https://www.acwing.com/problem/content/112/" target="_blank" rel="noopener">ACWING110防晒</a></h2>]]></content>
   </entry>
   <entry>
     <title>translate first day</title>

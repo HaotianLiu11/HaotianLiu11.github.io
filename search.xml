@@ -1,41 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>0x01位运算例题</title>
-    <url>/2020/05/29/0x01%E4%BD%8D%E8%BF%90%E7%AE%97%E4%BE%8B%E9%A2%98/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="0x01位运算例题"><a href="#0x01位运算例题" class="headerlink" title="0x01位运算例题"></a>0x01位运算例题</h1><blockquote>
-<p>点击每道题题目即可获取原题链接</p>
-</blockquote>
-<h2 id="a-b"><a href="#a-b" class="headerlink" title="a^b"></a><a href="https://www.acwing.com/problem/content/91/" target="_blank" rel="noopener">a^b</a></h2><h3 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h3><p><code>long long</code>可以表示的最大值为<code>922 3372 0368 5477 5807</code><br><code>unsigned long long</code>可以表示的最大值为<code>1844 6744 0737 0955 1615</code>  </p>
-<p>由此观之<code>a^b</code>大于<code>ULL</code>类型可以表示的最大值，所以要用快速幂的思想来求解这道题。</p>
-<p><img src="https://ae01.alicdn.com/kf/H4fabba6e8a6644e88cb9ee4fe512f4ecH.jpg" alt=""><br>且取模的性质如下</p>
-<ul>
-<li>(a + b) % p = (a % p + b % p) % p</li>
-<li>(a - b) % p = (a % p - b % p) % p </li>
-<li>(a <em> b) % p = (a % p </em> b % p) % p </li>
-<li>a ^ b % p = ((a % p)^b) % p </li>
-</ul>
-<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;bits&#x2F;stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">int power(int a, int b, int c) &#123;</span><br><span class="line">    int ans &#x3D; 1 % c;</span><br><span class="line">    for (; b; b &gt;&gt;&#x3D; 1) &#123;</span><br><span class="line">        if (b &amp; 1) ans &#x3D; (long long)ans * a % c;</span><br><span class="line">        a &#x3D; (long long)a * a % c;</span><br><span class="line">    &#125;</span><br><span class="line">    return ans;</span><br><span class="line">&#125;</span><br><span class="line">int main() &#123;</span><br><span class="line">    int a, b, p;</span><br><span class="line">    scanf(&quot;%d%d%d&quot;, &amp;a, &amp;b, &amp;p);</span><br><span class="line">    int ans &#x3D; power(a, b, p);</span><br><span class="line">    printf(&quot;%d&quot;, ans);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="复杂度"><a href="#复杂度" class="headerlink" title="复杂度"></a>复杂度</h3><p>我们可以用<code>b&amp;1</code>运算表示<code>b</code>的二进制下的最低位，并用<code>b&gt;&gt;1</code>来舍去最低位。在递归的过程中把<code>&gt;&gt;</code>和<code>&amp;</code>结合，其时间复杂度为<code>O(logb)</code></p>
-<h2 id="64位整数乘法"><a href="#64位整数乘法" class="headerlink" title="64位整数乘法"></a><a href="https://www.acwing.com/problem/content/92/" target="_blank" rel="noopener">64位整数乘法</a></h2><h3 id="代码-1"><a href="#代码-1" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;bits&#x2F;stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">typedef long long LL;</span><br><span class="line">LL power(LL a, LL b, LL c) &#123;</span><br><span class="line">    LL ans &#x3D; 0;</span><br><span class="line">    for (; b; b &gt;&gt;&#x3D; 1) &#123;</span><br><span class="line">        if (b &amp; 1) ans &#x3D; (ans + a) % c;</span><br><span class="line">        a &#x3D; a * 2 % c;</span><br><span class="line">    &#125;</span><br><span class="line">    return ans;</span><br><span class="line">&#125;</span><br><span class="line">int main() &#123;</span><br><span class="line">    LL a, b, p;</span><br><span class="line">    scanf(&quot;%lld%lld%lld&quot;, &amp;a, &amp;b, &amp;p);</span><br><span class="line">    LL ans &#x3D; power(a, b, p);</span><br><span class="line">    printf(&quot;%lld&quot;, ans);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="复杂度-1"><a href="#复杂度-1" class="headerlink" title="复杂度"></a>复杂度</h3><p>我们可以用<code>b&amp;1</code>运算表示<code>b</code>的二进制下的最低位，并用<code>b&gt;&gt;1</code>来舍去最低位。在递归的过程中把<code>&gt;&gt;</code>和<code>&amp;</code>结合，其时间复杂度为<code>O(logb)</code>，与上一题不同的是位数问题，但是每次<code>%p</code>之后都能保证不超过<code>2*10^18</code>，在<code>long long</code>的范围内</p>
-<h2 id="最短Hamilton路径"><a href="#最短Hamilton路径" class="headerlink" title="最短Hamilton路径"></a><a href="https://www.acwing.com/problem/content/93/" target="_blank" rel="noopener">最短Hamilton路径</a></h2><h3 id="分析-1"><a href="#分析-1" class="headerlink" title="分析"></a>分析</h3><p>我们可以采用朴素算法,其时间复杂度为<code>O(n*n!)</code>，<code>n!</code>为枚举<code>n</code>个点的全排列，<code>n</code>代表枚举路径的长度求得结果，这个算法的时间复杂度太高，不符合。而我们可以用二进制状态压缩<code>DP</code>来把时间复杂度优化到<code>O((n^2)*(2^n))</code>,我们用<code>F[i,j]</code>表示点被经过的状态对应二进制数<code>i</code>，且目前处于点<code>j</code>的最短路径   </p>
-<p>在起点时<code>F[1,0]=0</code>，即目前处于点<code>0</code>且只经过了点<code>0</code>的最短路径为<code>0</code>。为方便起见，我们将数组中其他元素设为无穷大，最终目的是求<code>F[(1&lt;&lt;n),n-1]</code>的值，即经过所有点且最终处于<code>n-1</code>的最短路径</p>
-<p>在任意时刻，有公式<code>F[i,j]=min(F[i,j],F[i^(1&lt;&lt;j),k]+weight[k,j])</code>，根据分析可得<code>k</code>一定是倒数第二个经过的点。我们枚举<code>k</code>，当<code>k</code>对应在<code>i</code>的二进制为<code>1</code>时，我们讨论这种情况并比较</p>
-<h3 id="代码-2"><a href="#代码-2" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;bits&#x2F;stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">const int N &#x3D; 20, M &#x3D; 1 &lt;&lt; 20;</span><br><span class="line">int weight[N][N], F[M][N];</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">    int n;</span><br><span class="line">    scanf(&quot;%d&quot;, &amp;n);</span><br><span class="line">    for (int i &#x3D; 0; i &lt; n; i++)</span><br><span class="line">        for (int j &#x3D; 0; j &lt; n; j++)</span><br><span class="line">            scanf(&quot;%d&quot;, &amp;weight[i][j]);</span><br><span class="line"></span><br><span class="line">    memset(F, 0x3f, sizeof F);</span><br><span class="line">    F[1][0] &#x3D; 0;</span><br><span class="line">    for (int i &#x3D; 1; i &lt; 1 &lt;&lt; n; i++)</span><br><span class="line">        for (int j &#x3D; 0; j &lt; n; j++)</span><br><span class="line">            if (i &gt;&gt; j &amp; 1)</span><br><span class="line">                for (int k &#x3D; 0; k &lt; n; k++)</span><br><span class="line">                    if ((i ^ 1 &lt;&lt; j) &gt;&gt; k &amp; 1)</span><br><span class="line">                        F[i][j] &#x3D; min(F[i][j], F[i ^ 1 &lt;&lt; j][k] + weight[k][j]);</span><br><span class="line"></span><br><span class="line">    printf(&quot;%d&quot;, F[(1 &lt;&lt; n) - 1][n - 1]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>还差一题，未完待续</p>
-</blockquote>
-<p><img src="https://ae01.alicdn.com/kf/Hdd96bb61417945ca90a15b8b5b98b5a1g.jpg" alt=""></p>
-]]></content>
-      <categories>
-        <category>算法竞赛进阶指南</category>
-      </categories>
-      <tags>
-        <tag>ACM</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>0x04二分</title>
     <url>/2020/05/31/0x04%E4%BA%8C%E5%88%86/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="0x04二分"><a href="#0x04二分" class="headerlink" title="0x04二分"></a>0x04二分</h1><h2 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h2><p>二分的基础的用法是在单调序列或单调函数中进行查找，因此当问题的答案具有单调性时，就可以通过二分把求解问题转换为判定（根据复杂度理论，判定的难度小于求解），进一步地，我们还可以扩展到通过三分法去解决单峰函数的极值以及相关问题</p>
@@ -54,63 +19,6 @@
 <p>未完待续</p>
 </blockquote>
 <p><img src="https://s1.ax1x.com/2020/05/31/t1moIH.jpg" alt=""></p>
-]]></content>
-      <categories>
-        <category>算法竞赛进阶指南</category>
-      </categories>
-      <tags>
-        <tag>ACM</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>0x01位运算</title>
-    <url>/2020/05/28/0x01%E4%BD%8D%E8%BF%90%E7%AE%97/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="0x01-位-运-算"><a href="#0x01-位-运-算" class="headerlink" title="0x01 位 运 算"></a>0x01 位 运 算</h1><h2 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h2><ol>
-<li><p>用<code>xor</code>表示异或运算，在<code>m</code>位二进制数中，通常称最低位为<code>0</code>位，从右到左依此类推，最高位为<code>m-1</code>位。</p>
-</li>
-<li><p><code>|-1|</code>的原码为<code>00000001</code><br><code>|-1|</code>的反码为<code>11111110</code><br><code>-1</code>的补码为<code>11111111</code>，十六进制表示为<code>0xff</code><br><code>8</code>位二进制对应的最大值<code>127</code>的十六进制表示为<code>0x7f</code><br>在计算机中数字以其补码的形式保存，正数的补码等于其原码，负数的补码等于其对应正数的原码取反码再<code>+1</code></p>
-</li>
-<li><p>对于<code>32</code>位二进制数<code>C</code>(设十进制的值为<code>S</code>)，其按位取反得到的编码<code>~C</code>对应的十进制的值为<code>-1-S</code>(正负都满足此规律)</p>
-</li>
-<li><p>补码下每个数值都有唯一的表示方式，并且任意两个数值做加减法运算，都等价于在<code>32</code>位补码下做最高位不进位的二进制加减法运算。发生算术溢出时，<code>32</code>位无符号整数相当于自动对<code>2^32</code>取模，这也解释了有符号整数溢出时为何会出现负数的现象。</p>
-</li>
-<li><p>在算法竞赛中常用十六进制来表示一个常数，这样书写需要八个字符。<br>| 10进制 | 16进制 |<br>| :-: | :-: |<br>| 21 4748 3647 | 0x7f ff ff ff |<br>| 10 6110 9567 | 0x3f 3f 3f 3f |<br>| -1 | 0xff ff ff ff | </p>
-</li>
-<li><p><code>4</code>个字节的<code>int</code>表示的最大值为<code>21 4748 3647</code><br><code>4</code>个字节的<code>unsigned int</code>表示的最大值为<code>42 9496 7295</code> </p>
-</li>
-<li><p><code>0x3f 3f 3f 3f</code>是一个很有用的值，它满足两个条件：<br>其一，整数的两倍不超过int能表示的最大正整数<br>其二，二进制下每八位都相同<br>因此，我们可以用<code>memset(a, 0x3f, sizeof a)</code>来给<code>a</code>数组的每一个元素都赋值为正无穷，虽然<code>0x7f</code>能给每一个元素赋值成最大，但是为了避免溢出情况，推荐用<code>0x3f</code>。</p>
-<ol>
-<li><code>1 &lt;&lt; n = 2^n, n &lt;&lt; 1 = 2n</code><br><code>n &gt;&gt; 1 = n / 2.0 向下取整</code><br>需要注意的是，整数做<code>/</code>运算执行的是向<code>0</code>取整<br><code>(-3) &gt;&gt; 1 = -2, (-3) / 2 = -1</code></li>
-</ol>
-</li>
-<li><p>除非特殊提示，我们默认右移采用的是算术右移的实现方式</p>
-<blockquote>
-<p>逻辑右移不考虑符号位，右移一位，左边补零即可。<br> 算术右移考虑符号位，右移一位，若符号位为1，就在左边补1；否则，就补0。<br> 所以算术右移也可以进行有符号位的除法,右移n位就等于除2的n次方。<br> 例如，8位二进制数11001101分别右移一位。<br> 逻辑右移就是[0]1100110<br> 算术右移就是[1]1100110  </p>
-</blockquote>
-</li>
-</ol>
-<h2 id="状态压缩"><a href="#状态压缩" class="headerlink" title="状态压缩"></a>状态压缩</h2><p>二进制状态压缩是指将一个长度为<code>m</code>的<code>bool</code>数组用一个<code>m</code>位二进制整数表示并存储的方法，利用如下操作实现对原<code>bool</code>数组对应下标元素的存取。  </p>
-<ol>
-<li>取出整数<code>n</code>的第<code>k</code>位：<code>(n&gt;&gt;k)&amp;1</code></li>
-<li>取出整数<code>n</code>的后<code>k</code>位<code>(0到k-1位)</code>：<code>((1&lt;&lt;K)-1)&amp;n</code></li>
-<li>把整数<code>n</code>的第<code>k</code>位反转：<code>(1&lt;&lt;k) nor n</code></li>
-<li>把整数<code>n</code>的第<code>k</code>位赋值为<code>1</code>：<code>(1&lt;&lt;k)|n</code>  </li>
-<li>把整数<code>n</code>的第<code>k</code>位赋值为<code>0</code>：<code>(~(1&lt;&lt;k))&amp;n</code>  </li>
-</ol>
-<p>当<code>m</code>不大时，我们可以使用一个整数存储，当m很大时，我们可以用若干个整数存储<code>(int数组)</code>，也可以用<code>C++STL</code>为我们提供的<code>bitset</code>实现。</p>
-<h2 id="成对变换"><a href="#成对变换" class="headerlink" title="成对变换"></a>成对变换</h2><p>通过计算可发现，对于非负整数<code>n</code>:  </p>
-<ol>
-<li>当<code>n</code>为偶数时，<code>n xor 1 = n + 1</code></li>
-<li>当<code>n</code>为奇数时，<code>n xor 1 = n - 1</code></li>
-</ol>
-<p>因此<code>0与1</code>, <code>2与3</code>, <code>4与5</code> … 关于<code>xor 1</code>运算构成成对变换。  </p>
-<p>这一性质经常用于图论邻接表中边集的存储。在具有无向边(双向边)的图中把一对正反方向的边分别存储在邻接表数组的第<code>n</code>与<code>n+1</code>位置(其中<code>n</code>为偶数)，就可以通过<code>xor 1</code>的运算获得与当前边<code>(x,y)</code>反向的边<code>(y,x)</code>的存储位置。</p>
-<h2 id="lowbit运算"><a href="#lowbit运算" class="headerlink" title="lowbit运算"></a>lowbit运算</h2><p><code>lowbit(n)</code>定义为非负整数<code>n</code>在二进制表示下“最低位的1及其后边所有的0”构成的数值。  </p>
-<p>例子：<code>lowbit(10)=2</code>  </p>
-<p>其原理为：<code>lowbit(n)=n&amp;(~n-1)=n&amp;(-n)</code></p>
-<p><code>lowbit</code>运算配合<code>Hash</code>可以找出整数二进制下所有是<code>1</code>的位，所花费的时间与<code>1</code>的个数同级。为了达到这个目的，我们只需要不断把<code>n</code>赋值为<code>n-lowbit(n)</code>直至<code>n=0</code>。我们可以把每次减去的数(其一定为2的幂)求<code>log</code>得到对应的<code>1</code>所在的位数，因为<code>C++math.h</code>库中的<code>log</code>函数复杂度常数较大，所以我们可以预处理一个数组，通过<code>Hash</code>的方法代替<code>log</code>运算。  </p>
-<p>此外<code>lowbit</code>运算也是树状数组中的一个基本运算。</p>
-<p><img src="https://ae01.alicdn.com/kf/H270ec52cb1794e5cb700f741bdd71aafA.jpg" alt=""></p>
 ]]></content>
       <categories>
         <category>算法竞赛进阶指南</category>
@@ -192,6 +100,63 @@
       </tags>
   </entry>
   <entry>
+    <title>0x01位运算</title>
+    <url>/2020/05/28/0x01%E4%BD%8D%E8%BF%90%E7%AE%97/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="0x01-位-运-算"><a href="#0x01-位-运-算" class="headerlink" title="0x01 位 运 算"></a>0x01 位 运 算</h1><h2 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h2><ol>
+<li><p>用<code>xor</code>表示异或运算，在<code>m</code>位二进制数中，通常称最低位为<code>0</code>位，从右到左依此类推，最高位为<code>m-1</code>位。</p>
+</li>
+<li><p><code>|-1|</code>的原码为<code>00000001</code><br><code>|-1|</code>的反码为<code>11111110</code><br><code>-1</code>的补码为<code>11111111</code>，十六进制表示为<code>0xff</code><br><code>8</code>位二进制对应的最大值<code>127</code>的十六进制表示为<code>0x7f</code><br>在计算机中数字以其补码的形式保存，正数的补码等于其原码，负数的补码等于其对应正数的原码取反码再<code>+1</code></p>
+</li>
+<li><p>对于<code>32</code>位二进制数<code>C</code>(设十进制的值为<code>S</code>)，其按位取反得到的编码<code>~C</code>对应的十进制的值为<code>-1-S</code>(正负都满足此规律)</p>
+</li>
+<li><p>补码下每个数值都有唯一的表示方式，并且任意两个数值做加减法运算，都等价于在<code>32</code>位补码下做最高位不进位的二进制加减法运算。发生算术溢出时，<code>32</code>位无符号整数相当于自动对<code>2^32</code>取模，这也解释了有符号整数溢出时为何会出现负数的现象。</p>
+</li>
+<li><p>在算法竞赛中常用十六进制来表示一个常数，这样书写需要八个字符。<br>| 10进制 | 16进制 |<br>| :-: | :-: |<br>| 21 4748 3647 | 0x7f ff ff ff |<br>| 10 6110 9567 | 0x3f 3f 3f 3f |<br>| -1 | 0xff ff ff ff | </p>
+</li>
+<li><p><code>4</code>个字节的<code>int</code>表示的最大值为<code>21 4748 3647</code><br><code>4</code>个字节的<code>unsigned int</code>表示的最大值为<code>42 9496 7295</code> </p>
+</li>
+<li><p><code>0x3f 3f 3f 3f</code>是一个很有用的值，它满足两个条件：<br>其一，整数的两倍不超过int能表示的最大正整数<br>其二，二进制下每八位都相同<br>因此，我们可以用<code>memset(a, 0x3f, sizeof a)</code>来给<code>a</code>数组的每一个元素都赋值为正无穷，虽然<code>0x7f</code>能给每一个元素赋值成最大，但是为了避免溢出情况，推荐用<code>0x3f</code>。</p>
+<ol>
+<li><code>1 &lt;&lt; n = 2^n, n &lt;&lt; 1 = 2n</code><br><code>n &gt;&gt; 1 = n / 2.0 向下取整</code><br>需要注意的是，整数做<code>/</code>运算执行的是向<code>0</code>取整<br><code>(-3) &gt;&gt; 1 = -2, (-3) / 2 = -1</code></li>
+</ol>
+</li>
+<li><p>除非特殊提示，我们默认右移采用的是算术右移的实现方式</p>
+<blockquote>
+<p>逻辑右移不考虑符号位，右移一位，左边补零即可。<br> 算术右移考虑符号位，右移一位，若符号位为1，就在左边补1；否则，就补0。<br> 所以算术右移也可以进行有符号位的除法,右移n位就等于除2的n次方。<br> 例如，8位二进制数11001101分别右移一位。<br> 逻辑右移就是[0]1100110<br> 算术右移就是[1]1100110  </p>
+</blockquote>
+</li>
+</ol>
+<h2 id="状态压缩"><a href="#状态压缩" class="headerlink" title="状态压缩"></a>状态压缩</h2><p>二进制状态压缩是指将一个长度为<code>m</code>的<code>bool</code>数组用一个<code>m</code>位二进制整数表示并存储的方法，利用如下操作实现对原<code>bool</code>数组对应下标元素的存取。  </p>
+<ol>
+<li>取出整数<code>n</code>的第<code>k</code>位：<code>(n&gt;&gt;k)&amp;1</code></li>
+<li>取出整数<code>n</code>的后<code>k</code>位<code>(0到k-1位)</code>：<code>((1&lt;&lt;K)-1)&amp;n</code></li>
+<li>把整数<code>n</code>的第<code>k</code>位反转：<code>(1&lt;&lt;k) nor n</code></li>
+<li>把整数<code>n</code>的第<code>k</code>位赋值为<code>1</code>：<code>(1&lt;&lt;k)|n</code>  </li>
+<li>把整数<code>n</code>的第<code>k</code>位赋值为<code>0</code>：<code>(~(1&lt;&lt;k))&amp;n</code>  </li>
+</ol>
+<p>当<code>m</code>不大时，我们可以使用一个整数存储，当m很大时，我们可以用若干个整数存储<code>(int数组)</code>，也可以用<code>C++STL</code>为我们提供的<code>bitset</code>实现。</p>
+<h2 id="成对变换"><a href="#成对变换" class="headerlink" title="成对变换"></a>成对变换</h2><p>通过计算可发现，对于非负整数<code>n</code>:  </p>
+<ol>
+<li>当<code>n</code>为偶数时，<code>n xor 1 = n + 1</code></li>
+<li>当<code>n</code>为奇数时，<code>n xor 1 = n - 1</code></li>
+</ol>
+<p>因此<code>0与1</code>, <code>2与3</code>, <code>4与5</code> … 关于<code>xor 1</code>运算构成成对变换。  </p>
+<p>这一性质经常用于图论邻接表中边集的存储。在具有无向边(双向边)的图中把一对正反方向的边分别存储在邻接表数组的第<code>n</code>与<code>n+1</code>位置(其中<code>n</code>为偶数)，就可以通过<code>xor 1</code>的运算获得与当前边<code>(x,y)</code>反向的边<code>(y,x)</code>的存储位置。</p>
+<h2 id="lowbit运算"><a href="#lowbit运算" class="headerlink" title="lowbit运算"></a>lowbit运算</h2><p><code>lowbit(n)</code>定义为非负整数<code>n</code>在二进制表示下“最低位的1及其后边所有的0”构成的数值。  </p>
+<p>例子：<code>lowbit(10)=2</code>  </p>
+<p>其原理为：<code>lowbit(n)=n&amp;(~n-1)=n&amp;(-n)</code></p>
+<p><code>lowbit</code>运算配合<code>Hash</code>可以找出整数二进制下所有是<code>1</code>的位，所花费的时间与<code>1</code>的个数同级。为了达到这个目的，我们只需要不断把<code>n</code>赋值为<code>n-lowbit(n)</code>直至<code>n=0</code>。我们可以把每次减去的数(其一定为2的幂)求<code>log</code>得到对应的<code>1</code>所在的位数，因为<code>C++math.h</code>库中的<code>log</code>函数复杂度常数较大，所以我们可以预处理一个数组，通过<code>Hash</code>的方法代替<code>log</code>运算。  </p>
+<p>此外<code>lowbit</code>运算也是树状数组中的一个基本运算。</p>
+<p><img src="https://ae01.alicdn.com/kf/H270ec52cb1794e5cb700f741bdd71aafA.jpg" alt=""></p>
+]]></content>
+      <categories>
+        <category>算法竞赛进阶指南</category>
+      </categories>
+      <tags>
+        <tag>ACM</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>0x07贪心</title>
     <url>/2020/06/02/0x07%E8%B4%AA%E5%BF%83/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="0x07贪心"><a href="#0x07贪心" class="headerlink" title="0x07贪心"></a>0x07贪心</h1><h2 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h2><p>贪心是一种在每次决策时采取当前意义下最优策略的算法，因此，使用贪心法要求问题的整体最优性可以由局部最优性导出。贪心算法的正确性需要证明，常见的证明手段有：  </p>
@@ -234,6 +199,81 @@
       </tags>
   </entry>
   <entry>
+    <title>0x01位运算例题</title>
+    <url>/2020/05/29/0x01%E4%BD%8D%E8%BF%90%E7%AE%97%E4%BE%8B%E9%A2%98/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="0x01位运算例题"><a href="#0x01位运算例题" class="headerlink" title="0x01位运算例题"></a>0x01位运算例题</h1><blockquote>
+<p>点击每道题题目即可获取原题链接</p>
+</blockquote>
+<h2 id="a-b"><a href="#a-b" class="headerlink" title="a^b"></a><a href="https://www.acwing.com/problem/content/91/" target="_blank" rel="noopener">a^b</a></h2><h3 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h3><p><code>long long</code>可以表示的最大值为<code>922 3372 0368 5477 5807</code><br><code>unsigned long long</code>可以表示的最大值为<code>1844 6744 0737 0955 1615</code>  </p>
+<p>由此观之<code>a^b</code>大于<code>ULL</code>类型可以表示的最大值，所以要用快速幂的思想来求解这道题。</p>
+<p><img src="https://ae01.alicdn.com/kf/H4fabba6e8a6644e88cb9ee4fe512f4ecH.jpg" alt=""><br>且取模的性质如下</p>
+<ul>
+<li>(a + b) % p = (a % p + b % p) % p</li>
+<li>(a - b) % p = (a % p - b % p) % p </li>
+<li>(a <em> b) % p = (a % p </em> b % p) % p </li>
+<li>a ^ b % p = ((a % p)^b) % p </li>
+</ul>
+<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;bits&#x2F;stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">int power(int a, int b, int c) &#123;</span><br><span class="line">    int ans &#x3D; 1 % c;</span><br><span class="line">    for (; b; b &gt;&gt;&#x3D; 1) &#123;</span><br><span class="line">        if (b &amp; 1) ans &#x3D; (long long)ans * a % c;</span><br><span class="line">        a &#x3D; (long long)a * a % c;</span><br><span class="line">    &#125;</span><br><span class="line">    return ans;</span><br><span class="line">&#125;</span><br><span class="line">int main() &#123;</span><br><span class="line">    int a, b, p;</span><br><span class="line">    scanf(&quot;%d%d%d&quot;, &amp;a, &amp;b, &amp;p);</span><br><span class="line">    int ans &#x3D; power(a, b, p);</span><br><span class="line">    printf(&quot;%d&quot;, ans);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="复杂度"><a href="#复杂度" class="headerlink" title="复杂度"></a>复杂度</h3><p>我们可以用<code>b&amp;1</code>运算表示<code>b</code>的二进制下的最低位，并用<code>b&gt;&gt;1</code>来舍去最低位。在递归的过程中把<code>&gt;&gt;</code>和<code>&amp;</code>结合，其时间复杂度为<code>O(logb)</code></p>
+<h2 id="64位整数乘法"><a href="#64位整数乘法" class="headerlink" title="64位整数乘法"></a><a href="https://www.acwing.com/problem/content/92/" target="_blank" rel="noopener">64位整数乘法</a></h2><h3 id="代码-1"><a href="#代码-1" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;bits&#x2F;stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">typedef long long LL;</span><br><span class="line">LL power(LL a, LL b, LL c) &#123;</span><br><span class="line">    LL ans &#x3D; 0;</span><br><span class="line">    for (; b; b &gt;&gt;&#x3D; 1) &#123;</span><br><span class="line">        if (b &amp; 1) ans &#x3D; (ans + a) % c;</span><br><span class="line">        a &#x3D; a * 2 % c;</span><br><span class="line">    &#125;</span><br><span class="line">    return ans;</span><br><span class="line">&#125;</span><br><span class="line">int main() &#123;</span><br><span class="line">    LL a, b, p;</span><br><span class="line">    scanf(&quot;%lld%lld%lld&quot;, &amp;a, &amp;b, &amp;p);</span><br><span class="line">    LL ans &#x3D; power(a, b, p);</span><br><span class="line">    printf(&quot;%lld&quot;, ans);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="复杂度-1"><a href="#复杂度-1" class="headerlink" title="复杂度"></a>复杂度</h3><p>我们可以用<code>b&amp;1</code>运算表示<code>b</code>的二进制下的最低位，并用<code>b&gt;&gt;1</code>来舍去最低位。在递归的过程中把<code>&gt;&gt;</code>和<code>&amp;</code>结合，其时间复杂度为<code>O(logb)</code>，与上一题不同的是位数问题，但是每次<code>%p</code>之后都能保证不超过<code>2*10^18</code>，在<code>long long</code>的范围内</p>
+<h2 id="最短Hamilton路径"><a href="#最短Hamilton路径" class="headerlink" title="最短Hamilton路径"></a><a href="https://www.acwing.com/problem/content/93/" target="_blank" rel="noopener">最短Hamilton路径</a></h2><h3 id="分析-1"><a href="#分析-1" class="headerlink" title="分析"></a>分析</h3><p>我们可以采用朴素算法,其时间复杂度为<code>O(n*n!)</code>，<code>n!</code>为枚举<code>n</code>个点的全排列，<code>n</code>代表枚举路径的长度求得结果，这个算法的时间复杂度太高，不符合。而我们可以用二进制状态压缩<code>DP</code>来把时间复杂度优化到<code>O((n^2)*(2^n))</code>,我们用<code>F[i,j]</code>表示点被经过的状态对应二进制数<code>i</code>，且目前处于点<code>j</code>的最短路径   </p>
+<p>在起点时<code>F[1,0]=0</code>，即目前处于点<code>0</code>且只经过了点<code>0</code>的最短路径为<code>0</code>。为方便起见，我们将数组中其他元素设为无穷大，最终目的是求<code>F[(1&lt;&lt;n),n-1]</code>的值，即经过所有点且最终处于<code>n-1</code>的最短路径</p>
+<p>在任意时刻，有公式<code>F[i,j]=min(F[i,j],F[i^(1&lt;&lt;j),k]+weight[k,j])</code>，根据分析可得<code>k</code>一定是倒数第二个经过的点。我们枚举<code>k</code>，当<code>k</code>对应在<code>i</code>的二进制为<code>1</code>时，我们讨论这种情况并比较</p>
+<h3 id="代码-2"><a href="#代码-2" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;bits&#x2F;stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">const int N &#x3D; 20, M &#x3D; 1 &lt;&lt; 20;</span><br><span class="line">int weight[N][N], F[M][N];</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">    int n;</span><br><span class="line">    scanf(&quot;%d&quot;, &amp;n);</span><br><span class="line">    for (int i &#x3D; 0; i &lt; n; i++)</span><br><span class="line">        for (int j &#x3D; 0; j &lt; n; j++)</span><br><span class="line">            scanf(&quot;%d&quot;, &amp;weight[i][j]);</span><br><span class="line"></span><br><span class="line">    memset(F, 0x3f, sizeof F);</span><br><span class="line">    F[1][0] &#x3D; 0;</span><br><span class="line">    for (int i &#x3D; 1; i &lt; 1 &lt;&lt; n; i++)</span><br><span class="line">        for (int j &#x3D; 0; j &lt; n; j++)</span><br><span class="line">            if (i &gt;&gt; j &amp; 1)</span><br><span class="line">                for (int k &#x3D; 0; k &lt; n; k++)</span><br><span class="line">                    if ((i ^ 1 &lt;&lt; j) &gt;&gt; k &amp; 1)</span><br><span class="line">                        F[i][j] &#x3D; min(F[i][j], F[i ^ 1 &lt;&lt; j][k] + weight[k][j]);</span><br><span class="line"></span><br><span class="line">    printf(&quot;%d&quot;, F[(1 &lt;&lt; n) - 1][n - 1]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>还差一题，未完待续</p>
+</blockquote>
+<p><img src="https://ae01.alicdn.com/kf/Hdd96bb61417945ca90a15b8b5b98b5a1g.jpg" alt=""></p>
+]]></content>
+      <categories>
+        <category>算法竞赛进阶指南</category>
+      </categories>
+      <tags>
+        <tag>ACM</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>CODEFORCES 800 1360A.Minimal Square</title>
+    <url>/2020/05/28/CODEFORCES1360A/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="1360A-Minimal-Square"><a href="#1360A-Minimal-Square" class="headerlink" title="1360A.Minimal Square"></a>1360A.Minimal Square</h1><h2 id="原题链接"><a href="#原题链接" class="headerlink" title="原题链接"></a>原题链接</h2><p><a href="http://codeforces.com/problemset/problem/1360/A" target="_blank" rel="noopener">1360A.Minimal Square</a></p>
+<h2 id="题目大意"><a href="#题目大意" class="headerlink" title="题目大意"></a>题目大意</h2><p>第一行输入测试数目</p>
+<p>从第二行开始依次输入每个测试样例的<code>a</code>和<code>b</code></p>
+<p><strong>描述</strong>：<code>a</code>代表长，<code>b</code>代表宽，要求输出一个正方形的最小面积，这个正方形把两个相同的长方形(样例输入构成的长方形)覆盖，且这两个长方形不重合，每个长方形的边与正方形平行</p>
+<h2 id="解题思路"><a href="#解题思路" class="headerlink" title="解题思路"></a>解题思路</h2><p>求出长和宽的最小值乘以<code>2</code>，之后将所得的值与长和宽比较得出的最大值作为目标正方形的边长，再输出面积</p>
+<h2 id="解题代码"><a href="#解题代码" class="headerlink" title="解题代码"></a>解题代码</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;bits&#x2F;stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">int main() &#123;</span><br><span class="line">    int t;</span><br><span class="line">    scanf(&quot;%d&quot;, &amp;t);</span><br><span class="line">    while (t--) &#123;</span><br><span class="line">        int a, b;</span><br><span class="line">        scanf(&quot;%d%d&quot;, &amp;a, &amp;b);</span><br><span class="line">        int temp &#x3D; min(a, b);</span><br><span class="line">        int side &#x3D; 2 * temp;</span><br><span class="line">        int s &#x3D; pow(max(side, max(a, b)), 2);</span><br><span class="line">        printf(&quot;%d\n&quot;, s);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://ae01.alicdn.com/kf/He2534bd81da14f7cac54ae321362c2e1p.jpg" alt=""></p>
+]]></content>
+      <categories>
+        <category>CODEFORCES</category>
+      </categories>
+      <tags>
+        <tag>CODEFORCES800</tag>
+        <tag>acm/math</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>CODEFORCES 1100 1360C.Similar Pairs</title>
+    <url>/2020/05/31/CODEFORCES1360C/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="1360C-Similar-Pairs"><a href="#1360C-Similar-Pairs" class="headerlink" title="1360C.Similar Pairs"></a>1360C.Similar Pairs</h1><h2 id="原题链接"><a href="#原题链接" class="headerlink" title="原题链接"></a>原题链接</h2><p><a href="https://codeforces.com/problemset/problem/1360/C" target="_blank" rel="noopener">1360C.Similar Pairs</a></p>
+<h2 id="题目大意"><a href="#题目大意" class="headerlink" title="题目大意"></a>题目大意</h2><p>第一行输入测试数目</p>
+<p>之后每两行为一组测试：  </p>
+<p>第二行输入每组测试的元素个数  </p>
+<p>第三行输入每组的元素  </p>
+<p><strong>描述</strong>：当两个数奇偶相同或者绝对值相差<code>1</code>则称这两个数为<code>1</code>组，每次测试给你偶数个数，问所有元素是否有与它配对的数</p>
+<h2 id="解题思路"><a href="#解题思路" class="headerlink" title="解题思路"></a>解题思路</h2><p>因为一共有偶数个数，所以当奇数元素个数为偶数时，偶数元素个数也一定为偶数，则一定可以两两配对；如果奇数元素个数和偶数元素个数都为奇数时，检查是否存在一个奇数和一个偶数相减的绝对值为<code>1</code>的情况，如果存在这种情况，则一定可以两两配对，如果不存在，则不能两两配对</p>
+<h2 id="解题代码"><a href="#解题代码" class="headerlink" title="解题代码"></a>解题代码</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;bits&#x2F;stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">int nums[55];</span><br><span class="line">int main() &#123;</span><br><span class="line">    int t;</span><br><span class="line">    scanf(&quot;%d&quot;, &amp;t);</span><br><span class="line">    while (t--) &#123;</span><br><span class="line">        memset(nums, 0, sizeof nums);</span><br><span class="line">        int n;</span><br><span class="line">        scanf(&quot;%d&quot;, &amp;n);</span><br><span class="line">        int sum &#x3D; 0;</span><br><span class="line">        for (int i &#x3D; 0; i &lt; n; i++) &#123;</span><br><span class="line">            scanf(&quot;%d&quot;, &amp;nums[i]);</span><br><span class="line">            if (nums[i] % 2)</span><br><span class="line">                sum++;</span><br><span class="line">        &#125;</span><br><span class="line">        if (sum % 2 &#x3D;&#x3D; 0) printf(&quot;YES\n&quot;);</span><br><span class="line">        else &#123;</span><br><span class="line">            sort(nums, nums+n);</span><br><span class="line">            int flag &#x3D; 0;</span><br><span class="line">            for (int i &#x3D; 1; i &lt; n; i++) &#123;</span><br><span class="line">                if (abs(nums[i] - nums[i - 1] &#x3D;&#x3D; 1)) &#123;</span><br><span class="line">                    printf(&quot;YES\n&quot;);</span><br><span class="line">                    flag &#x3D; 1;</span><br><span class="line">                    break;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            if (flag &#x3D;&#x3D; 0)</span><br><span class="line">                printf(&quot;NO\n&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://s1.ax1x.com/2020/05/31/t1moIH.jpg" alt=""></p>
+]]></content>
+      <categories>
+        <category>CODEFORCES</category>
+      </categories>
+      <tags>
+        <tag>CODEFORCES1100</tag>
+        <tag>acm/greedy</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>API之stringstream用法</title>
     <url>/2020/05/30/API%E4%B9%8Bstringstream%E7%94%A8%E6%B3%95/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="API之stringstream用法"><a href="#API之stringstream用法" class="headerlink" title="API之stringstream用法"></a>API之stringstream用法</h1><p>本文主要介绍 C++ 中 stringstream 类的常见用法。</p>
@@ -265,86 +305,6 @@
       </categories>
       <tags>
         <tag>C/C++常用API</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>CODEFORCES 800 1360B.Honest Coach</title>
-    <url>/2020/05/30/CODEFORCES1360B/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="1360B-Honest-Coach"><a href="#1360B-Honest-Coach" class="headerlink" title="1360B.Honest Coach"></a>1360B.Honest Coach</h1><h2 id="原题链接"><a href="#原题链接" class="headerlink" title="原题链接"></a>原题链接</h2><p><a href="https://codeforces.com/problemset/problem/1360/B?csrf_token=6ef612f8a17a9c506cca94a69af1a61e" target="_blank" rel="noopener">1360B.Honest Coach</a></p>
-<h2 id="题目大意"><a href="#题目大意" class="headerlink" title="题目大意"></a>题目大意</h2><p>第一行输入测试数目</p>
-<p>第二行输入队员个数</p>
-<p><strong>描述</strong>：把队员分成两队，每队最少为<code>1</code>人，求<code>abs</code>|第一个队的最大值减去第二个队的最小值|最小</p>
-<h2 id="解题思路"><a href="#解题思路" class="headerlink" title="解题思路"></a>解题思路</h2><p>贪心的思想，先排序，再贪心</p>
-<h2 id="解题代码"><a href="#解题代码" class="headerlink" title="解题代码"></a>解题代码</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line">#include &lt;algorithm&gt;</span><br><span class="line">#include &lt;iostream&gt;</span><br><span class="line">#include &lt;vector&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">int main() &#123;</span><br><span class="line">    int t;</span><br><span class="line">    scanf(&quot;%d&quot;, &amp;t);</span><br><span class="line">    while (t--) &#123;</span><br><span class="line">        int n;</span><br><span class="line">        scanf(&quot;%d&quot;, &amp;n);</span><br><span class="line">        vector&lt;int&gt; nums(n);</span><br><span class="line"></span><br><span class="line">        for (auto &amp;x : nums) &#123;</span><br><span class="line">            scanf(&quot;%d&quot;, &amp;x);</span><br><span class="line">        &#125;</span><br><span class="line">		    </span><br><span class="line">        sort(nums.begin(), nums.end());</span><br><span class="line">        int result &#x3D; 0x3f3f3f3f;</span><br><span class="line">        for (int i &#x3D; 1; i &lt; n; i++) &#123;</span><br><span class="line">            result &#x3D; min(result, abs(nums[i] - nums[i - 1]));</span><br><span class="line">        &#125;</span><br><span class="line">        printf(&quot;%d\n&quot;, result);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><img src="https://ae01.alicdn.com/kf/He2534bd81da14f7cac54ae321362c2e1p.jpg" alt=""></p>
-]]></content>
-      <categories>
-        <category>CODEFORCES</category>
-      </categories>
-      <tags>
-        <tag>CODEFORCES800</tag>
-        <tag>acm/greedy</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>CODEFORCES 1100 1360C.Similar Pairs</title>
-    <url>/2020/05/31/CODEFORCES1360C/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="1360C-Similar-Pairs"><a href="#1360C-Similar-Pairs" class="headerlink" title="1360C.Similar Pairs"></a>1360C.Similar Pairs</h1><h2 id="原题链接"><a href="#原题链接" class="headerlink" title="原题链接"></a>原题链接</h2><p><a href="https://codeforces.com/problemset/problem/1360/C" target="_blank" rel="noopener">1360C.Similar Pairs</a></p>
-<h2 id="题目大意"><a href="#题目大意" class="headerlink" title="题目大意"></a>题目大意</h2><p>第一行输入测试数目</p>
-<p>之后每两行为一组测试：  </p>
-<p>第二行输入每组测试的元素个数  </p>
-<p>第三行输入每组的元素  </p>
-<p><strong>描述</strong>：当两个数奇偶相同或者绝对值相差<code>1</code>则称这两个数为<code>1</code>组，每次测试给你偶数个数，问所有元素是否有与它配对的数</p>
-<h2 id="解题思路"><a href="#解题思路" class="headerlink" title="解题思路"></a>解题思路</h2><p>因为一共有偶数个数，所以当奇数元素个数为偶数时，偶数元素个数也一定为偶数，则一定可以两两配对；如果奇数元素个数和偶数元素个数都为奇数时，检查是否存在一个奇数和一个偶数相减的绝对值为<code>1</code>的情况，如果存在这种情况，则一定可以两两配对，如果不存在，则不能两两配对</p>
-<h2 id="解题代码"><a href="#解题代码" class="headerlink" title="解题代码"></a>解题代码</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;bits&#x2F;stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">int nums[55];</span><br><span class="line">int main() &#123;</span><br><span class="line">    int t;</span><br><span class="line">    scanf(&quot;%d&quot;, &amp;t);</span><br><span class="line">    while (t--) &#123;</span><br><span class="line">        memset(nums, 0, sizeof nums);</span><br><span class="line">        int n;</span><br><span class="line">        scanf(&quot;%d&quot;, &amp;n);</span><br><span class="line">        int sum &#x3D; 0;</span><br><span class="line">        for (int i &#x3D; 0; i &lt; n; i++) &#123;</span><br><span class="line">            scanf(&quot;%d&quot;, &amp;nums[i]);</span><br><span class="line">            if (nums[i] % 2)</span><br><span class="line">                sum++;</span><br><span class="line">        &#125;</span><br><span class="line">        if (sum % 2 &#x3D;&#x3D; 0) printf(&quot;YES\n&quot;);</span><br><span class="line">        else &#123;</span><br><span class="line">            sort(nums, nums+n);</span><br><span class="line">            int flag &#x3D; 0;</span><br><span class="line">            for (int i &#x3D; 1; i &lt; n; i++) &#123;</span><br><span class="line">                if (abs(nums[i] - nums[i - 1] &#x3D;&#x3D; 1)) &#123;</span><br><span class="line">                    printf(&quot;YES\n&quot;);</span><br><span class="line">                    flag &#x3D; 1;</span><br><span class="line">                    break;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            if (flag &#x3D;&#x3D; 0)</span><br><span class="line">                printf(&quot;NO\n&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><img src="https://s1.ax1x.com/2020/05/31/t1moIH.jpg" alt=""></p>
-]]></content>
-      <categories>
-        <category>CODEFORCES</category>
-      </categories>
-      <tags>
-        <tag>acm/greedy</tag>
-        <tag>CODEFORCES1100</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>HEXO+BUTTERFLY搭建骚气且实用的个人网站</title>
-    <url>/2020/05/27/HEXO-BUTTERFLY%E6%90%AD%E5%BB%BA%E9%AA%9A%E6%B0%94%E4%B8%94%E5%AE%9E%E7%94%A8%E7%9A%84%E4%B8%AA%E4%BA%BA%E7%BD%91%E7%AB%99/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>YOU CAN DRINK ALL YOU LIKE, BUT IN THE MORNING YOU GET HEADACHE WITH THE SAME PROBLEMS.</p>
-</blockquote>
-<hr>
-<h2 id="引子"><a href="#引子" class="headerlink" title="引子"></a>引子</h2><p>最近狂刷<code>codeforces</code>，但是逐渐发现自身一个问题，那就是刷过的题虽然在当天感觉很明白，但是隔一天，隔两天，就发现自己再遇到此题时又是一翻鏖战，这就是说明自己做过的题吸收的效率不够高，于是我就打算做一道题总结一道题。那么问题来了，在哪里总结呢？</p>
-<p>首先排除的是微信公众号，众所周知，微信公众号只能是自己分享东西的平台，而在这上面总结知识点就会引出很多问题，其一，每篇文章都要排版，其二，我的粉丝未必合此文章的胃口，其三，每天只能发布一篇文章，大大限制了自己的总结内容与时间分配。</p>
-<p>那么诸如<code>csdn</code>、博客园、掘金、知乎这种东西呢？也有很多不方便的地方，比如文章左右侧的广告，实在影响人的心情，此外还有审核等等的制约，思前想后，我决定自己开辟一个个人网站。</p>
-<p>当然不能从无到有手动开辟，自己能力有限，而且我的目的也是总结，总不能让自己以后把大把的时间浪费到维护网站上面去。于是我听从了大佬的建议，采用<code>hexo+github</code>的方式，<code>hexo</code>开辟网站，托管到<code>github</code>上面去。</p>
-<p>花里胡哨的页面也是最吸引我的原因之一，我采用了<code>butterfly</code>的主题，绝对美炸天！</p>
-<h2 id="过程"><a href="#过程" class="headerlink" title="过程"></a>过程</h2><p>过程当然是心酸+心酸+心酸，心态险些被搞没。至于搭建网站的教程，实话实说，看了n多篇技术总结，都号称史上最全，到最后还是觉得看官方文档最省事。</p>
-<p>当然自己也找到了一些好的文章，在此列出来希望对大家有帮助：</p>
-<p><code>hexo</code>安装文章：</p>
-<ul>
-<li><a href="https://www.jianshu.com/p/a1a4ebf0e5fc" target="_blank" rel="noopener">Hexo+Butterfly+Github+Coding搭建个人博客</a></li>
-<li><a href="https://hexo.io/" target="_blank" rel="noopener">hexo官方文档</a></li>
-</ul>
-<p><code>butterfly</code>主题系列文章：</p>
-<ol>
-<li><a href="https://jerryc.me/posts/21cfbf15/" target="_blank" rel="noopener">hexo-theme-butterfly 安装文档(一)快速开始</a></li>
-<li><a href="https://jerryc.me/posts/dc584b87/" target="_blank" rel="noopener">hexo-theme-butterfly 安装文档(二)主题页面</a></li>
-<li><a href="https://jerryc.me/posts/4aa8abbe/" target="_blank" rel="noopener">hexo-theme-butterfly 安装文档(三)主题配置</a></li>
-<li><a href="https://jerryc.me/posts/98d20436/" target="_blank" rel="noopener">hexo-theme-butterfly 安装文档(四)主题问答、打赏名单</a></li>
-<li><a href="https://jerryc.me/posts/198a4240/" target="_blank" rel="noopener">hexo-theme-butterfly 安装文档(五)更新日誌</a></li>
-</ol>
-<h2 id="收益"><a href="#收益" class="headerlink" title="收益"></a>收益</h2><p>没日没夜的折腾了两天，总能从其中学到什么：其一，当然是收获了又骚又实用的好网站；其二，学会了<code>git</code>+<code>github</code>的基本使用，常见的<code>git</code>命令也记得很熟；其三，收获了一种精神——永不放弃，哪有什么一帆风顺，加油，骚年！</p>
-<h2 id="不足"><a href="#不足" class="headerlink" title="不足"></a>不足</h2><p>自己的网站弄的也不是很成熟，还有很多功能没有上线，比如日历、赞赏等，自己没有买域名，只是托管到<code>github</code>上。</p>
-<h2 id="欢迎"><a href="#欢迎" class="headerlink" title="欢迎"></a>欢迎</h2><p><a href="https://haotianliu11.github.io/" target="_blank" rel="noopener">我的个人网站</a></p>
-<hr>
-<p><img src="https://imgkr.cn-bj.ufileos.com/148c824d-4eb8-48d3-9825-51625347b0f0.png" alt=""></p>
-]]></content>
-      <categories>
-        <category>博客搭建历程</category>
-      </categories>
-      <tags>
-        <tag>微信公众号文章——随笔</tag>
       </tags>
   </entry>
   <entry>
@@ -386,34 +346,75 @@
       </tags>
   </entry>
   <entry>
-    <title>CODEFORCES 1300 1360D.Buying Shovels</title>
-    <url>/2020/05/31/CODEFORCES1360D/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="1360D-Buying-Shovels"><a href="#1360D-Buying-Shovels" class="headerlink" title="1360D.Buying Shovels"></a>1360D.Buying Shovels</h1><h2 id="原题链接"><a href="#原题链接" class="headerlink" title="原题链接"></a>原题链接</h2><p><a href="https://codeforces.com/problemset/problem/1360/D" target="_blank" rel="noopener">1360D.Buying Shovels</a></p>
-<h2 id="题目大意"><a href="#题目大意" class="headerlink" title="题目大意"></a>题目大意</h2><p>第一行输入测试数目</p>
-<p>之后每一行为一组测试：  </p>
-<p>每组测试输入两个数：<code>n</code>和<code>k</code></p>
-<p><strong>描述</strong>：有<code>k</code>种包裹，第<code>i</code>个包裹里有<code>i</code>个铲子，只能选择一种包裹，可选这个包裹无限次，要求选择的包裹数最少，并且铲子和等于<code>n</code></p>
-<h2 id="解题思路"><a href="#解题思路" class="headerlink" title="解题思路"></a>解题思路</h2><p>根据数据范围可以看出是求质数问题，求<code>n</code>中的质数，要求此质数在<code>k</code>的范围内，<code>n/此质数</code>最小，意思就是选最大的可以除尽的包裹，得到的就是选择包裹数最少</p>
-<h2 id="解题代码"><a href="#解题代码" class="headerlink" title="解题代码"></a>解题代码</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;bits&#x2F;stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">    int t;</span><br><span class="line">    scanf(&quot;%d&quot;, &amp;t);</span><br><span class="line">    while (t--) &#123;</span><br><span class="line">        int n, k;</span><br><span class="line">        scanf(&quot;%d%d&quot;, &amp;n, &amp;k);</span><br><span class="line">        int ans &#x3D; n;</span><br><span class="line">        for (int i &#x3D; 1; i * i &lt;&#x3D; n; i++) &#123;</span><br><span class="line">            if (n % i &#x3D;&#x3D; 0) &#123;</span><br><span class="line">                if (i &lt;&#x3D; k)</span><br><span class="line">                    ans &#x3D; min(ans, n &#x2F; i);</span><br><span class="line">                if (n &#x2F; i &lt;&#x3D; k)</span><br><span class="line">                    ans &#x3D; min(ans, i);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        cout &lt;&lt; ans &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><img src="https://s1.ax1x.com/2020/05/31/t1moIH.jpg" alt=""></p>
+    <title>计算机网络基础总结(1)</title>
+    <url>/2020/06/02/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80%E6%80%BB%E7%BB%93-1/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="计算机网络基础总结-1"><a href="#计算机网络基础总结-1" class="headerlink" title="计算机网络基础总结(1)"></a>计算机网络基础总结(1)</h1><ol>
+<li>局域网：覆盖范围小、自己花钱买设备、带宽固定、自己维护、100米、10M 100M 1000M<br>广域网：距离远、花钱租带宽<br>Internet：由ISP组成、有自己的机房、对网民提供访问Internet连接</li>
+<li>ISP：Internet服务提供商（Internet service provide）</li>
+<li>DNS：把网站域名解析成IP地址</li>
+<li>子网掩码：告诉计算机哪里是网络部分，哪里是主机部分</li>
+<li>路由器的作用是在不同网段转发数据</li>
+<li>计算机的网卡有mac地址（物理地址），全球唯一，mac地址在计算机出场时已经被固定在网卡中：48位二进制（12位十六进制）</li>
+<li><p>计算机访问过程：  </p>
+<p>先把要访问的域名发送给DNS服务器，DNS服务器把域名解析成IP地址返回  </p>
+<p>数据包由数据、原IP地址、目标IP地址组成  </p>
+<p>数据帧由数据、原IP地址、目标IP地址、此时的mac地址、下一个目的地的mac地址组成  </p>
+<p>计算机发送数据帧后，数据帧在运输的过程中两个mac地址不断变化，因此不断重新封装，但是数据包没变   </p>
+<p>数据帧在运输过程中不断经过路由器，路由器看数据包中的IP地址，决定下一步走哪个mac地址</p>
+<p>目标服务器收到请求后，往计算机回传数据，会把数据切割成小块，并给每一块编号，然后取一部分放到目标服务器的缓存当中，再然后在缓存中取出一块，加上此服务器IP地址、目标计算机IP地址、此时的mac地址、下一个目的地的mac开始发送，发送后，此数据块不会被缓存区删除，因为发送的过程中可能会丢失，当目标计算机收到此数据块放到计算机中的缓存区后，发送请求接受下一个数据块的消息到此服务器时，此数据块才会在缓存区被删除  </p>
+<p>当计算机的缓存满了时，会读取，然后再存缓存 </p>
+<p>第一张图说明：<br> <img src="https://ae01.alicdn.com/kf/Hdb3d351ef0844379b41ec593f99d16506.jpg" alt="">  </p>
+<p> 第二张图说明：<br> <img src="https://ae01.alicdn.com/kf/Hdb637a9eee4a485f886ec3430de942ddU.jpg" alt=""></p>
+</li>
+<li><p>OSI参考模型（国际标准把计算机通信进行的定义）</p>
+<ol>
+<li>应用层：所有能产生网络流量的程序</li>
+<li>表示层：在传输之前是否进行加密或压缩处理、传的是二进制还是ASCII码</li>
+<li>会话层：电脑和某服务器建立起的联系，比如电影前进后退进、查木马都是会话层的体现 netstat -n 命令可在终端查看此电脑建立的会话  </li>
+<li>传输层：可靠传输（比如某服务器传输数据到计算机、把数据分块传输，如果发送了某一块之后没收到请求下一块的信息，就会接着发送这个数据块，防止数据块丢失）、流量控制（比如服务器发送数据太快了，则计算机发消息告诉服务器调整发送速度）、不可靠传输（比如DNS解析域名，一个数据包就能说明问题与得到答案，不需要建立会话）</li>
+<li>网络层：负责选择最佳路径、规划IP地址</li>
+<li>数据链路层：帧的开始和结束、透明传输（将数据中与开头或结尾表示相同的部分进行转义）、差错校验（检错错误，数据中多加一部分数据进行校验，但不纠错，只检查，错误的就扔掉，纠错是在传输层进行）  </li>
+<li>物理层：接口标准、电器标准、如何在物理链路上传输更快的速度</li>
+</ol>
+</li>
+<li><p>每一层都是一个较为独立的模块，每一个模块变化都不会影响其他的模块；但每一层都有关系：物理层-&gt;数据链路层-&gt;网络层-&gt;传输层-&gt;会话层-&gt;表示层-&gt;应用层-&gt;人（-&gt;代表xx为xx提供服务） </p>
+</li>
+<li><p>网络出现故障，应该从最底层物理层往上一层一层进行检查  </p>
+<ol>
+<li>物理层故障：查看连接状态、查看发送和接收的数据包</li>
+<li>数据链路层故障：mac地址冲突、ADSL欠费、网速没办法协商一致、计算机连接到错误的VLAN(虚拟局域网)</li>
+<li>网络层故障：配置了错误的IP地址、子网掩码、配置错误的网关、路由器没有配置到达目标网络的路由、数据有没有通过各个网关到达指定位置  </li>
+<li>应用层故障：应用程序配置错误</li>
+</ol>
+</li>
+<li><p>打开终端输入命令ping一个网址，若数据有来有回，则证明网通了</p>
+</li>
+<li>OSI参考模型和网络安全<ol>
+<li>物理层安全</li>
+<li>数据链路层安全：ADSL账号密码、VLAN、交换机端口绑定mac地址</li>
+<li>网络层安全：在路由器上时使用ACL控制数据包流量、防火墙</li>
+<li>应用层安全：开发的应用程序没漏洞</li>
+</ol>
+</li>
+</ol>
+<p><img src="https://ae01.alicdn.com/kf/H66237f88bb294f1db97200f8cd552ddbd.jpg" alt=""></p>
 ]]></content>
       <categories>
-        <category>CODEFORCES</category>
+        <category>计算机网络基础</category>
       </categories>
       <tags>
-        <tag>CODEFORCES1300</tag>
-        <tag>acm/math</tag>
+        <tag>计算机网络基础——韩立刚视频总结</tag>
       </tags>
   </entry>
   <entry>
-    <title>CODEFORCES 800 1360A.Minimal Square</title>
-    <url>/2020/05/28/CODEFORCES1360A/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="1360A-Minimal-Square"><a href="#1360A-Minimal-Square" class="headerlink" title="1360A.Minimal Square"></a>1360A.Minimal Square</h1><h2 id="原题链接"><a href="#原题链接" class="headerlink" title="原题链接"></a>原题链接</h2><p><a href="http://codeforces.com/problemset/problem/1360/A" target="_blank" rel="noopener">1360A.Minimal Square</a></p>
+    <title>CODEFORCES 800 1360B.Honest Coach</title>
+    <url>/2020/05/30/CODEFORCES1360B/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="1360B-Honest-Coach"><a href="#1360B-Honest-Coach" class="headerlink" title="1360B.Honest Coach"></a>1360B.Honest Coach</h1><h2 id="原题链接"><a href="#原题链接" class="headerlink" title="原题链接"></a>原题链接</h2><p><a href="https://codeforces.com/problemset/problem/1360/B?csrf_token=6ef612f8a17a9c506cca94a69af1a61e" target="_blank" rel="noopener">1360B.Honest Coach</a></p>
 <h2 id="题目大意"><a href="#题目大意" class="headerlink" title="题目大意"></a>题目大意</h2><p>第一行输入测试数目</p>
-<p>从第二行开始依次输入每个测试样例的<code>a</code>和<code>b</code></p>
-<p><strong>描述</strong>：<code>a</code>代表长，<code>b</code>代表宽，要求输出一个正方形的最小面积，这个正方形把两个相同的长方形(样例输入构成的长方形)覆盖，且这两个长方形不重合，每个长方形的边与正方形平行</p>
-<h2 id="解题思路"><a href="#解题思路" class="headerlink" title="解题思路"></a>解题思路</h2><p>求出长和宽的最小值乘以<code>2</code>，之后将所得的值与长和宽比较得出的最大值作为目标正方形的边长，再输出面积</p>
-<h2 id="解题代码"><a href="#解题代码" class="headerlink" title="解题代码"></a>解题代码</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;bits&#x2F;stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">int main() &#123;</span><br><span class="line">    int t;</span><br><span class="line">    scanf(&quot;%d&quot;, &amp;t);</span><br><span class="line">    while (t--) &#123;</span><br><span class="line">        int a, b;</span><br><span class="line">        scanf(&quot;%d%d&quot;, &amp;a, &amp;b);</span><br><span class="line">        int temp &#x3D; min(a, b);</span><br><span class="line">        int side &#x3D; 2 * temp;</span><br><span class="line">        int s &#x3D; pow(max(side, max(a, b)), 2);</span><br><span class="line">        printf(&quot;%d\n&quot;, s);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>第二行输入队员个数</p>
+<p><strong>描述</strong>：把队员分成两队，每队最少为<code>1</code>人，求<code>abs</code>|第一个队的最大值减去第二个队的最小值|最小</p>
+<h2 id="解题思路"><a href="#解题思路" class="headerlink" title="解题思路"></a>解题思路</h2><p>贪心的思想，先排序，再贪心</p>
+<h2 id="解题代码"><a href="#解题代码" class="headerlink" title="解题代码"></a>解题代码</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line">#include &lt;algorithm&gt;</span><br><span class="line">#include &lt;iostream&gt;</span><br><span class="line">#include &lt;vector&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">int main() &#123;</span><br><span class="line">    int t;</span><br><span class="line">    scanf(&quot;%d&quot;, &amp;t);</span><br><span class="line">    while (t--) &#123;</span><br><span class="line">        int n;</span><br><span class="line">        scanf(&quot;%d&quot;, &amp;n);</span><br><span class="line">        vector&lt;int&gt; nums(n);</span><br><span class="line"></span><br><span class="line">        for (auto &amp;x : nums) &#123;</span><br><span class="line">            scanf(&quot;%d&quot;, &amp;x);</span><br><span class="line">        &#125;</span><br><span class="line">		    </span><br><span class="line">        sort(nums.begin(), nums.end());</span><br><span class="line">        int result &#x3D; 0x3f3f3f3f;</span><br><span class="line">        for (int i &#x3D; 1; i &lt; n; i++) &#123;</span><br><span class="line">            result &#x3D; min(result, abs(nums[i] - nums[i - 1]));</span><br><span class="line">        &#125;</span><br><span class="line">        printf(&quot;%d\n&quot;, result);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p><img src="https://ae01.alicdn.com/kf/He2534bd81da14f7cac54ae321362c2e1p.jpg" alt=""></p>
 ]]></content>
       <categories>
@@ -421,51 +422,7 @@
       </categories>
       <tags>
         <tag>CODEFORCES800</tag>
-        <tag>acm/math</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>translate first day</title>
-    <url>/2020/05/31/translate-first-day/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="A-week-of-distractions-from-Trump-shows-a-leader-in-crisis"><a href="#A-week-of-distractions-from-Trump-shows-a-leader-in-crisis" class="headerlink" title="A week of distractions from Trump shows a leader in crisis"></a>A week of distractions from Trump shows a leader in crisis</h1><p>(CNN)On Monday, as the nation marked Memorial Day, President Donald Trump mocked his campaign rival for wearing a face mask. On Wednesday, as the national death toll from coronavirus reached a wretched milestone, Trump and his family flew to Florida in an attempted focus on space travel.</p>
-<p>By Friday, as smoke was lifting in Minneapolis after a night of racial unrest, he announced the United States would withdraw from the World Health Organization. A day later, after another night of protests, he declared himself safe inside his heavily fortified mansion and insinuated his own supporters would rally outside that evening.</p>
-<p>In between, there was a dark suggestion of murder, false conspiracies about voting through the mail, a fight over where to hold his nominating convention and a dramatic escalation of ill will with the very social media platform that facilitated almost all the other diversions in the first place.</p>
-<p>Trump’s efforts to change the subject at moments of peril have been a hallmark of his entire career in politics and, when successful, a constant source of frustration for his rivals. But rarely have they appeared more blatant or off-key than now, as a battered nation emerges from a pandemic that has left more than 100,000 dead and as racial unrest brews again.<br>That it is all happening five months before Trump faces an election in which polls show him trailing only heightens the sense of a leader in crisis, even as he insists he has a handle on both matters and attempts to proceed as planned with his presidency. Trump, cognizant of his precarious political position, has retrenched.</p>
-<p>Unwilling or unable to strike a unifying tone, Trump lashed out Saturday morning when he criticized the Democratic mayors of Washington and Minneapolis while appearing to summon his own supporters to rally outside the White House.</p>
-<p>After announcing his was safe, warning he was protected by “vicious dogs” and “ominous weapons,” Trump provided a play-by-play of Friday evening’s protests, of which he said he’d “watched every move.” Trump wrote: “Tonight, I understand, is MAGA NIGHT AT THE WHITE HOUSE???”</p>
-<p>Advisers insist Trump is focused on reviving the country after three months of pandemic that have led, along with the six-figure death toll, to record levels of unemployment and entire industries shuttered. Trump has aggressively pushed for states to reopen even when they don’t necessarily meet the parameters set out by his task force, which has seen its meetings sharply curtailed and its health experts’ public roles reduced.</p>
-<p>At the same time, Trump has sought over the past week to shine the presidential spotlight into dustier corners filled with festering racial grievances and antique conspiracies, all of which have been debunked. He has waged feuds old and new and unveiled strategically timed policy announcements at a moment when his leadership is being questioned.</p>
-<p>The events that unfolded after the President issued a tweet early Friday laden with racist overtones underscored the degree to which he has used inflammatory statements to ignite controversy and enthuse his supporters, even as he denied later that those were his intentions.</p>
-<p>Aides spent Friday debating whether Trump should address the situation in Minnesota during a planned appearance in the Rose Garden, which had been called to announce new actions against China and the US withdrawal from the World Health Organization.</p>
-<p>Some of his advisers encouraged him to speak about Minnesota because his election-year rival had already delivered an address on the topic. Others were more skeptical, convinced Trump would only face more questions about his tweet that used a phrase first uttered by a Miami police chief in 1967 to describe a crackdown in black neighborhoods.</p>
-<p>More than 12 hours after tweeting “when the looting starts, the shooting starts” as images of Minneapolis fire and riots played on cable news, Trump insisted on Twitter that his message was not, in fact, a reference to brutal civil rights-era police tactics. But he ignored the topic in the Rose Garden, choosing instead to focus on China and retreating to the Oval Office as reporters shouted questions.</p>
-<p>It was only around 5 p.m. ET — after a full day of public silence — that Trump announced he’d spoken with the family of George Floyd, the black man who had died after being pinned to the ground by his neck by a white police officer.</p>
-<p>“It certainly looked like there was no excuse for it,” he said of the violent arrest during a roundtable event meant to focus on coronavirus.</p>
-<p>The episode followed Trump’s longtime model of igniting controversy before retreating hours later. If anything, leaving his message lingering without explanation was a diversion in itself and another example of Trump’s inability — or unwillingness — to put aside the divisive itch he’s long cultivated.</p>
-<p>The role of national consoler has never come easily to Trump, nor have attempts at unifying a country riven by politics and ideology. In many instances he’s simply shown no interest in assuming the tone or accepting the responsibilities that US presidents have shouldered throughout history.</p>
-<p>He doesn’t believe it’s up to him to demonstrate responsible mask-wearing, and he retweeted a message earlier this week that appeared to mock former Vice President Joe Biden’s mask-and-aviators ensemble.</p>
-<p>Most of the country may say Trump should wear a mask in public — a Quinnipiac University poll this week put the figure at 67% — but among white men the number stands only at 49%, enough for his stance to pass political muster with his most reliable bloc of supporters.</p>
-<p>As coronavirus began ravaging parts of the country, he did declare himself a wartime President waging battle against the “invisible enemy.” But with war comes death — in this case, more US deaths than the Vietnam and Korean wars combined — and Trump was slow to acknowledge the 100,000 milestone reached midweek.</p>
-<p>He was aboard Air Force One when the death toll officially ticked into six digits, returning to Washington after his plans to witness the first manned US space launch in nearly a decade had been thwarted by the weather.</p>
-<p>He had hoped that the trip, with his entire family in tow, would help shift a national storyline from the miserable pandemic toward a more optimistic one of scientific potential. But the launch was scrubbed when thunderstorms rolled in and Trump was forced to return to Washington.</p>
-<p>The President didn’t address the grim figure as he returned to the White House with the first lady on Wednesday.</p>
-<p>He finally tweeted about it on Thursday morning, deeming it “a very sad milestone.” But he did not make time to address it in person.</p>
-<p>Instead, he has wielded sinister conspiracies and false allegations.</p>
-<p>He’s railed against vote-by-mail, which many governors are seeking to expand amid a highly contagious viral pandemic and which has not proved to be rife with fraud. Despite his issues with the practice, Trump himself voted by mail in February, even though he was in Florida — the state where he votes — on the day that early voting locations opened and drove past one that’s across from his golf course at least six times.</p>
-<p>He has actively worked to relitigate the circumstances that led to Robert Mueller’s Russia investigation, including this week, when he fan-danced around the still-unnamed allegation against his predecessor Barack Obama.</p>
-<p>On Friday evening, his newly installed director of national intelligence appeared to further the cause by releasing the transcripts of phone calls between Trump’s onetime national security adviser and the then-Russian ambassador to the United States.</p>
-<p>The darkest of Trump’s fixations remains the unfounded insinuation that a morning cable news host played a role in killing a young aide almost two decades ago, a blatant falsehood that led this week to pleas from the young woman’s widower for Twitter to disallow the messages.</p>
-<p>The social media giant did not block those messages but did attempt to fact-check his claims about vote-by-mail, a move that set Trump off and led to a hurried effort inside the White House to finalize an executive order few believe will withstand legal scrutiny and that could, potentially, cause even more regulation of the President’s tweets. Hours after he signed it, Twitter slapped a warning on his Minnesota tweet, saying it glorified violence.</p>
-<p>At one time, Trump used his once-a-week campaign rallies to unleash the vitriol and paranoia that his supporters love and that he believes are the very characteristics that led to his unlikely victory in 2016.</p>
-<p>Rallies are out of the question for now — though aides say they’re looking to revive them sooner rather than later.</p>
-<p>This story has been updated with additional developments.</p>
-<p><img src="https://ae01.alicdn.com/kf/Haf7cd3754a7a4a1390938116e7db9917N.jpg" alt=""></p>
-]]></content>
-      <categories>
-        <category>TRANSLATE</category>
-      </categories>
-      <tags>
-        <tag>TRANSLATE</tag>
+        <tag>acm/greedy</tag>
       </tags>
   </entry>
   <entry>
@@ -578,6 +535,110 @@
       </categories>
       <tags>
         <tag>PYTHON</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>CODEFORCES 1300 1360D.Buying Shovels</title>
+    <url>/2020/05/31/CODEFORCES1360D/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="1360D-Buying-Shovels"><a href="#1360D-Buying-Shovels" class="headerlink" title="1360D.Buying Shovels"></a>1360D.Buying Shovels</h1><h2 id="原题链接"><a href="#原题链接" class="headerlink" title="原题链接"></a>原题链接</h2><p><a href="https://codeforces.com/problemset/problem/1360/D" target="_blank" rel="noopener">1360D.Buying Shovels</a></p>
+<h2 id="题目大意"><a href="#题目大意" class="headerlink" title="题目大意"></a>题目大意</h2><p>第一行输入测试数目</p>
+<p>之后每一行为一组测试：  </p>
+<p>每组测试输入两个数：<code>n</code>和<code>k</code></p>
+<p><strong>描述</strong>：有<code>k</code>种包裹，第<code>i</code>个包裹里有<code>i</code>个铲子，只能选择一种包裹，可选这个包裹无限次，要求选择的包裹数最少，并且铲子和等于<code>n</code></p>
+<h2 id="解题思路"><a href="#解题思路" class="headerlink" title="解题思路"></a>解题思路</h2><p>根据数据范围可以看出是求质数问题，求<code>n</code>中的质数，要求此质数在<code>k</code>的范围内，<code>n/此质数</code>最小，意思就是选最大的可以除尽的包裹，得到的就是选择包裹数最少</p>
+<h2 id="解题代码"><a href="#解题代码" class="headerlink" title="解题代码"></a>解题代码</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;bits&#x2F;stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">    int t;</span><br><span class="line">    scanf(&quot;%d&quot;, &amp;t);</span><br><span class="line">    while (t--) &#123;</span><br><span class="line">        int n, k;</span><br><span class="line">        scanf(&quot;%d%d&quot;, &amp;n, &amp;k);</span><br><span class="line">        int ans &#x3D; n;</span><br><span class="line">        for (int i &#x3D; 1; i * i &lt;&#x3D; n; i++) &#123;</span><br><span class="line">            if (n % i &#x3D;&#x3D; 0) &#123;</span><br><span class="line">                if (i &lt;&#x3D; k)</span><br><span class="line">                    ans &#x3D; min(ans, n &#x2F; i);</span><br><span class="line">                if (n &#x2F; i &lt;&#x3D; k)</span><br><span class="line">                    ans &#x3D; min(ans, i);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        cout &lt;&lt; ans &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://s1.ax1x.com/2020/05/31/t1moIH.jpg" alt=""></p>
+]]></content>
+      <categories>
+        <category>CODEFORCES</category>
+      </categories>
+      <tags>
+        <tag>acm/math</tag>
+        <tag>CODEFORCES1300</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>translate first day</title>
+    <url>/2020/05/31/translate-first-day/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="A-week-of-distractions-from-Trump-shows-a-leader-in-crisis"><a href="#A-week-of-distractions-from-Trump-shows-a-leader-in-crisis" class="headerlink" title="A week of distractions from Trump shows a leader in crisis"></a>A week of distractions from Trump shows a leader in crisis</h1><p>(CNN)On Monday, as the nation marked Memorial Day, President Donald Trump mocked his campaign rival for wearing a face mask. On Wednesday, as the national death toll from coronavirus reached a wretched milestone, Trump and his family flew to Florida in an attempted focus on space travel.</p>
+<p>By Friday, as smoke was lifting in Minneapolis after a night of racial unrest, he announced the United States would withdraw from the World Health Organization. A day later, after another night of protests, he declared himself safe inside his heavily fortified mansion and insinuated his own supporters would rally outside that evening.</p>
+<p>In between, there was a dark suggestion of murder, false conspiracies about voting through the mail, a fight over where to hold his nominating convention and a dramatic escalation of ill will with the very social media platform that facilitated almost all the other diversions in the first place.</p>
+<p>Trump’s efforts to change the subject at moments of peril have been a hallmark of his entire career in politics and, when successful, a constant source of frustration for his rivals. But rarely have they appeared more blatant or off-key than now, as a battered nation emerges from a pandemic that has left more than 100,000 dead and as racial unrest brews again.<br>That it is all happening five months before Trump faces an election in which polls show him trailing only heightens the sense of a leader in crisis, even as he insists he has a handle on both matters and attempts to proceed as planned with his presidency. Trump, cognizant of his precarious political position, has retrenched.</p>
+<p>Unwilling or unable to strike a unifying tone, Trump lashed out Saturday morning when he criticized the Democratic mayors of Washington and Minneapolis while appearing to summon his own supporters to rally outside the White House.</p>
+<p>After announcing his was safe, warning he was protected by “vicious dogs” and “ominous weapons,” Trump provided a play-by-play of Friday evening’s protests, of which he said he’d “watched every move.” Trump wrote: “Tonight, I understand, is MAGA NIGHT AT THE WHITE HOUSE???”</p>
+<p>Advisers insist Trump is focused on reviving the country after three months of pandemic that have led, along with the six-figure death toll, to record levels of unemployment and entire industries shuttered. Trump has aggressively pushed for states to reopen even when they don’t necessarily meet the parameters set out by his task force, which has seen its meetings sharply curtailed and its health experts’ public roles reduced.</p>
+<p>At the same time, Trump has sought over the past week to shine the presidential spotlight into dustier corners filled with festering racial grievances and antique conspiracies, all of which have been debunked. He has waged feuds old and new and unveiled strategically timed policy announcements at a moment when his leadership is being questioned.</p>
+<p>The events that unfolded after the President issued a tweet early Friday laden with racist overtones underscored the degree to which he has used inflammatory statements to ignite controversy and enthuse his supporters, even as he denied later that those were his intentions.</p>
+<p>Aides spent Friday debating whether Trump should address the situation in Minnesota during a planned appearance in the Rose Garden, which had been called to announce new actions against China and the US withdrawal from the World Health Organization.</p>
+<p>Some of his advisers encouraged him to speak about Minnesota because his election-year rival had already delivered an address on the topic. Others were more skeptical, convinced Trump would only face more questions about his tweet that used a phrase first uttered by a Miami police chief in 1967 to describe a crackdown in black neighborhoods.</p>
+<p>More than 12 hours after tweeting “when the looting starts, the shooting starts” as images of Minneapolis fire and riots played on cable news, Trump insisted on Twitter that his message was not, in fact, a reference to brutal civil rights-era police tactics. But he ignored the topic in the Rose Garden, choosing instead to focus on China and retreating to the Oval Office as reporters shouted questions.</p>
+<p>It was only around 5 p.m. ET — after a full day of public silence — that Trump announced he’d spoken with the family of George Floyd, the black man who had died after being pinned to the ground by his neck by a white police officer.</p>
+<p>“It certainly looked like there was no excuse for it,” he said of the violent arrest during a roundtable event meant to focus on coronavirus.</p>
+<p>The episode followed Trump’s longtime model of igniting controversy before retreating hours later. If anything, leaving his message lingering without explanation was a diversion in itself and another example of Trump’s inability — or unwillingness — to put aside the divisive itch he’s long cultivated.</p>
+<p>The role of national consoler has never come easily to Trump, nor have attempts at unifying a country riven by politics and ideology. In many instances he’s simply shown no interest in assuming the tone or accepting the responsibilities that US presidents have shouldered throughout history.</p>
+<p>He doesn’t believe it’s up to him to demonstrate responsible mask-wearing, and he retweeted a message earlier this week that appeared to mock former Vice President Joe Biden’s mask-and-aviators ensemble.</p>
+<p>Most of the country may say Trump should wear a mask in public — a Quinnipiac University poll this week put the figure at 67% — but among white men the number stands only at 49%, enough for his stance to pass political muster with his most reliable bloc of supporters.</p>
+<p>As coronavirus began ravaging parts of the country, he did declare himself a wartime President waging battle against the “invisible enemy.” But with war comes death — in this case, more US deaths than the Vietnam and Korean wars combined — and Trump was slow to acknowledge the 100,000 milestone reached midweek.</p>
+<p>He was aboard Air Force One when the death toll officially ticked into six digits, returning to Washington after his plans to witness the first manned US space launch in nearly a decade had been thwarted by the weather.</p>
+<p>He had hoped that the trip, with his entire family in tow, would help shift a national storyline from the miserable pandemic toward a more optimistic one of scientific potential. But the launch was scrubbed when thunderstorms rolled in and Trump was forced to return to Washington.</p>
+<p>The President didn’t address the grim figure as he returned to the White House with the first lady on Wednesday.</p>
+<p>He finally tweeted about it on Thursday morning, deeming it “a very sad milestone.” But he did not make time to address it in person.</p>
+<p>Instead, he has wielded sinister conspiracies and false allegations.</p>
+<p>He’s railed against vote-by-mail, which many governors are seeking to expand amid a highly contagious viral pandemic and which has not proved to be rife with fraud. Despite his issues with the practice, Trump himself voted by mail in February, even though he was in Florida — the state where he votes — on the day that early voting locations opened and drove past one that’s across from his golf course at least six times.</p>
+<p>He has actively worked to relitigate the circumstances that led to Robert Mueller’s Russia investigation, including this week, when he fan-danced around the still-unnamed allegation against his predecessor Barack Obama.</p>
+<p>On Friday evening, his newly installed director of national intelligence appeared to further the cause by releasing the transcripts of phone calls between Trump’s onetime national security adviser and the then-Russian ambassador to the United States.</p>
+<p>The darkest of Trump’s fixations remains the unfounded insinuation that a morning cable news host played a role in killing a young aide almost two decades ago, a blatant falsehood that led this week to pleas from the young woman’s widower for Twitter to disallow the messages.</p>
+<p>The social media giant did not block those messages but did attempt to fact-check his claims about vote-by-mail, a move that set Trump off and led to a hurried effort inside the White House to finalize an executive order few believe will withstand legal scrutiny and that could, potentially, cause even more regulation of the President’s tweets. Hours after he signed it, Twitter slapped a warning on his Minnesota tweet, saying it glorified violence.</p>
+<p>At one time, Trump used his once-a-week campaign rallies to unleash the vitriol and paranoia that his supporters love and that he believes are the very characteristics that led to his unlikely victory in 2016.</p>
+<p>Rallies are out of the question for now — though aides say they’re looking to revive them sooner rather than later.</p>
+<p>This story has been updated with additional developments.</p>
+<p><img src="https://ae01.alicdn.com/kf/Haf7cd3754a7a4a1390938116e7db9917N.jpg" alt=""></p>
+]]></content>
+      <categories>
+        <category>TRANSLATE</category>
+      </categories>
+      <tags>
+        <tag>TRANSLATE</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>HEXO+BUTTERFLY搭建骚气且实用的个人网站</title>
+    <url>/2020/05/27/HEXO-BUTTERFLY%E6%90%AD%E5%BB%BA%E9%AA%9A%E6%B0%94%E4%B8%94%E5%AE%9E%E7%94%A8%E7%9A%84%E4%B8%AA%E4%BA%BA%E7%BD%91%E7%AB%99/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>YOU CAN DRINK ALL YOU LIKE, BUT IN THE MORNING YOU GET HEADACHE WITH THE SAME PROBLEMS.</p>
+</blockquote>
+<hr>
+<h2 id="引子"><a href="#引子" class="headerlink" title="引子"></a>引子</h2><p>最近狂刷<code>codeforces</code>，但是逐渐发现自身一个问题，那就是刷过的题虽然在当天感觉很明白，但是隔一天，隔两天，就发现自己再遇到此题时又是一翻鏖战，这就是说明自己做过的题吸收的效率不够高，于是我就打算做一道题总结一道题。那么问题来了，在哪里总结呢？</p>
+<p>首先排除的是微信公众号，众所周知，微信公众号只能是自己分享东西的平台，而在这上面总结知识点就会引出很多问题，其一，每篇文章都要排版，其二，我的粉丝未必合此文章的胃口，其三，每天只能发布一篇文章，大大限制了自己的总结内容与时间分配。</p>
+<p>那么诸如<code>csdn</code>、博客园、掘金、知乎这种东西呢？也有很多不方便的地方，比如文章左右侧的广告，实在影响人的心情，此外还有审核等等的制约，思前想后，我决定自己开辟一个个人网站。</p>
+<p>当然不能从无到有手动开辟，自己能力有限，而且我的目的也是总结，总不能让自己以后把大把的时间浪费到维护网站上面去。于是我听从了大佬的建议，采用<code>hexo+github</code>的方式，<code>hexo</code>开辟网站，托管到<code>github</code>上面去。</p>
+<p>花里胡哨的页面也是最吸引我的原因之一，我采用了<code>butterfly</code>的主题，绝对美炸天！</p>
+<h2 id="过程"><a href="#过程" class="headerlink" title="过程"></a>过程</h2><p>过程当然是心酸+心酸+心酸，心态险些被搞没。至于搭建网站的教程，实话实说，看了n多篇技术总结，都号称史上最全，到最后还是觉得看官方文档最省事。</p>
+<p>当然自己也找到了一些好的文章，在此列出来希望对大家有帮助：</p>
+<p><code>hexo</code>安装文章：</p>
+<ul>
+<li><a href="https://www.jianshu.com/p/a1a4ebf0e5fc" target="_blank" rel="noopener">Hexo+Butterfly+Github+Coding搭建个人博客</a></li>
+<li><a href="https://hexo.io/" target="_blank" rel="noopener">hexo官方文档</a></li>
+</ul>
+<p><code>butterfly</code>主题系列文章：</p>
+<ol>
+<li><a href="https://jerryc.me/posts/21cfbf15/" target="_blank" rel="noopener">hexo-theme-butterfly 安装文档(一)快速开始</a></li>
+<li><a href="https://jerryc.me/posts/dc584b87/" target="_blank" rel="noopener">hexo-theme-butterfly 安装文档(二)主题页面</a></li>
+<li><a href="https://jerryc.me/posts/4aa8abbe/" target="_blank" rel="noopener">hexo-theme-butterfly 安装文档(三)主题配置</a></li>
+<li><a href="https://jerryc.me/posts/98d20436/" target="_blank" rel="noopener">hexo-theme-butterfly 安装文档(四)主题问答、打赏名单</a></li>
+<li><a href="https://jerryc.me/posts/198a4240/" target="_blank" rel="noopener">hexo-theme-butterfly 安装文档(五)更新日誌</a></li>
+</ol>
+<h2 id="收益"><a href="#收益" class="headerlink" title="收益"></a>收益</h2><p>没日没夜的折腾了两天，总能从其中学到什么：其一，当然是收获了又骚又实用的好网站；其二，学会了<code>git</code>+<code>github</code>的基本使用，常见的<code>git</code>命令也记得很熟；其三，收获了一种精神——永不放弃，哪有什么一帆风顺，加油，骚年！</p>
+<h2 id="不足"><a href="#不足" class="headerlink" title="不足"></a>不足</h2><p>自己的网站弄的也不是很成熟，还有很多功能没有上线，比如日历、赞赏等，自己没有买域名，只是托管到<code>github</code>上。</p>
+<h2 id="欢迎"><a href="#欢迎" class="headerlink" title="欢迎"></a>欢迎</h2><p><a href="https://haotianliu11.github.io/" target="_blank" rel="noopener">我的个人网站</a></p>
+<hr>
+<p><img src="https://imgkr.cn-bj.ufileos.com/148c824d-4eb8-48d3-9825-51625347b0f0.png" alt=""></p>
+]]></content>
+      <categories>
+        <category>博客搭建历程</category>
+      </categories>
+      <tags>
+        <tag>微信公众号文章——随笔</tag>
       </tags>
   </entry>
 </search>

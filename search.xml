@@ -1,6 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>0x01位运算</title>
+    <url>/2020/05/28/0x01%E4%BD%8D%E8%BF%90%E7%AE%97/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="0x01-位-运-算"><a href="#0x01-位-运-算" class="headerlink" title="0x01 位 运 算"></a>0x01 位 运 算</h1><h2 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h2><ol>
+<li><p>用<code>xor</code>表示异或运算，在<code>m</code>位二进制数中，通常称最低位为<code>0</code>位，从右到左依此类推，最高位为<code>m-1</code>位。</p>
+</li>
+<li><p><code>|-1|</code>的原码为<code>00000001</code><br><code>|-1|</code>的反码为<code>11111110</code><br><code>-1</code>的补码为<code>11111111</code>，十六进制表示为<code>0xff</code><br><code>8</code>位二进制对应的最大值<code>127</code>的十六进制表示为<code>0x7f</code><br>在计算机中数字以其补码的形式保存，正数的补码等于其原码，负数的补码等于其对应正数的原码取反码再<code>+1</code></p>
+</li>
+<li><p>对于<code>32</code>位二进制数<code>C</code>(设十进制的值为<code>S</code>)，其按位取反得到的编码<code>~C</code>对应的十进制的值为<code>-1-S</code>(正负都满足此规律)</p>
+</li>
+<li><p>补码下每个数值都有唯一的表示方式，并且任意两个数值做加减法运算，都等价于在<code>32</code>位补码下做最高位不进位的二进制加减法运算。发生算术溢出时，<code>32</code>位无符号整数相当于自动对<code>2^32</code>取模，这也解释了有符号整数溢出时为何会出现负数的现象。</p>
+</li>
+<li><p>在算法竞赛中常用十六进制来表示一个常数，这样书写需要八个字符。<br>| 10进制 | 16进制 |<br>| :-: | :-: |<br>| 21 4748 3647 | 0x7f ff ff ff |<br>| 10 6110 9567 | 0x3f 3f 3f 3f |<br>| -1 | 0xff ff ff ff | </p>
+</li>
+<li><p><code>4</code>个字节的<code>int</code>表示的最大值为<code>21 4748 3647</code><br><code>4</code>个字节的<code>unsigned int</code>表示的最大值为<code>42 9496 7295</code> </p>
+</li>
+<li><p><code>0x3f 3f 3f 3f</code>是一个很有用的值，它满足两个条件：<br>其一，整数的两倍不超过int能表示的最大正整数<br>其二，二进制下每八位都相同<br>因此，我们可以用<code>memset(a, 0x3f, sizeof a)</code>来给<code>a</code>数组的每一个元素都赋值为正无穷，虽然<code>0x7f</code>能给每一个元素赋值成最大，但是为了避免溢出情况，推荐用<code>0x3f</code>。</p>
+<ol>
+<li><code>1 &lt;&lt; n = 2^n, n &lt;&lt; 1 = 2n</code><br><code>n &gt;&gt; 1 = n / 2.0 向下取整</code><br>需要注意的是，整数做<code>/</code>运算执行的是向<code>0</code>取整<br><code>(-3) &gt;&gt; 1 = -2, (-3) / 2 = -1</code></li>
+</ol>
+</li>
+<li><p>除非特殊提示，我们默认右移采用的是算术右移的实现方式</p>
+<blockquote>
+<p>逻辑右移不考虑符号位，右移一位，左边补零即可。<br> 算术右移考虑符号位，右移一位，若符号位为1，就在左边补1；否则，就补0。<br> 所以算术右移也可以进行有符号位的除法,右移n位就等于除2的n次方。<br> 例如，8位二进制数11001101分别右移一位。<br> 逻辑右移就是[0]1100110<br> 算术右移就是[1]1100110  </p>
+</blockquote>
+</li>
+</ol>
+<h2 id="状态压缩"><a href="#状态压缩" class="headerlink" title="状态压缩"></a>状态压缩</h2><p>二进制状态压缩是指将一个长度为<code>m</code>的<code>bool</code>数组用一个<code>m</code>位二进制整数表示并存储的方法，利用如下操作实现对原<code>bool</code>数组对应下标元素的存取。  </p>
+<ol>
+<li>取出整数<code>n</code>的第<code>k</code>位：<code>(n&gt;&gt;k)&amp;1</code></li>
+<li>取出整数<code>n</code>的后<code>k</code>位<code>(0到k-1位)</code>：<code>((1&lt;&lt;K)-1)&amp;n</code></li>
+<li>把整数<code>n</code>的第<code>k</code>位反转：<code>(1&lt;&lt;k) nor n</code></li>
+<li>把整数<code>n</code>的第<code>k</code>位赋值为<code>1</code>：<code>(1&lt;&lt;k)|n</code>  </li>
+<li>把整数<code>n</code>的第<code>k</code>位赋值为<code>0</code>：<code>(~(1&lt;&lt;k))&amp;n</code>  </li>
+</ol>
+<p>当<code>m</code>不大时，我们可以使用一个整数存储，当m很大时，我们可以用若干个整数存储<code>(int数组)</code>，也可以用<code>C++STL</code>为我们提供的<code>bitset</code>实现。</p>
+<h2 id="成对变换"><a href="#成对变换" class="headerlink" title="成对变换"></a>成对变换</h2><p>通过计算可发现，对于非负整数<code>n</code>:  </p>
+<ol>
+<li>当<code>n</code>为偶数时，<code>n xor 1 = n + 1</code></li>
+<li>当<code>n</code>为奇数时，<code>n xor 1 = n - 1</code></li>
+</ol>
+<p>因此<code>0与1</code>, <code>2与3</code>, <code>4与5</code> … 关于<code>xor 1</code>运算构成成对变换。  </p>
+<p>这一性质经常用于图论邻接表中边集的存储。在具有无向边(双向边)的图中把一对正反方向的边分别存储在邻接表数组的第<code>n</code>与<code>n+1</code>位置(其中<code>n</code>为偶数)，就可以通过<code>xor 1</code>的运算获得与当前边<code>(x,y)</code>反向的边<code>(y,x)</code>的存储位置。</p>
+<h2 id="lowbit运算"><a href="#lowbit运算" class="headerlink" title="lowbit运算"></a>lowbit运算</h2><p><code>lowbit(n)</code>定义为非负整数<code>n</code>在二进制表示下“最低位的1及其后边所有的0”构成的数值。  </p>
+<p>例子：<code>lowbit(10)=2</code>  </p>
+<p>其原理为：<code>lowbit(n)=n&amp;(~n-1)=n&amp;(-n)</code></p>
+<p><code>lowbit</code>运算配合<code>Hash</code>可以找出整数二进制下所有是<code>1</code>的位，所花费的时间与<code>1</code>的个数同级。为了达到这个目的，我们只需要不断把<code>n</code>赋值为<code>n-lowbit(n)</code>直至<code>n=0</code>。我们可以把每次减去的数(其一定为2的幂)求<code>log</code>得到对应的<code>1</code>所在的位数，因为<code>C++math.h</code>库中的<code>log</code>函数复杂度常数较大，所以我们可以预处理一个数组，通过<code>Hash</code>的方法代替<code>log</code>运算。  </p>
+<p>此外<code>lowbit</code>运算也是树状数组中的一个基本运算。</p>
+<p><img src="https://ae01.alicdn.com/kf/H270ec52cb1794e5cb700f741bdd71aafA.jpg" alt=""></p>
+]]></content>
+      <categories>
+        <category>算法竞赛进阶指南</category>
+      </categories>
+      <tags>
+        <tag>ACM</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>0x01位运算例题</title>
+    <url>/2020/05/29/0x01%E4%BD%8D%E8%BF%90%E7%AE%97%E4%BE%8B%E9%A2%98/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="0x01位运算例题"><a href="#0x01位运算例题" class="headerlink" title="0x01位运算例题"></a>0x01位运算例题</h1><blockquote>
+<p>点击每道题题目即可获取原题链接</p>
+</blockquote>
+<h2 id="a-b"><a href="#a-b" class="headerlink" title="a^b"></a><a href="https://www.acwing.com/problem/content/91/" target="_blank" rel="noopener">a^b</a></h2><h3 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h3><p><code>long long</code>可以表示的最大值为<code>922 3372 0368 5477 5807</code><br><code>unsigned long long</code>可以表示的最大值为<code>1844 6744 0737 0955 1615</code>  </p>
+<p>由此观之<code>a^b</code>大于<code>ULL</code>类型可以表示的最大值，所以要用快速幂的思想来求解这道题。</p>
+<p><img src="https://ae01.alicdn.com/kf/H4fabba6e8a6644e88cb9ee4fe512f4ecH.jpg" alt=""><br>且取模的性质如下</p>
+<ul>
+<li>(a + b) % p = (a % p + b % p) % p</li>
+<li>(a - b) % p = (a % p - b % p) % p </li>
+<li>(a <em> b) % p = (a % p </em> b % p) % p </li>
+<li>a ^ b % p = ((a % p)^b) % p </li>
+</ul>
+<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;bits&#x2F;stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">int power(int a, int b, int c) &#123;</span><br><span class="line">    int ans &#x3D; 1 % c;</span><br><span class="line">    for (; b; b &gt;&gt;&#x3D; 1) &#123;</span><br><span class="line">        if (b &amp; 1) ans &#x3D; (long long)ans * a % c;</span><br><span class="line">        a &#x3D; (long long)a * a % c;</span><br><span class="line">    &#125;</span><br><span class="line">    return ans;</span><br><span class="line">&#125;</span><br><span class="line">int main() &#123;</span><br><span class="line">    int a, b, p;</span><br><span class="line">    scanf(&quot;%d%d%d&quot;, &amp;a, &amp;b, &amp;p);</span><br><span class="line">    int ans &#x3D; power(a, b, p);</span><br><span class="line">    printf(&quot;%d&quot;, ans);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="复杂度"><a href="#复杂度" class="headerlink" title="复杂度"></a>复杂度</h3><p>我们可以用<code>b&amp;1</code>运算表示<code>b</code>的二进制下的最低位，并用<code>b&gt;&gt;1</code>来舍去最低位。在递归的过程中把<code>&gt;&gt;</code>和<code>&amp;</code>结合，其时间复杂度为<code>O(logb)</code></p>
+<h2 id="64位整数乘法"><a href="#64位整数乘法" class="headerlink" title="64位整数乘法"></a><a href="https://www.acwing.com/problem/content/92/" target="_blank" rel="noopener">64位整数乘法</a></h2><h3 id="代码-1"><a href="#代码-1" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;bits&#x2F;stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">typedef long long LL;</span><br><span class="line">LL power(LL a, LL b, LL c) &#123;</span><br><span class="line">    LL ans &#x3D; 0;</span><br><span class="line">    for (; b; b &gt;&gt;&#x3D; 1) &#123;</span><br><span class="line">        if (b &amp; 1) ans &#x3D; (ans + a) % c;</span><br><span class="line">        a &#x3D; a * 2 % c;</span><br><span class="line">    &#125;</span><br><span class="line">    return ans;</span><br><span class="line">&#125;</span><br><span class="line">int main() &#123;</span><br><span class="line">    LL a, b, p;</span><br><span class="line">    scanf(&quot;%lld%lld%lld&quot;, &amp;a, &amp;b, &amp;p);</span><br><span class="line">    LL ans &#x3D; power(a, b, p);</span><br><span class="line">    printf(&quot;%lld&quot;, ans);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="复杂度-1"><a href="#复杂度-1" class="headerlink" title="复杂度"></a>复杂度</h3><p>我们可以用<code>b&amp;1</code>运算表示<code>b</code>的二进制下的最低位，并用<code>b&gt;&gt;1</code>来舍去最低位。在递归的过程中把<code>&gt;&gt;</code>和<code>&amp;</code>结合，其时间复杂度为<code>O(logb)</code>，与上一题不同的是位数问题，但是每次<code>%p</code>之后都能保证不超过<code>2*10^18</code>，在<code>long long</code>的范围内</p>
+<h2 id="最短Hamilton路径"><a href="#最短Hamilton路径" class="headerlink" title="最短Hamilton路径"></a><a href="https://www.acwing.com/problem/content/93/" target="_blank" rel="noopener">最短Hamilton路径</a></h2><h3 id="分析-1"><a href="#分析-1" class="headerlink" title="分析"></a>分析</h3><p>我们可以采用朴素算法,其时间复杂度为<code>O(n*n!)</code>，<code>n!</code>为枚举<code>n</code>个点的全排列，<code>n</code>代表枚举路径的长度求得结果，这个算法的时间复杂度太高，不符合。而我们可以用二进制状态压缩<code>DP</code>来把时间复杂度优化到<code>O((n^2)*(2^n))</code>,我们用<code>F[i,j]</code>表示点被经过的状态对应二进制数<code>i</code>，且目前处于点<code>j</code>的最短路径   </p>
+<p>在起点时<code>F[1,0]=0</code>，即目前处于点<code>0</code>且只经过了点<code>0</code>的最短路径为<code>0</code>。为方便起见，我们将数组中其他元素设为无穷大，最终目的是求<code>F[(1&lt;&lt;n),n-1]</code>的值，即经过所有点且最终处于<code>n-1</code>的最短路径</p>
+<p>在任意时刻，有公式<code>F[i,j]=min(F[i,j],F[i^(1&lt;&lt;j),k]+weight[k,j])</code>，根据分析可得<code>k</code>一定是倒数第二个经过的点。我们枚举<code>k</code>，当<code>k</code>对应在<code>i</code>的二进制为<code>1</code>时，我们讨论这种情况并比较</p>
+<h3 id="代码-2"><a href="#代码-2" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;bits&#x2F;stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">const int N &#x3D; 20, M &#x3D; 1 &lt;&lt; 20;</span><br><span class="line">int weight[N][N], F[M][N];</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">    int n;</span><br><span class="line">    scanf(&quot;%d&quot;, &amp;n);</span><br><span class="line">    for (int i &#x3D; 0; i &lt; n; i++)</span><br><span class="line">        for (int j &#x3D; 0; j &lt; n; j++)</span><br><span class="line">            scanf(&quot;%d&quot;, &amp;weight[i][j]);</span><br><span class="line"></span><br><span class="line">    memset(F, 0x3f, sizeof F);</span><br><span class="line">    F[1][0] &#x3D; 0;</span><br><span class="line">    for (int i &#x3D; 1; i &lt; 1 &lt;&lt; n; i++)</span><br><span class="line">        for (int j &#x3D; 0; j &lt; n; j++)</span><br><span class="line">            if (i &gt;&gt; j &amp; 1)</span><br><span class="line">                for (int k &#x3D; 0; k &lt; n; k++)</span><br><span class="line">                    if ((i ^ 1 &lt;&lt; j) &gt;&gt; k &amp; 1)</span><br><span class="line">                        F[i][j] &#x3D; min(F[i][j], F[i ^ 1 &lt;&lt; j][k] + weight[k][j]);</span><br><span class="line"></span><br><span class="line">    printf(&quot;%d&quot;, F[(1 &lt;&lt; n) - 1][n - 1]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>还差一题，未完待续</p>
+</blockquote>
+<p><img src="https://ae01.alicdn.com/kf/Hdd96bb61417945ca90a15b8b5b98b5a1g.jpg" alt=""></p>
+]]></content>
+      <categories>
+        <category>算法竞赛进阶指南</category>
+      </categories>
+      <tags>
+        <tag>ACM</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>0x04二分</title>
     <url>/2020/05/31/0x04%E4%BA%8C%E5%88%86/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="0x04二分"><a href="#0x04二分" class="headerlink" title="0x04二分"></a>0x04二分</h1><h2 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h2><p>二分的基础的用法是在单调序列或单调函数中进行查找，因此当问题的答案具有单调性时，就可以通过二分把求解问题转换为判定（根据复杂度理论，判定的难度小于求解），进一步地，我们还可以扩展到通过三分法去解决单峰函数的极值以及相关问题</p>
@@ -19,6 +111,48 @@
 <p>未完待续</p>
 </blockquote>
 <p><img src="https://s1.ax1x.com/2020/05/31/t1moIH.jpg" alt=""></p>
+]]></content>
+      <categories>
+        <category>算法竞赛进阶指南</category>
+      </categories>
+      <tags>
+        <tag>ACM</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>0x07贪心</title>
+    <url>/2020/06/02/0x07%E8%B4%AA%E5%BF%83/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="0x07贪心"><a href="#0x07贪心" class="headerlink" title="0x07贪心"></a>0x07贪心</h1><h2 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h2><p>贪心是一种在每次决策时采取当前意义下最优策略的算法，因此，使用贪心法要求问题的整体最优性可以由局部最优性导出。贪心算法的正确性需要证明，常见的证明手段有：  </p>
+<ol>
+<li>微扰（邻项交换）<br>证明在任意局面下，任何对局部最优策略的微小改变都会造成整体结果的变差，经常用于以“排序”为贪心策略的证明</li>
+<li>范围缩放<br>证明任何对局部最优策略作用范围的扩展都不会造成整体结果的变差  </li>
+<li>决策包容性<br>证明在任意局面下，做出局部最优策略以后，在问题状态空间中的可达集合包含了作出其他任何决策后的可达集合。换言之，这个局部最优策略的可能性包含其他所有策略提供的可能性  </li>
+<li>反证法</li>
+<li>数学归纳法</li>
+</ol>
+<blockquote>
+<p>我们通过几道例题来介绍贪心算法的应用</p>
+</blockquote>
+<h2 id="ACWING110-防晒"><a href="#ACWING110-防晒" class="headerlink" title="ACWING110.防晒"></a><a href="https://www.acwing.com/problem/content/112/" target="_blank" rel="noopener">ACWING110.防晒</a></h2><p>按照<code>minSPF</code>递减的顺序把奶牛排序，依次考虑每头奶牛  </p>
+<p>对于每头奶牛，扫描一遍所有的防晒霜，在这头奶牛能用（能用指的是该防晒霜的强度符合这头奶牛的范围，并且瓶数还有剩余）的防晒霜里找<code>SPF</code>值最大的使用  </p>
+<p>以上算法的贪心策略是在满足条件的前提下每次选择<code>SPF</code>最大的防晒霜，这个策略正确的原因是：我们考虑这一步策略的作用范围扩展到后续其他奶牛之后产生的影响。每瓶防晒霜是否可用，会被<code>minSPF</code>和<code>maxSPF</code>两个条件限制，因为奶牛已经按照<code>minSPF</code>递减排序，所以每一个不低于当前奶牛<code>minSPF</code>值的防晒霜，都不会低于后面其他奶牛的<code>minSPF</code>。也就是说，对于当前奶牛可用的任意两瓶防晒霜<code>x</code>和<code>y</code>，如果<code>SFP[X]&lt;SFP[y]</code>，那么后面的奶牛只可能出现三种情况之一  </p>
+<ol>
+<li><p><code>x</code>和<code>y</code>都能用<br><img src="https://ae01.alicdn.com/kf/H2cc96d8dff754e51a734da64de4234dd0.jpg" alt=""></p>
+</li>
+<li><p><code>x</code>和<code>y</code>都不能用<br><img src="https://ae01.alicdn.com/kf/H9ee214eba1ab4d3db7de671fcec790cfN.jpg" alt=""></p>
+</li>
+<li><p><code>x</code>能用，<code>y</code>不能用<br><img src="https://ae01.alicdn.com/kf/H956b6a5e4b7743629416b5c1c262da0bn.jpg" alt=""></p>
+</li>
+</ol>
+<p>因此当前奶牛选择较大的<code>y</code>去用，对于整体的影响肯定比选择较小的<code>x</code>去用要好，另外，每头奶牛对答案的贡献至多是<code>1</code>，即使让当前奶牛放弃日光浴，留下防晒霜给后面的某一头奶牛去用，对答案的贡献也不会更大，综上所述，尽量满足当前的奶牛，并选择<code>SPF</code>值尽量大的防晒霜是一个正确的贪心策略</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;bits&#x2F;stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line">const int N &#x3D; 2510;</span><br><span class="line">typedef pair&lt;int, int&gt; PII;</span><br><span class="line">int n, m;</span><br><span class="line">PII cows[N];</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">    cin &gt;&gt; n &gt;&gt; m;</span><br><span class="line">    map&lt;int, int&gt; spfs;</span><br><span class="line">    for (int i &#x3D; 0; i &lt; n; i++) cin &gt;&gt; cows[i].first &gt;&gt; cows[i].second;</span><br><span class="line">    for (int i &#x3D; 0; i &lt; m; i++) &#123;</span><br><span class="line">        int spf, cover;</span><br><span class="line">        cin &gt;&gt; spf &gt;&gt; cover;</span><br><span class="line">        spfs[spf] +&#x3D; cover;</span><br><span class="line">    &#125;</span><br><span class="line">    sort(cows, cows + n);</span><br><span class="line">    int res &#x3D; 0;</span><br><span class="line">    spfs[0] &#x3D; spfs[1001] &#x3D; 1;</span><br><span class="line">    for (int i &#x3D; n - 1; i &gt;&#x3D; 0; i--) &#123;</span><br><span class="line">        auto spf &#x3D; spfs.upper_bound(cows[i].second);</span><br><span class="line">        spf--;</span><br><span class="line">        if (spf-&gt;first &gt;&#x3D; cows[i].first) &#123;</span><br><span class="line">            res++;</span><br><span class="line">            if (--spf-&gt;second &#x3D;&#x3D; 0)</span><br><span class="line">                spfs.erase(spf);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    cout &lt;&lt; res &lt;&lt; endl;</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="ACWING111-畜栏预定"><a href="#ACWING111-畜栏预定" class="headerlink" title="ACWING111.畜栏预定"></a><a href="https://www.acwing.com/problem/content/113/" target="_blank" rel="noopener">ACWING111.畜栏预定</a></h2><p>按照开始吃草的时间把牛排序，用小根堆维护所有畜栏中最后一头牛结束吃草的时间的最小值，每循环到一头牛，如果这头牛的吃草开始时间比这个小根堆的堆顶大，则把这个牛插入到这个小根堆堆顶对应的畜栏中，再重新维护小根堆；如果小根堆的堆顶比这头牛的开始吃草时间大，则新建一个畜栏，插入到小根堆中</p>
+<p>这种策略成功的原因在于：把每个畜栏的时间都充分利用，如果存在多个畜栏可以存放此牛，则选择最后一头牛结束吃草时间最小的畜栏，这样可以充分利用每个畜栏的时间；把每个牛的开始吃草时间从小到大排序的原因是，这样就可以让后面的牛插入在畜栏的后面，如果不排序，则每个畜栏前面可能有时间空隙放牛，这是不符合要求的，很难做出来</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;bits&#x2F;stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line">typedef pair&lt;int, int&gt; PII;</span><br><span class="line">const int N &#x3D; 50010;</span><br><span class="line"></span><br><span class="line">int n;</span><br><span class="line">int id[N];</span><br><span class="line">pair&lt;PII, int&gt; cows[N];</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">    cin &gt;&gt; n;</span><br><span class="line">    for (int i &#x3D; 0; i &lt; n; i++) &#123;</span><br><span class="line">        cin &gt;&gt; cows[i].first.first &gt;&gt; cows[i].first.second;</span><br><span class="line">        cows[i].second &#x3D; i;</span><br><span class="line">    &#125;</span><br><span class="line">    sort(cows, cows + n);</span><br><span class="line"></span><br><span class="line">    priority_queue&lt;PII, vector&lt;PII&gt;, greater&lt;PII&gt; &gt; heap;</span><br><span class="line">    for (int i &#x3D; 0; i &lt; n; i++) &#123;</span><br><span class="line">        if (heap.empty() || heap.top().first &gt;&#x3D; cows[i].first.first) &#123;</span><br><span class="line">            id[cows[i].second] &#x3D; heap.size() + 1;</span><br><span class="line">            heap.push(&#123;cows[i].first.second, heap.size() + 1&#125;);</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            auto stall &#x3D; heap.top();</span><br><span class="line">            heap.pop();</span><br><span class="line">            stall.first &#x3D; cows[i].first.second;</span><br><span class="line">            id[cows[i].second] &#x3D; stall.second;</span><br><span class="line">            heap.push(stall);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    cout &lt;&lt; heap.size() &lt;&lt; endl;</span><br><span class="line">    for (int i &#x3D; 0; i &lt; n; i++) cout &lt;&lt; id[i] &lt;&lt; endl;</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>未完待续</p>
+</blockquote>
+<p><img src="https://ae01.alicdn.com/kf/Hef70c4f4a75e40738e47ea16124d9091W.jpg" alt=""></p>
 ]]></content>
       <categories>
         <category>算法竞赛进阶指南</category>
@@ -100,214 +234,6 @@
       </tags>
   </entry>
   <entry>
-    <title>0x01位运算</title>
-    <url>/2020/05/28/0x01%E4%BD%8D%E8%BF%90%E7%AE%97/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="0x01-位-运-算"><a href="#0x01-位-运-算" class="headerlink" title="0x01 位 运 算"></a>0x01 位 运 算</h1><h2 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h2><ol>
-<li><p>用<code>xor</code>表示异或运算，在<code>m</code>位二进制数中，通常称最低位为<code>0</code>位，从右到左依此类推，最高位为<code>m-1</code>位。</p>
-</li>
-<li><p><code>|-1|</code>的原码为<code>00000001</code><br><code>|-1|</code>的反码为<code>11111110</code><br><code>-1</code>的补码为<code>11111111</code>，十六进制表示为<code>0xff</code><br><code>8</code>位二进制对应的最大值<code>127</code>的十六进制表示为<code>0x7f</code><br>在计算机中数字以其补码的形式保存，正数的补码等于其原码，负数的补码等于其对应正数的原码取反码再<code>+1</code></p>
-</li>
-<li><p>对于<code>32</code>位二进制数<code>C</code>(设十进制的值为<code>S</code>)，其按位取反得到的编码<code>~C</code>对应的十进制的值为<code>-1-S</code>(正负都满足此规律)</p>
-</li>
-<li><p>补码下每个数值都有唯一的表示方式，并且任意两个数值做加减法运算，都等价于在<code>32</code>位补码下做最高位不进位的二进制加减法运算。发生算术溢出时，<code>32</code>位无符号整数相当于自动对<code>2^32</code>取模，这也解释了有符号整数溢出时为何会出现负数的现象。</p>
-</li>
-<li><p>在算法竞赛中常用十六进制来表示一个常数，这样书写需要八个字符。<br>| 10进制 | 16进制 |<br>| :-: | :-: |<br>| 21 4748 3647 | 0x7f ff ff ff |<br>| 10 6110 9567 | 0x3f 3f 3f 3f |<br>| -1 | 0xff ff ff ff | </p>
-</li>
-<li><p><code>4</code>个字节的<code>int</code>表示的最大值为<code>21 4748 3647</code><br><code>4</code>个字节的<code>unsigned int</code>表示的最大值为<code>42 9496 7295</code> </p>
-</li>
-<li><p><code>0x3f 3f 3f 3f</code>是一个很有用的值，它满足两个条件：<br>其一，整数的两倍不超过int能表示的最大正整数<br>其二，二进制下每八位都相同<br>因此，我们可以用<code>memset(a, 0x3f, sizeof a)</code>来给<code>a</code>数组的每一个元素都赋值为正无穷，虽然<code>0x7f</code>能给每一个元素赋值成最大，但是为了避免溢出情况，推荐用<code>0x3f</code>。</p>
-<ol>
-<li><code>1 &lt;&lt; n = 2^n, n &lt;&lt; 1 = 2n</code><br><code>n &gt;&gt; 1 = n / 2.0 向下取整</code><br>需要注意的是，整数做<code>/</code>运算执行的是向<code>0</code>取整<br><code>(-3) &gt;&gt; 1 = -2, (-3) / 2 = -1</code></li>
-</ol>
-</li>
-<li><p>除非特殊提示，我们默认右移采用的是算术右移的实现方式</p>
-<blockquote>
-<p>逻辑右移不考虑符号位，右移一位，左边补零即可。<br> 算术右移考虑符号位，右移一位，若符号位为1，就在左边补1；否则，就补0。<br> 所以算术右移也可以进行有符号位的除法,右移n位就等于除2的n次方。<br> 例如，8位二进制数11001101分别右移一位。<br> 逻辑右移就是[0]1100110<br> 算术右移就是[1]1100110  </p>
-</blockquote>
-</li>
-</ol>
-<h2 id="状态压缩"><a href="#状态压缩" class="headerlink" title="状态压缩"></a>状态压缩</h2><p>二进制状态压缩是指将一个长度为<code>m</code>的<code>bool</code>数组用一个<code>m</code>位二进制整数表示并存储的方法，利用如下操作实现对原<code>bool</code>数组对应下标元素的存取。  </p>
-<ol>
-<li>取出整数<code>n</code>的第<code>k</code>位：<code>(n&gt;&gt;k)&amp;1</code></li>
-<li>取出整数<code>n</code>的后<code>k</code>位<code>(0到k-1位)</code>：<code>((1&lt;&lt;K)-1)&amp;n</code></li>
-<li>把整数<code>n</code>的第<code>k</code>位反转：<code>(1&lt;&lt;k) nor n</code></li>
-<li>把整数<code>n</code>的第<code>k</code>位赋值为<code>1</code>：<code>(1&lt;&lt;k)|n</code>  </li>
-<li>把整数<code>n</code>的第<code>k</code>位赋值为<code>0</code>：<code>(~(1&lt;&lt;k))&amp;n</code>  </li>
-</ol>
-<p>当<code>m</code>不大时，我们可以使用一个整数存储，当m很大时，我们可以用若干个整数存储<code>(int数组)</code>，也可以用<code>C++STL</code>为我们提供的<code>bitset</code>实现。</p>
-<h2 id="成对变换"><a href="#成对变换" class="headerlink" title="成对变换"></a>成对变换</h2><p>通过计算可发现，对于非负整数<code>n</code>:  </p>
-<ol>
-<li>当<code>n</code>为偶数时，<code>n xor 1 = n + 1</code></li>
-<li>当<code>n</code>为奇数时，<code>n xor 1 = n - 1</code></li>
-</ol>
-<p>因此<code>0与1</code>, <code>2与3</code>, <code>4与5</code> … 关于<code>xor 1</code>运算构成成对变换。  </p>
-<p>这一性质经常用于图论邻接表中边集的存储。在具有无向边(双向边)的图中把一对正反方向的边分别存储在邻接表数组的第<code>n</code>与<code>n+1</code>位置(其中<code>n</code>为偶数)，就可以通过<code>xor 1</code>的运算获得与当前边<code>(x,y)</code>反向的边<code>(y,x)</code>的存储位置。</p>
-<h2 id="lowbit运算"><a href="#lowbit运算" class="headerlink" title="lowbit运算"></a>lowbit运算</h2><p><code>lowbit(n)</code>定义为非负整数<code>n</code>在二进制表示下“最低位的1及其后边所有的0”构成的数值。  </p>
-<p>例子：<code>lowbit(10)=2</code>  </p>
-<p>其原理为：<code>lowbit(n)=n&amp;(~n-1)=n&amp;(-n)</code></p>
-<p><code>lowbit</code>运算配合<code>Hash</code>可以找出整数二进制下所有是<code>1</code>的位，所花费的时间与<code>1</code>的个数同级。为了达到这个目的，我们只需要不断把<code>n</code>赋值为<code>n-lowbit(n)</code>直至<code>n=0</code>。我们可以把每次减去的数(其一定为2的幂)求<code>log</code>得到对应的<code>1</code>所在的位数，因为<code>C++math.h</code>库中的<code>log</code>函数复杂度常数较大，所以我们可以预处理一个数组，通过<code>Hash</code>的方法代替<code>log</code>运算。  </p>
-<p>此外<code>lowbit</code>运算也是树状数组中的一个基本运算。</p>
-<p><img src="https://ae01.alicdn.com/kf/H270ec52cb1794e5cb700f741bdd71aafA.jpg" alt=""></p>
-]]></content>
-      <categories>
-        <category>算法竞赛进阶指南</category>
-      </categories>
-      <tags>
-        <tag>ACM</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>0x07贪心</title>
-    <url>/2020/06/02/0x07%E8%B4%AA%E5%BF%83/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="0x07贪心"><a href="#0x07贪心" class="headerlink" title="0x07贪心"></a>0x07贪心</h1><h2 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h2><p>贪心是一种在每次决策时采取当前意义下最优策略的算法，因此，使用贪心法要求问题的整体最优性可以由局部最优性导出。贪心算法的正确性需要证明，常见的证明手段有：  </p>
-<ol>
-<li>微扰（邻项交换）<br>证明在任意局面下，任何对局部最优策略的微小改变都会造成整体结果的变差，经常用于以“排序”为贪心策略的证明</li>
-<li>范围缩放<br>证明任何对局部最优策略作用范围的扩展都不会造成整体结果的变差  </li>
-<li>决策包容性<br>证明在任意局面下，做出局部最优策略以后，在问题状态空间中的可达集合包含了作出其他任何决策后的可达集合。换言之，这个局部最优策略的可能性包含其他所有策略提供的可能性  </li>
-<li>反证法</li>
-<li>数学归纳法</li>
-</ol>
-<blockquote>
-<p>我们通过几道例题来介绍贪心算法的应用</p>
-</blockquote>
-<h2 id="ACWING110-防晒"><a href="#ACWING110-防晒" class="headerlink" title="ACWING110.防晒"></a><a href="https://www.acwing.com/problem/content/112/" target="_blank" rel="noopener">ACWING110.防晒</a></h2><p>按照<code>minSPF</code>递减的顺序把奶牛排序，依次考虑每头奶牛  </p>
-<p>对于每头奶牛，扫描一遍所有的防晒霜，在这头奶牛能用（能用指的是该防晒霜的强度符合这头奶牛的范围，并且瓶数还有剩余）的防晒霜里找<code>SPF</code>值最大的使用  </p>
-<p>以上算法的贪心策略是在满足条件的前提下每次选择<code>SPF</code>最大的防晒霜，这个策略正确的原因是：我们考虑这一步策略的作用范围扩展到后续其他奶牛之后产生的影响。每瓶防晒霜是否可用，会被<code>minSPF</code>和<code>maxSPF</code>两个条件限制，因为奶牛已经按照<code>minSPF</code>递减排序，所以每一个不低于当前奶牛<code>minSPF</code>值的防晒霜，都不会低于后面其他奶牛的<code>minSPF</code>。也就是说，对于当前奶牛可用的任意两瓶防晒霜<code>x</code>和<code>y</code>，如果<code>SFP[X]&lt;SFP[y]</code>，那么后面的奶牛只可能出现三种情况之一  </p>
-<ol>
-<li><p><code>x</code>和<code>y</code>都能用<br><img src="https://ae01.alicdn.com/kf/H2cc96d8dff754e51a734da64de4234dd0.jpg" alt=""></p>
-</li>
-<li><p><code>x</code>和<code>y</code>都不能用<br><img src="https://ae01.alicdn.com/kf/H9ee214eba1ab4d3db7de671fcec790cfN.jpg" alt=""></p>
-</li>
-<li><p><code>x</code>能用，<code>y</code>不能用<br><img src="https://ae01.alicdn.com/kf/H956b6a5e4b7743629416b5c1c262da0bn.jpg" alt=""></p>
-</li>
-</ol>
-<p>因此当前奶牛选择较大的<code>y</code>去用，对于整体的影响肯定比选择较小的<code>x</code>去用要好，另外，每头奶牛对答案的贡献至多是<code>1</code>，即使让当前奶牛放弃日光浴，留下防晒霜给后面的某一头奶牛去用，对答案的贡献也不会更大，综上所述，尽量满足当前的奶牛，并选择<code>SPF</code>值尽量大的防晒霜是一个正确的贪心策略</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;bits&#x2F;stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line">const int N &#x3D; 2510;</span><br><span class="line">typedef pair&lt;int, int&gt; PII;</span><br><span class="line">int n, m;</span><br><span class="line">PII cows[N];</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">    cin &gt;&gt; n &gt;&gt; m;</span><br><span class="line">    map&lt;int, int&gt; spfs;</span><br><span class="line">    for (int i &#x3D; 0; i &lt; n; i++) cin &gt;&gt; cows[i].first &gt;&gt; cows[i].second;</span><br><span class="line">    for (int i &#x3D; 0; i &lt; m; i++) &#123;</span><br><span class="line">        int spf, cover;</span><br><span class="line">        cin &gt;&gt; spf &gt;&gt; cover;</span><br><span class="line">        spfs[spf] +&#x3D; cover;</span><br><span class="line">    &#125;</span><br><span class="line">    sort(cows, cows + n);</span><br><span class="line">    int res &#x3D; 0;</span><br><span class="line">    spfs[0] &#x3D; spfs[1001] &#x3D; 1;</span><br><span class="line">    for (int i &#x3D; n - 1; i &gt;&#x3D; 0; i--) &#123;</span><br><span class="line">        auto spf &#x3D; spfs.upper_bound(cows[i].second);</span><br><span class="line">        spf--;</span><br><span class="line">        if (spf-&gt;first &gt;&#x3D; cows[i].first) &#123;</span><br><span class="line">            res++;</span><br><span class="line">            if (--spf-&gt;second &#x3D;&#x3D; 0)</span><br><span class="line">                spfs.erase(spf);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    cout &lt;&lt; res &lt;&lt; endl;</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="ACWING111-畜栏预定"><a href="#ACWING111-畜栏预定" class="headerlink" title="ACWING111.畜栏预定"></a><a href="https://www.acwing.com/problem/content/113/" target="_blank" rel="noopener">ACWING111.畜栏预定</a></h2><p>按照开始吃草的时间把牛排序，用小根堆维护所有畜栏中最后一头牛结束吃草的时间的最小值，每循环到一头牛，如果这头牛的吃草开始时间比这个小根堆的堆顶大，则把这个牛插入到这个小根堆堆顶对应的畜栏中，再重新维护小根堆；如果小根堆的堆顶比这头牛的开始吃草时间大，则新建一个畜栏，插入到小根堆中</p>
-<p>这种策略成功的原因在于：把每个畜栏的时间都充分利用，如果存在多个畜栏可以存放此牛，则选择最后一头牛结束吃草时间最小的畜栏，这样可以充分利用每个畜栏的时间；把每个牛的开始吃草时间从小到大排序的原因是，这样就可以让后面的牛插入在畜栏的后面，如果不排序，则每个畜栏前面可能有时间空隙放牛，这是不符合要求的，很难做出来</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;bits&#x2F;stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line">typedef pair&lt;int, int&gt; PII;</span><br><span class="line">const int N &#x3D; 50010;</span><br><span class="line"></span><br><span class="line">int n;</span><br><span class="line">int id[N];</span><br><span class="line">pair&lt;PII, int&gt; cows[N];</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">    cin &gt;&gt; n;</span><br><span class="line">    for (int i &#x3D; 0; i &lt; n; i++) &#123;</span><br><span class="line">        cin &gt;&gt; cows[i].first.first &gt;&gt; cows[i].first.second;</span><br><span class="line">        cows[i].second &#x3D; i;</span><br><span class="line">    &#125;</span><br><span class="line">    sort(cows, cows + n);</span><br><span class="line"></span><br><span class="line">    priority_queue&lt;PII, vector&lt;PII&gt;, greater&lt;PII&gt; &gt; heap;</span><br><span class="line">    for (int i &#x3D; 0; i &lt; n; i++) &#123;</span><br><span class="line">        if (heap.empty() || heap.top().first &gt;&#x3D; cows[i].first.first) &#123;</span><br><span class="line">            id[cows[i].second] &#x3D; heap.size() + 1;</span><br><span class="line">            heap.push(&#123;cows[i].first.second, heap.size() + 1&#125;);</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            auto stall &#x3D; heap.top();</span><br><span class="line">            heap.pop();</span><br><span class="line">            stall.first &#x3D; cows[i].first.second;</span><br><span class="line">            id[cows[i].second] &#x3D; stall.second;</span><br><span class="line">            heap.push(stall);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    cout &lt;&lt; heap.size() &lt;&lt; endl;</span><br><span class="line">    for (int i &#x3D; 0; i &lt; n; i++) cout &lt;&lt; id[i] &lt;&lt; endl;</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>未完待续</p>
-</blockquote>
-<p><img src="https://ae01.alicdn.com/kf/Hef70c4f4a75e40738e47ea16124d9091W.jpg" alt=""></p>
-]]></content>
-      <categories>
-        <category>算法竞赛进阶指南</category>
-      </categories>
-      <tags>
-        <tag>ACM</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>0x01位运算例题</title>
-    <url>/2020/05/29/0x01%E4%BD%8D%E8%BF%90%E7%AE%97%E4%BE%8B%E9%A2%98/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="0x01位运算例题"><a href="#0x01位运算例题" class="headerlink" title="0x01位运算例题"></a>0x01位运算例题</h1><blockquote>
-<p>点击每道题题目即可获取原题链接</p>
-</blockquote>
-<h2 id="a-b"><a href="#a-b" class="headerlink" title="a^b"></a><a href="https://www.acwing.com/problem/content/91/" target="_blank" rel="noopener">a^b</a></h2><h3 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h3><p><code>long long</code>可以表示的最大值为<code>922 3372 0368 5477 5807</code><br><code>unsigned long long</code>可以表示的最大值为<code>1844 6744 0737 0955 1615</code>  </p>
-<p>由此观之<code>a^b</code>大于<code>ULL</code>类型可以表示的最大值，所以要用快速幂的思想来求解这道题。</p>
-<p><img src="https://ae01.alicdn.com/kf/H4fabba6e8a6644e88cb9ee4fe512f4ecH.jpg" alt=""><br>且取模的性质如下</p>
-<ul>
-<li>(a + b) % p = (a % p + b % p) % p</li>
-<li>(a - b) % p = (a % p - b % p) % p </li>
-<li>(a <em> b) % p = (a % p </em> b % p) % p </li>
-<li>a ^ b % p = ((a % p)^b) % p </li>
-</ul>
-<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;bits&#x2F;stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">int power(int a, int b, int c) &#123;</span><br><span class="line">    int ans &#x3D; 1 % c;</span><br><span class="line">    for (; b; b &gt;&gt;&#x3D; 1) &#123;</span><br><span class="line">        if (b &amp; 1) ans &#x3D; (long long)ans * a % c;</span><br><span class="line">        a &#x3D; (long long)a * a % c;</span><br><span class="line">    &#125;</span><br><span class="line">    return ans;</span><br><span class="line">&#125;</span><br><span class="line">int main() &#123;</span><br><span class="line">    int a, b, p;</span><br><span class="line">    scanf(&quot;%d%d%d&quot;, &amp;a, &amp;b, &amp;p);</span><br><span class="line">    int ans &#x3D; power(a, b, p);</span><br><span class="line">    printf(&quot;%d&quot;, ans);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="复杂度"><a href="#复杂度" class="headerlink" title="复杂度"></a>复杂度</h3><p>我们可以用<code>b&amp;1</code>运算表示<code>b</code>的二进制下的最低位，并用<code>b&gt;&gt;1</code>来舍去最低位。在递归的过程中把<code>&gt;&gt;</code>和<code>&amp;</code>结合，其时间复杂度为<code>O(logb)</code></p>
-<h2 id="64位整数乘法"><a href="#64位整数乘法" class="headerlink" title="64位整数乘法"></a><a href="https://www.acwing.com/problem/content/92/" target="_blank" rel="noopener">64位整数乘法</a></h2><h3 id="代码-1"><a href="#代码-1" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;bits&#x2F;stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">typedef long long LL;</span><br><span class="line">LL power(LL a, LL b, LL c) &#123;</span><br><span class="line">    LL ans &#x3D; 0;</span><br><span class="line">    for (; b; b &gt;&gt;&#x3D; 1) &#123;</span><br><span class="line">        if (b &amp; 1) ans &#x3D; (ans + a) % c;</span><br><span class="line">        a &#x3D; a * 2 % c;</span><br><span class="line">    &#125;</span><br><span class="line">    return ans;</span><br><span class="line">&#125;</span><br><span class="line">int main() &#123;</span><br><span class="line">    LL a, b, p;</span><br><span class="line">    scanf(&quot;%lld%lld%lld&quot;, &amp;a, &amp;b, &amp;p);</span><br><span class="line">    LL ans &#x3D; power(a, b, p);</span><br><span class="line">    printf(&quot;%lld&quot;, ans);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="复杂度-1"><a href="#复杂度-1" class="headerlink" title="复杂度"></a>复杂度</h3><p>我们可以用<code>b&amp;1</code>运算表示<code>b</code>的二进制下的最低位，并用<code>b&gt;&gt;1</code>来舍去最低位。在递归的过程中把<code>&gt;&gt;</code>和<code>&amp;</code>结合，其时间复杂度为<code>O(logb)</code>，与上一题不同的是位数问题，但是每次<code>%p</code>之后都能保证不超过<code>2*10^18</code>，在<code>long long</code>的范围内</p>
-<h2 id="最短Hamilton路径"><a href="#最短Hamilton路径" class="headerlink" title="最短Hamilton路径"></a><a href="https://www.acwing.com/problem/content/93/" target="_blank" rel="noopener">最短Hamilton路径</a></h2><h3 id="分析-1"><a href="#分析-1" class="headerlink" title="分析"></a>分析</h3><p>我们可以采用朴素算法,其时间复杂度为<code>O(n*n!)</code>，<code>n!</code>为枚举<code>n</code>个点的全排列，<code>n</code>代表枚举路径的长度求得结果，这个算法的时间复杂度太高，不符合。而我们可以用二进制状态压缩<code>DP</code>来把时间复杂度优化到<code>O((n^2)*(2^n))</code>,我们用<code>F[i,j]</code>表示点被经过的状态对应二进制数<code>i</code>，且目前处于点<code>j</code>的最短路径   </p>
-<p>在起点时<code>F[1,0]=0</code>，即目前处于点<code>0</code>且只经过了点<code>0</code>的最短路径为<code>0</code>。为方便起见，我们将数组中其他元素设为无穷大，最终目的是求<code>F[(1&lt;&lt;n),n-1]</code>的值，即经过所有点且最终处于<code>n-1</code>的最短路径</p>
-<p>在任意时刻，有公式<code>F[i,j]=min(F[i,j],F[i^(1&lt;&lt;j),k]+weight[k,j])</code>，根据分析可得<code>k</code>一定是倒数第二个经过的点。我们枚举<code>k</code>，当<code>k</code>对应在<code>i</code>的二进制为<code>1</code>时，我们讨论这种情况并比较</p>
-<h3 id="代码-2"><a href="#代码-2" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;bits&#x2F;stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">const int N &#x3D; 20, M &#x3D; 1 &lt;&lt; 20;</span><br><span class="line">int weight[N][N], F[M][N];</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">    int n;</span><br><span class="line">    scanf(&quot;%d&quot;, &amp;n);</span><br><span class="line">    for (int i &#x3D; 0; i &lt; n; i++)</span><br><span class="line">        for (int j &#x3D; 0; j &lt; n; j++)</span><br><span class="line">            scanf(&quot;%d&quot;, &amp;weight[i][j]);</span><br><span class="line"></span><br><span class="line">    memset(F, 0x3f, sizeof F);</span><br><span class="line">    F[1][0] &#x3D; 0;</span><br><span class="line">    for (int i &#x3D; 1; i &lt; 1 &lt;&lt; n; i++)</span><br><span class="line">        for (int j &#x3D; 0; j &lt; n; j++)</span><br><span class="line">            if (i &gt;&gt; j &amp; 1)</span><br><span class="line">                for (int k &#x3D; 0; k &lt; n; k++)</span><br><span class="line">                    if ((i ^ 1 &lt;&lt; j) &gt;&gt; k &amp; 1)</span><br><span class="line">                        F[i][j] &#x3D; min(F[i][j], F[i ^ 1 &lt;&lt; j][k] + weight[k][j]);</span><br><span class="line"></span><br><span class="line">    printf(&quot;%d&quot;, F[(1 &lt;&lt; n) - 1][n - 1]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>还差一题，未完待续</p>
-</blockquote>
-<p><img src="https://ae01.alicdn.com/kf/Hdd96bb61417945ca90a15b8b5b98b5a1g.jpg" alt=""></p>
-]]></content>
-      <categories>
-        <category>算法竞赛进阶指南</category>
-      </categories>
-      <tags>
-        <tag>ACM</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>CODEFORCES 800 1360A.Minimal Square</title>
-    <url>/2020/05/28/CODEFORCES1360A/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="1360A-Minimal-Square"><a href="#1360A-Minimal-Square" class="headerlink" title="1360A.Minimal Square"></a>1360A.Minimal Square</h1><h2 id="原题链接"><a href="#原题链接" class="headerlink" title="原题链接"></a>原题链接</h2><p><a href="http://codeforces.com/problemset/problem/1360/A" target="_blank" rel="noopener">1360A.Minimal Square</a></p>
-<h2 id="题目大意"><a href="#题目大意" class="headerlink" title="题目大意"></a>题目大意</h2><p>第一行输入测试数目</p>
-<p>从第二行开始依次输入每个测试样例的<code>a</code>和<code>b</code></p>
-<p><strong>描述</strong>：<code>a</code>代表长，<code>b</code>代表宽，要求输出一个正方形的最小面积，这个正方形把两个相同的长方形(样例输入构成的长方形)覆盖，且这两个长方形不重合，每个长方形的边与正方形平行</p>
-<h2 id="解题思路"><a href="#解题思路" class="headerlink" title="解题思路"></a>解题思路</h2><p>求出长和宽的最小值乘以<code>2</code>，之后将所得的值与长和宽比较得出的最大值作为目标正方形的边长，再输出面积</p>
-<h2 id="解题代码"><a href="#解题代码" class="headerlink" title="解题代码"></a>解题代码</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;bits&#x2F;stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">int main() &#123;</span><br><span class="line">    int t;</span><br><span class="line">    scanf(&quot;%d&quot;, &amp;t);</span><br><span class="line">    while (t--) &#123;</span><br><span class="line">        int a, b;</span><br><span class="line">        scanf(&quot;%d%d&quot;, &amp;a, &amp;b);</span><br><span class="line">        int temp &#x3D; min(a, b);</span><br><span class="line">        int side &#x3D; 2 * temp;</span><br><span class="line">        int s &#x3D; pow(max(side, max(a, b)), 2);</span><br><span class="line">        printf(&quot;%d\n&quot;, s);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><img src="https://ae01.alicdn.com/kf/He2534bd81da14f7cac54ae321362c2e1p.jpg" alt=""></p>
-]]></content>
-      <categories>
-        <category>CODEFORCES</category>
-      </categories>
-      <tags>
-        <tag>CODEFORCES800</tag>
-        <tag>acm/math</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>CODEFORCES 1100 1360C.Similar Pairs</title>
-    <url>/2020/05/31/CODEFORCES1360C/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="1360C-Similar-Pairs"><a href="#1360C-Similar-Pairs" class="headerlink" title="1360C.Similar Pairs"></a>1360C.Similar Pairs</h1><h2 id="原题链接"><a href="#原题链接" class="headerlink" title="原题链接"></a>原题链接</h2><p><a href="https://codeforces.com/problemset/problem/1360/C" target="_blank" rel="noopener">1360C.Similar Pairs</a></p>
-<h2 id="题目大意"><a href="#题目大意" class="headerlink" title="题目大意"></a>题目大意</h2><p>第一行输入测试数目</p>
-<p>之后每两行为一组测试：  </p>
-<p>第二行输入每组测试的元素个数  </p>
-<p>第三行输入每组的元素  </p>
-<p><strong>描述</strong>：当两个数奇偶相同或者绝对值相差<code>1</code>则称这两个数为<code>1</code>组，每次测试给你偶数个数，问所有元素是否有与它配对的数</p>
-<h2 id="解题思路"><a href="#解题思路" class="headerlink" title="解题思路"></a>解题思路</h2><p>因为一共有偶数个数，所以当奇数元素个数为偶数时，偶数元素个数也一定为偶数，则一定可以两两配对；如果奇数元素个数和偶数元素个数都为奇数时，检查是否存在一个奇数和一个偶数相减的绝对值为<code>1</code>的情况，如果存在这种情况，则一定可以两两配对，如果不存在，则不能两两配对</p>
-<h2 id="解题代码"><a href="#解题代码" class="headerlink" title="解题代码"></a>解题代码</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;bits&#x2F;stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">int nums[55];</span><br><span class="line">int main() &#123;</span><br><span class="line">    int t;</span><br><span class="line">    scanf(&quot;%d&quot;, &amp;t);</span><br><span class="line">    while (t--) &#123;</span><br><span class="line">        memset(nums, 0, sizeof nums);</span><br><span class="line">        int n;</span><br><span class="line">        scanf(&quot;%d&quot;, &amp;n);</span><br><span class="line">        int sum &#x3D; 0;</span><br><span class="line">        for (int i &#x3D; 0; i &lt; n; i++) &#123;</span><br><span class="line">            scanf(&quot;%d&quot;, &amp;nums[i]);</span><br><span class="line">            if (nums[i] % 2)</span><br><span class="line">                sum++;</span><br><span class="line">        &#125;</span><br><span class="line">        if (sum % 2 &#x3D;&#x3D; 0) printf(&quot;YES\n&quot;);</span><br><span class="line">        else &#123;</span><br><span class="line">            sort(nums, nums+n);</span><br><span class="line">            int flag &#x3D; 0;</span><br><span class="line">            for (int i &#x3D; 1; i &lt; n; i++) &#123;</span><br><span class="line">                if (abs(nums[i] - nums[i - 1] &#x3D;&#x3D; 1)) &#123;</span><br><span class="line">                    printf(&quot;YES\n&quot;);</span><br><span class="line">                    flag &#x3D; 1;</span><br><span class="line">                    break;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            if (flag &#x3D;&#x3D; 0)</span><br><span class="line">                printf(&quot;NO\n&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><img src="https://s1.ax1x.com/2020/05/31/t1moIH.jpg" alt=""></p>
-]]></content>
-      <categories>
-        <category>CODEFORCES</category>
-      </categories>
-      <tags>
-        <tag>CODEFORCES1100</tag>
-        <tag>acm/greedy</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>API之stringstream用法</title>
-    <url>/2020/05/30/API%E4%B9%8Bstringstream%E7%94%A8%E6%B3%95/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="API之stringstream用法"><a href="#API之stringstream用法" class="headerlink" title="API之stringstream用法"></a>API之stringstream用法</h1><p>本文主要介绍 C++ 中 stringstream 类的常见用法。</p>
-<h2 id="1-概述"><a href="#1-概述" class="headerlink" title="1.概述"></a>1.概述</h2><p><code>&lt;sstream&gt;</code>定义了三个类：<code>istringstream</code>、<code>ostringstream</code>和<code>stringstream</code>，分别用来进行流的输入、输出和输入输出操作。本文以<code>stringstream</code>为主，介绍流的输入和输出操作</p>
-<p><code>&lt;sstream&gt;</code>主要用来进行数据类型转换，由于<code>&lt;sstream&gt;</code>使用<code>string</code>对象来代替字符数组（<code>snprintf</code>方式），就避免缓冲区溢出的危险；而且，因为传入参数和目标对象的类型会被自动推导出来，所以不存在错误的格式化符的问题。简单说，相比c库的数据类型转换而言，<code>&lt;sstream&gt;</code>更加安全、自动和直接</p>
-<h2 id="2-代码示例"><a href="#2-代码示例" class="headerlink" title="2.代码示例"></a>2.代码示例</h2><h3 id="2-1数据类型转换"><a href="#2-1数据类型转换" class="headerlink" title="2.1数据类型转换"></a>2.1数据类型转换</h3><p>这里展示一个代码示例，该示例介绍了将<code>int</code>类型转换为<code>string</code>类型的过程。示例代码（<code>stringstream_test1.cpp</code>）如下：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line">#include &lt;iostream&gt;</span><br><span class="line">#include &lt;sstream&gt;</span><br><span class="line">#include &lt;string&gt;</span><br><span class="line"></span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">    stringstream sstream;</span><br><span class="line">    string strResult;</span><br><span class="line">    int nValue &#x3D; 1000;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 将int类型的值放入输入流中</span><br><span class="line">    sstream &lt;&lt; nValue;</span><br><span class="line">    &#x2F;&#x2F; 从sstream中抽取前面插入的int类型的值，赋给string类型</span><br><span class="line">    sstream &gt;&gt; strResult;</span><br><span class="line"></span><br><span class="line">    cout &lt;&lt; &quot;[cout]strResult is: &quot; &lt;&lt; strResult &lt;&lt; endl;</span><br><span class="line">    printf(&quot;[printf]strResult is: %s\n&quot;, strResult.c_str());</span><br><span class="line"></span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>结果如下：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[cout]strResult is: 1000   </span><br><span class="line">[printf]strResult is: 1000</span><br></pre></td></tr></table></figure></p>
-<h3 id="2-2多个字符串拼接"><a href="#2-2多个字符串拼接" class="headerlink" title="2.2多个字符串拼接"></a>2.2多个字符串拼接</h3><p>本示例介绍在<code>stringstream</code>中存放多个字符串，实现多个字符串拼接的目的（其实完全可以使用 <code>string</code>类实现），同时，介绍<code>stringstream</code>的清空方法。示例代码（<code>stringstream_test2.cpp</code>）如下：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;iostream&gt;</span><br><span class="line">#include &lt;sstream&gt;</span><br><span class="line">#include &lt;string&gt;</span><br><span class="line"></span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">    stringstream sstream;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 将多个字符串放入 sstream 中</span><br><span class="line">    sstream &lt;&lt; &quot;first&quot;</span><br><span class="line">            &lt;&lt; &quot; &quot;</span><br><span class="line">            &lt;&lt; &quot;string,&quot;;</span><br><span class="line">    sstream &lt;&lt; &quot; second string&quot;;</span><br><span class="line">    cout &lt;&lt; &quot;strResult is: &quot; &lt;&lt; sstream.str() &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 清空 sstream</span><br><span class="line">    sstream.str(&quot;&quot;);</span><br><span class="line">    sstream &lt;&lt; &quot;third string&quot;;</span><br><span class="line">    cout &lt;&lt; &quot;After clear, strResult is: &quot; &lt;&lt; sstream.str() &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>结果如下：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">strResult is: first string, second string</span><br><span class="line">After clear, strResult is: third string</span><br></pre></td></tr></table></figure></p>
-<p>从上述代码执行结果能够知道：</p>
-<ul>
-<li>可以使用<code>str()</code>方法，将<code>stringstream</code>类型转换为<code>string</code>类型</li>
-<li>可以将多个字符串放入<code>stringstream</code>中，实现字符串的拼接目的</li>
-<li>如果想清空<code>stringstream</code>，必须使用<code>sstream.str(&quot;&quot;)</code>; 方式:<code>clear()</code>方法适用于进行多次数据类型转换的场景。详见示例<code>2.3</code></li>
-</ul>
-<h3 id="2-3stringstream的清空"><a href="#2-3stringstream的清空" class="headerlink" title="2.3stringstream的清空"></a>2.3stringstream的清空</h3><p>清空<code>stringstream</code>有两种方法：<code>clear()</code>方法以及<code>str(&quot;&quot;)</code>方法，这两种方法有不同的使用场景。<code>str(&quot;&quot;)</code>方法的使用场景，在上面的示例中已经介绍了，这里介绍<code>clear()</code>方法的使用场景。示例代码（<code>stringstream_test3.cpp</code>）如下：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;iostream&gt;</span><br><span class="line">#include &lt;sstream&gt;</span><br><span class="line"></span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">    stringstream sstream;</span><br><span class="line">    int first, second;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 插入字符串</span><br><span class="line">    sstream &lt;&lt; &quot;456&quot;;</span><br><span class="line">    &#x2F;&#x2F; 转换为int类型</span><br><span class="line">    sstream &gt;&gt; first;</span><br><span class="line">    cout &lt;&lt; first &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 在进行多次类型转换前，必须先运行clear()</span><br><span class="line">    sstream.clear();</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 插入bool值</span><br><span class="line">    sstream &lt;&lt; true;</span><br><span class="line">    &#x2F;&#x2F; 转换为int类型</span><br><span class="line">    sstream &gt;&gt; second;</span><br><span class="line">    cout &lt;&lt; second &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>结果如下：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">456</span><br><span class="line">1</span><br></pre></td></tr></table></figure></p>
-<p>注意：在本示例涉及的场景下（多次数据类型转换），必须使用<code>clear()</code>方法清空<code>stringstream</code>，不使用<code>clear()</code>方法或使用<code>str(&quot;&quot;)</code>方法，都不能得到数据类型转换的正确结果。下图分别是未使用<code>clear()</code>方法、使用<code>str(&quot;&quot;)</code>方法时的运行结果：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">456</span><br><span class="line">4197008</span><br><span class="line"></span><br><span class="line">456</span><br><span class="line">0</span><br></pre></td></tr></table></figure>
-<h3 id="2-4测试"><a href="#2-4测试" class="headerlink" title="2.4测试"></a>2.4测试</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;iostream&gt;</span><br><span class="line">#include &lt;sstream&gt;</span><br><span class="line">#include &lt;string&gt;</span><br><span class="line"></span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">    stringstream sstream;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 将多个字符串放入 sstream 中</span><br><span class="line">    sstream &lt;&lt; &quot;firstiiii&quot;</span><br><span class="line">            &lt;&lt; &quot; &quot;</span><br><span class="line">            &lt;&lt; &quot;string,&quot;;</span><br><span class="line">    sstream &lt;&lt; &quot; second string&quot;;</span><br><span class="line">    string a, b;</span><br><span class="line">    sstream &gt;&gt; a;</span><br><span class="line">    cout &lt;&lt; &quot;strResult is: &quot; &lt;&lt; a &lt;&lt; endl;</span><br><span class="line">    sstream &gt;&gt; a;</span><br><span class="line">    cout &lt;&lt; &quot;strResult is: &quot; &lt;&lt; a &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; sstream.str();</span><br><span class="line"></span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>结果如下：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">strResult is: firstiiii</span><br><span class="line">strResult is: string,</span><br><span class="line">firstiiii string, second string</span><br></pre></td></tr></table></figure><br>由此可知，我们可以用它来分割字符串中的单词</p>
-<h2 id="3-例题"><a href="#3-例题" class="headerlink" title="3.例题"></a>3.例题</h2><p><a href="https://leetcode-cn.com/problems/check-if-a-word-occurs-as-a-prefix-of-any-word-in-a-sentence/" target="_blank" rel="noopener">LEETCODE1455. 检查单词是否为句中其他单词的前缀</a></p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">   public:</span><br><span class="line">    int isPrefixOfWord(string sentence, string searchWord) &#123;</span><br><span class="line">        stringstream ssin(sentence);</span><br><span class="line"></span><br><span class="line">        string word;</span><br><span class="line">        for (int i &#x3D; 1; ssin &gt;&gt; word; i++)</span><br><span class="line">            if (word.substr(0, searchWord.size()) &#x3D;&#x3D; searchWord)</span><br><span class="line">                return i;</span><br><span class="line">        return -1;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p><img src="https://ae01.alicdn.com/kf/H0b4d4cb9ed5441f7b122f043b18076c9H.jpg" alt=""></p>
-]]></content>
-      <categories>
-        <category>C/C++常用API</category>
-      </categories>
-      <tags>
-        <tag>C/C++常用API</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>API之lowerer_bound/upper_bound用法</title>
     <url>/2020/06/02/API%E4%B9%8Blowerer-bound-upper-bound%E7%94%A8%E6%B3%95/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="API之lowerer-bound-upper-bound用法"><a href="#API之lowerer-bound-upper-bound用法" class="headerlink" title="API之lowerer_bound/upper_bound用法"></a>API之lowerer_bound/upper_bound用法</h1><h2 id="lower-bound"><a href="#lower-bound" class="headerlink" title="lower_bound()"></a>lower_bound()</h2><p><code>lower_bound(beg, end, val, comp)</code>  </p>
@@ -346,64 +272,37 @@
       </tags>
   </entry>
   <entry>
-    <title>计算机网络基础总结(1)</title>
-    <url>/2020/06/02/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80%E6%80%BB%E7%BB%93-1/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="计算机网络基础总结-1"><a href="#计算机网络基础总结-1" class="headerlink" title="计算机网络基础总结(1)"></a>计算机网络基础总结(1)</h1><ol>
-<li>局域网：覆盖范围小、自己花钱买设备、带宽固定、自己维护、100米、10M 100M 1000M<br>广域网：距离远、花钱租带宽<br>Internet：由ISP组成、有自己的机房、对网民提供访问Internet连接</li>
-<li>ISP：Internet服务提供商（Internet service provide）</li>
-<li>DNS：把网站域名解析成IP地址</li>
-<li>子网掩码：告诉计算机哪里是网络部分，哪里是主机部分</li>
-<li>路由器的作用是在不同网段转发数据</li>
-<li>计算机的网卡有mac地址（物理地址），全球唯一，mac地址在计算机出场时已经被固定在网卡中：48位二进制（12位十六进制）</li>
-<li><p>计算机访问过程：  </p>
-<p>先把要访问的域名发送给DNS服务器，DNS服务器把域名解析成IP地址返回  </p>
-<p>数据包由数据、原IP地址、目标IP地址组成  </p>
-<p>数据帧由数据、原IP地址、目标IP地址、此时的mac地址、下一个目的地的mac地址组成  </p>
-<p>计算机发送数据帧后，数据帧在运输的过程中两个mac地址不断变化，因此不断重新封装，但是数据包没变   </p>
-<p>数据帧在运输过程中不断经过路由器，路由器看数据包中的IP地址，决定下一步走哪个mac地址</p>
-<p>目标服务器收到请求后，往计算机回传数据，会把数据切割成小块，并给每一块编号，然后取一部分放到目标服务器的缓存当中，再然后在缓存中取出一块，加上此服务器IP地址、目标计算机IP地址、此时的mac地址、下一个目的地的mac开始发送，发送后，此数据块不会被缓存区删除，因为发送的过程中可能会丢失，当目标计算机收到此数据块放到计算机中的缓存区后，发送请求接受下一个数据块的消息到此服务器时，此数据块才会在缓存区被删除  </p>
-<p>当计算机的缓存满了时，会读取，然后再存缓存 </p>
-<p>第一张图说明：<br> <img src="https://ae01.alicdn.com/kf/Hdb3d351ef0844379b41ec593f99d16506.jpg" alt="">  </p>
-<p> 第二张图说明：<br> <img src="https://ae01.alicdn.com/kf/Hdb637a9eee4a485f886ec3430de942ddU.jpg" alt=""></p>
-</li>
-<li><p>OSI参考模型（国际标准把计算机通信进行的定义）</p>
-<ol>
-<li>应用层：所有能产生网络流量的程序</li>
-<li>表示层：在传输之前是否进行加密或压缩处理、传的是二进制还是ASCII码</li>
-<li>会话层：电脑和某服务器建立起的联系，比如电影前进后退进、查木马都是会话层的体现 netstat -n 命令可在终端查看此电脑建立的会话  </li>
-<li>传输层：可靠传输（比如某服务器传输数据到计算机、把数据分块传输，如果发送了某一块之后没收到请求下一块的信息，就会接着发送这个数据块，防止数据块丢失）、流量控制（比如服务器发送数据太快了，则计算机发消息告诉服务器调整发送速度）、不可靠传输（比如DNS解析域名，一个数据包就能说明问题与得到答案，不需要建立会话）</li>
-<li>网络层：负责选择最佳路径、规划IP地址</li>
-<li>数据链路层：帧的开始和结束、透明传输（将数据中与开头或结尾表示相同的部分进行转义）、差错校验（检错错误，数据中多加一部分数据进行校验，但不纠错，只检查，错误的就扔掉，纠错是在传输层进行）  </li>
-<li>物理层：接口标准、电器标准、如何在物理链路上传输更快的速度</li>
-</ol>
-</li>
-<li><p>每一层都是一个较为独立的模块，每一个模块变化都不会影响其他的模块；但每一层都有关系：物理层-&gt;数据链路层-&gt;网络层-&gt;传输层-&gt;会话层-&gt;表示层-&gt;应用层-&gt;人（-&gt;代表xx为xx提供服务） </p>
-</li>
-<li><p>网络出现故障，应该从最底层物理层往上一层一层进行检查  </p>
-<ol>
-<li>物理层故障：查看连接状态、查看发送和接收的数据包</li>
-<li>数据链路层故障：mac地址冲突、ADSL欠费、网速没办法协商一致、计算机连接到错误的VLAN(虚拟局域网)</li>
-<li>网络层故障：配置了错误的IP地址、子网掩码、配置错误的网关、路由器没有配置到达目标网络的路由、数据有没有通过各个网关到达指定位置  </li>
-<li>应用层故障：应用程序配置错误</li>
-</ol>
-</li>
-<li><p>打开终端输入命令ping一个网址，若数据有来有回，则证明网通了</p>
-</li>
-<li>OSI参考模型和网络安全<ol>
-<li>物理层安全</li>
-<li>数据链路层安全：ADSL账号密码、VLAN、交换机端口绑定mac地址</li>
-<li>网络层安全：在路由器上时使用ACL控制数据包流量、防火墙</li>
-<li>应用层安全：开发的应用程序没漏洞</li>
-</ol>
-</li>
-</ol>
-<p><img src="https://ae01.alicdn.com/kf/H66237f88bb294f1db97200f8cd552ddbd.jpg" alt=""></p>
+    <title>API之stringstream用法</title>
+    <url>/2020/05/30/API%E4%B9%8Bstringstream%E7%94%A8%E6%B3%95/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="API之stringstream用法"><a href="#API之stringstream用法" class="headerlink" title="API之stringstream用法"></a>API之stringstream用法</h1><p>本文主要介绍 C++ 中 stringstream 类的常见用法。</p>
+<h2 id="1-概述"><a href="#1-概述" class="headerlink" title="1.概述"></a>1.概述</h2><p><code>&lt;sstream&gt;</code>定义了三个类：<code>istringstream</code>、<code>ostringstream</code>和<code>stringstream</code>，分别用来进行流的输入、输出和输入输出操作。本文以<code>stringstream</code>为主，介绍流的输入和输出操作</p>
+<p><code>&lt;sstream&gt;</code>主要用来进行数据类型转换，由于<code>&lt;sstream&gt;</code>使用<code>string</code>对象来代替字符数组（<code>snprintf</code>方式），就避免缓冲区溢出的危险；而且，因为传入参数和目标对象的类型会被自动推导出来，所以不存在错误的格式化符的问题。简单说，相比c库的数据类型转换而言，<code>&lt;sstream&gt;</code>更加安全、自动和直接</p>
+<h2 id="2-代码示例"><a href="#2-代码示例" class="headerlink" title="2.代码示例"></a>2.代码示例</h2><h3 id="2-1数据类型转换"><a href="#2-1数据类型转换" class="headerlink" title="2.1数据类型转换"></a>2.1数据类型转换</h3><p>这里展示一个代码示例，该示例介绍了将<code>int</code>类型转换为<code>string</code>类型的过程。示例代码（<code>stringstream_test1.cpp</code>）如下：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line">#include &lt;iostream&gt;</span><br><span class="line">#include &lt;sstream&gt;</span><br><span class="line">#include &lt;string&gt;</span><br><span class="line"></span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">    stringstream sstream;</span><br><span class="line">    string strResult;</span><br><span class="line">    int nValue &#x3D; 1000;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 将int类型的值放入输入流中</span><br><span class="line">    sstream &lt;&lt; nValue;</span><br><span class="line">    &#x2F;&#x2F; 从sstream中抽取前面插入的int类型的值，赋给string类型</span><br><span class="line">    sstream &gt;&gt; strResult;</span><br><span class="line"></span><br><span class="line">    cout &lt;&lt; &quot;[cout]strResult is: &quot; &lt;&lt; strResult &lt;&lt; endl;</span><br><span class="line">    printf(&quot;[printf]strResult is: %s\n&quot;, strResult.c_str());</span><br><span class="line"></span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>结果如下：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[cout]strResult is: 1000   </span><br><span class="line">[printf]strResult is: 1000</span><br></pre></td></tr></table></figure></p>
+<h3 id="2-2多个字符串拼接"><a href="#2-2多个字符串拼接" class="headerlink" title="2.2多个字符串拼接"></a>2.2多个字符串拼接</h3><p>本示例介绍在<code>stringstream</code>中存放多个字符串，实现多个字符串拼接的目的（其实完全可以使用 <code>string</code>类实现），同时，介绍<code>stringstream</code>的清空方法。示例代码（<code>stringstream_test2.cpp</code>）如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;iostream&gt;</span><br><span class="line">#include &lt;sstream&gt;</span><br><span class="line">#include &lt;string&gt;</span><br><span class="line"></span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">    stringstream sstream;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 将多个字符串放入 sstream 中</span><br><span class="line">    sstream &lt;&lt; &quot;first&quot;</span><br><span class="line">            &lt;&lt; &quot; &quot;</span><br><span class="line">            &lt;&lt; &quot;string,&quot;;</span><br><span class="line">    sstream &lt;&lt; &quot; second string&quot;;</span><br><span class="line">    cout &lt;&lt; &quot;strResult is: &quot; &lt;&lt; sstream.str() &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 清空 sstream</span><br><span class="line">    sstream.str(&quot;&quot;);</span><br><span class="line">    sstream &lt;&lt; &quot;third string&quot;;</span><br><span class="line">    cout &lt;&lt; &quot;After clear, strResult is: &quot; &lt;&lt; sstream.str() &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>结果如下：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">strResult is: first string, second string</span><br><span class="line">After clear, strResult is: third string</span><br></pre></td></tr></table></figure></p>
+<p>从上述代码执行结果能够知道：</p>
+<ul>
+<li>可以使用<code>str()</code>方法，将<code>stringstream</code>类型转换为<code>string</code>类型</li>
+<li>可以将多个字符串放入<code>stringstream</code>中，实现字符串的拼接目的</li>
+<li>如果想清空<code>stringstream</code>，必须使用<code>sstream.str(&quot;&quot;)</code>; 方式:<code>clear()</code>方法适用于进行多次数据类型转换的场景。详见示例<code>2.3</code></li>
+</ul>
+<h3 id="2-3stringstream的清空"><a href="#2-3stringstream的清空" class="headerlink" title="2.3stringstream的清空"></a>2.3stringstream的清空</h3><p>清空<code>stringstream</code>有两种方法：<code>clear()</code>方法以及<code>str(&quot;&quot;)</code>方法，这两种方法有不同的使用场景。<code>str(&quot;&quot;)</code>方法的使用场景，在上面的示例中已经介绍了，这里介绍<code>clear()</code>方法的使用场景。示例代码（<code>stringstream_test3.cpp</code>）如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;iostream&gt;</span><br><span class="line">#include &lt;sstream&gt;</span><br><span class="line"></span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">    stringstream sstream;</span><br><span class="line">    int first, second;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 插入字符串</span><br><span class="line">    sstream &lt;&lt; &quot;456&quot;;</span><br><span class="line">    &#x2F;&#x2F; 转换为int类型</span><br><span class="line">    sstream &gt;&gt; first;</span><br><span class="line">    cout &lt;&lt; first &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 在进行多次类型转换前，必须先运行clear()</span><br><span class="line">    sstream.clear();</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 插入bool值</span><br><span class="line">    sstream &lt;&lt; true;</span><br><span class="line">    &#x2F;&#x2F; 转换为int类型</span><br><span class="line">    sstream &gt;&gt; second;</span><br><span class="line">    cout &lt;&lt; second &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>结果如下：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">456</span><br><span class="line">1</span><br></pre></td></tr></table></figure></p>
+<p>注意：在本示例涉及的场景下（多次数据类型转换），必须使用<code>clear()</code>方法清空<code>stringstream</code>，不使用<code>clear()</code>方法或使用<code>str(&quot;&quot;)</code>方法，都不能得到数据类型转换的正确结果。下图分别是未使用<code>clear()</code>方法、使用<code>str(&quot;&quot;)</code>方法时的运行结果：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">456</span><br><span class="line">4197008</span><br><span class="line"></span><br><span class="line">456</span><br><span class="line">0</span><br></pre></td></tr></table></figure>
+<h3 id="2-4测试"><a href="#2-4测试" class="headerlink" title="2.4测试"></a>2.4测试</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;iostream&gt;</span><br><span class="line">#include &lt;sstream&gt;</span><br><span class="line">#include &lt;string&gt;</span><br><span class="line"></span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">    stringstream sstream;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 将多个字符串放入 sstream 中</span><br><span class="line">    sstream &lt;&lt; &quot;firstiiii&quot;</span><br><span class="line">            &lt;&lt; &quot; &quot;</span><br><span class="line">            &lt;&lt; &quot;string,&quot;;</span><br><span class="line">    sstream &lt;&lt; &quot; second string&quot;;</span><br><span class="line">    string a, b;</span><br><span class="line">    sstream &gt;&gt; a;</span><br><span class="line">    cout &lt;&lt; &quot;strResult is: &quot; &lt;&lt; a &lt;&lt; endl;</span><br><span class="line">    sstream &gt;&gt; a;</span><br><span class="line">    cout &lt;&lt; &quot;strResult is: &quot; &lt;&lt; a &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; sstream.str();</span><br><span class="line"></span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>结果如下：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">strResult is: firstiiii</span><br><span class="line">strResult is: string,</span><br><span class="line">firstiiii string, second string</span><br></pre></td></tr></table></figure><br>由此可知，我们可以用它来分割字符串中的单词</p>
+<h2 id="3-例题"><a href="#3-例题" class="headerlink" title="3.例题"></a>3.例题</h2><p><a href="https://leetcode-cn.com/problems/check-if-a-word-occurs-as-a-prefix-of-any-word-in-a-sentence/" target="_blank" rel="noopener">LEETCODE1455. 检查单词是否为句中其他单词的前缀</a></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">   public:</span><br><span class="line">    int isPrefixOfWord(string sentence, string searchWord) &#123;</span><br><span class="line">        stringstream ssin(sentence);</span><br><span class="line"></span><br><span class="line">        string word;</span><br><span class="line">        for (int i &#x3D; 1; ssin &gt;&gt; word; i++)</span><br><span class="line">            if (word.substr(0, searchWord.size()) &#x3D;&#x3D; searchWord)</span><br><span class="line">                return i;</span><br><span class="line">        return -1;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p><img src="https://ae01.alicdn.com/kf/H0b4d4cb9ed5441f7b122f043b18076c9H.jpg" alt=""></p>
 ]]></content>
       <categories>
-        <category>计算机网络基础</category>
+        <category>C/C++常用API</category>
       </categories>
       <tags>
-        <tag>计算机网络基础——韩立刚视频总结</tag>
+        <tag>C/C++常用API</tag>
       </tags>
   </entry>
   <entry>
@@ -423,6 +322,106 @@
       <tags>
         <tag>CODEFORCES800</tag>
         <tag>acm/greedy</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>CODEFORCES 1100 1360C.Similar Pairs</title>
+    <url>/2020/05/31/CODEFORCES1360C/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="1360C-Similar-Pairs"><a href="#1360C-Similar-Pairs" class="headerlink" title="1360C.Similar Pairs"></a>1360C.Similar Pairs</h1><h2 id="原题链接"><a href="#原题链接" class="headerlink" title="原题链接"></a>原题链接</h2><p><a href="https://codeforces.com/problemset/problem/1360/C" target="_blank" rel="noopener">1360C.Similar Pairs</a></p>
+<h2 id="题目大意"><a href="#题目大意" class="headerlink" title="题目大意"></a>题目大意</h2><p>第一行输入测试数目</p>
+<p>之后每两行为一组测试：  </p>
+<p>第二行输入每组测试的元素个数  </p>
+<p>第三行输入每组的元素  </p>
+<p><strong>描述</strong>：当两个数奇偶相同或者绝对值相差<code>1</code>则称这两个数为<code>1</code>组，每次测试给你偶数个数，问所有元素是否有与它配对的数</p>
+<h2 id="解题思路"><a href="#解题思路" class="headerlink" title="解题思路"></a>解题思路</h2><p>因为一共有偶数个数，所以当奇数元素个数为偶数时，偶数元素个数也一定为偶数，则一定可以两两配对；如果奇数元素个数和偶数元素个数都为奇数时，检查是否存在一个奇数和一个偶数相减的绝对值为<code>1</code>的情况，如果存在这种情况，则一定可以两两配对，如果不存在，则不能两两配对</p>
+<h2 id="解题代码"><a href="#解题代码" class="headerlink" title="解题代码"></a>解题代码</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;bits&#x2F;stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">int nums[55];</span><br><span class="line">int main() &#123;</span><br><span class="line">    int t;</span><br><span class="line">    scanf(&quot;%d&quot;, &amp;t);</span><br><span class="line">    while (t--) &#123;</span><br><span class="line">        memset(nums, 0, sizeof nums);</span><br><span class="line">        int n;</span><br><span class="line">        scanf(&quot;%d&quot;, &amp;n);</span><br><span class="line">        int sum &#x3D; 0;</span><br><span class="line">        for (int i &#x3D; 0; i &lt; n; i++) &#123;</span><br><span class="line">            scanf(&quot;%d&quot;, &amp;nums[i]);</span><br><span class="line">            if (nums[i] % 2)</span><br><span class="line">                sum++;</span><br><span class="line">        &#125;</span><br><span class="line">        if (sum % 2 &#x3D;&#x3D; 0) printf(&quot;YES\n&quot;);</span><br><span class="line">        else &#123;</span><br><span class="line">            sort(nums, nums+n);</span><br><span class="line">            int flag &#x3D; 0;</span><br><span class="line">            for (int i &#x3D; 1; i &lt; n; i++) &#123;</span><br><span class="line">                if (abs(nums[i] - nums[i - 1] &#x3D;&#x3D; 1)) &#123;</span><br><span class="line">                    printf(&quot;YES\n&quot;);</span><br><span class="line">                    flag &#x3D; 1;</span><br><span class="line">                    break;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            if (flag &#x3D;&#x3D; 0)</span><br><span class="line">                printf(&quot;NO\n&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://s1.ax1x.com/2020/05/31/t1moIH.jpg" alt=""></p>
+]]></content>
+      <categories>
+        <category>CODEFORCES</category>
+      </categories>
+      <tags>
+        <tag>acm/greedy</tag>
+        <tag>CODEFORCES1100</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>CODEFORCES 800 1360A.Minimal Square</title>
+    <url>/2020/05/28/CODEFORCES1360A/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="1360A-Minimal-Square"><a href="#1360A-Minimal-Square" class="headerlink" title="1360A.Minimal Square"></a>1360A.Minimal Square</h1><h2 id="原题链接"><a href="#原题链接" class="headerlink" title="原题链接"></a>原题链接</h2><p><a href="http://codeforces.com/problemset/problem/1360/A" target="_blank" rel="noopener">1360A.Minimal Square</a></p>
+<h2 id="题目大意"><a href="#题目大意" class="headerlink" title="题目大意"></a>题目大意</h2><p>第一行输入测试数目</p>
+<p>从第二行开始依次输入每个测试样例的<code>a</code>和<code>b</code></p>
+<p><strong>描述</strong>：<code>a</code>代表长，<code>b</code>代表宽，要求输出一个正方形的最小面积，这个正方形把两个相同的长方形(样例输入构成的长方形)覆盖，且这两个长方形不重合，每个长方形的边与正方形平行</p>
+<h2 id="解题思路"><a href="#解题思路" class="headerlink" title="解题思路"></a>解题思路</h2><p>求出长和宽的最小值乘以<code>2</code>，之后将所得的值与长和宽比较得出的最大值作为目标正方形的边长，再输出面积</p>
+<h2 id="解题代码"><a href="#解题代码" class="headerlink" title="解题代码"></a>解题代码</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;bits&#x2F;stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">int main() &#123;</span><br><span class="line">    int t;</span><br><span class="line">    scanf(&quot;%d&quot;, &amp;t);</span><br><span class="line">    while (t--) &#123;</span><br><span class="line">        int a, b;</span><br><span class="line">        scanf(&quot;%d%d&quot;, &amp;a, &amp;b);</span><br><span class="line">        int temp &#x3D; min(a, b);</span><br><span class="line">        int side &#x3D; 2 * temp;</span><br><span class="line">        int s &#x3D; pow(max(side, max(a, b)), 2);</span><br><span class="line">        printf(&quot;%d\n&quot;, s);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://ae01.alicdn.com/kf/He2534bd81da14f7cac54ae321362c2e1p.jpg" alt=""></p>
+]]></content>
+      <categories>
+        <category>CODEFORCES</category>
+      </categories>
+      <tags>
+        <tag>CODEFORCES800</tag>
+        <tag>acm/math</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>CODEFORCES 1300 1360D.Buying Shovels</title>
+    <url>/2020/05/31/CODEFORCES1360D/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="1360D-Buying-Shovels"><a href="#1360D-Buying-Shovels" class="headerlink" title="1360D.Buying Shovels"></a>1360D.Buying Shovels</h1><h2 id="原题链接"><a href="#原题链接" class="headerlink" title="原题链接"></a>原题链接</h2><p><a href="https://codeforces.com/problemset/problem/1360/D" target="_blank" rel="noopener">1360D.Buying Shovels</a></p>
+<h2 id="题目大意"><a href="#题目大意" class="headerlink" title="题目大意"></a>题目大意</h2><p>第一行输入测试数目</p>
+<p>之后每一行为一组测试：  </p>
+<p>每组测试输入两个数：<code>n</code>和<code>k</code></p>
+<p><strong>描述</strong>：有<code>k</code>种包裹，第<code>i</code>个包裹里有<code>i</code>个铲子，只能选择一种包裹，可选这个包裹无限次，要求选择的包裹数最少，并且铲子和等于<code>n</code></p>
+<h2 id="解题思路"><a href="#解题思路" class="headerlink" title="解题思路"></a>解题思路</h2><p>根据数据范围可以看出是求质数问题，求<code>n</code>中的质数，要求此质数在<code>k</code>的范围内，<code>n/此质数</code>最小，意思就是选最大的可以除尽的包裹，得到的就是选择包裹数最少</p>
+<h2 id="解题代码"><a href="#解题代码" class="headerlink" title="解题代码"></a>解题代码</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;bits&#x2F;stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">    int t;</span><br><span class="line">    scanf(&quot;%d&quot;, &amp;t);</span><br><span class="line">    while (t--) &#123;</span><br><span class="line">        int n, k;</span><br><span class="line">        scanf(&quot;%d%d&quot;, &amp;n, &amp;k);</span><br><span class="line">        int ans &#x3D; n;</span><br><span class="line">        for (int i &#x3D; 1; i * i &lt;&#x3D; n; i++) &#123;</span><br><span class="line">            if (n % i &#x3D;&#x3D; 0) &#123;</span><br><span class="line">                if (i &lt;&#x3D; k)</span><br><span class="line">                    ans &#x3D; min(ans, n &#x2F; i);</span><br><span class="line">                if (n &#x2F; i &lt;&#x3D; k)</span><br><span class="line">                    ans &#x3D; min(ans, i);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        cout &lt;&lt; ans &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://s1.ax1x.com/2020/05/31/t1moIH.jpg" alt=""></p>
+]]></content>
+      <categories>
+        <category>CODEFORCES</category>
+      </categories>
+      <tags>
+        <tag>acm/math</tag>
+        <tag>CODEFORCES1300</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>HEXO+BUTTERFLY搭建骚气且实用的个人网站</title>
+    <url>/2020/05/27/HEXO-BUTTERFLY%E6%90%AD%E5%BB%BA%E9%AA%9A%E6%B0%94%E4%B8%94%E5%AE%9E%E7%94%A8%E7%9A%84%E4%B8%AA%E4%BA%BA%E7%BD%91%E7%AB%99/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>YOU CAN DRINK ALL YOU LIKE, BUT IN THE MORNING YOU GET HEADACHE WITH THE SAME PROBLEMS.</p>
+</blockquote>
+<hr>
+<h2 id="引子"><a href="#引子" class="headerlink" title="引子"></a>引子</h2><p>最近狂刷<code>codeforces</code>，但是逐渐发现自身一个问题，那就是刷过的题虽然在当天感觉很明白，但是隔一天，隔两天，就发现自己再遇到此题时又是一翻鏖战，这就是说明自己做过的题吸收的效率不够高，于是我就打算做一道题总结一道题。那么问题来了，在哪里总结呢？</p>
+<p>首先排除的是微信公众号，众所周知，微信公众号只能是自己分享东西的平台，而在这上面总结知识点就会引出很多问题，其一，每篇文章都要排版，其二，我的粉丝未必合此文章的胃口，其三，每天只能发布一篇文章，大大限制了自己的总结内容与时间分配。</p>
+<p>那么诸如<code>csdn</code>、博客园、掘金、知乎这种东西呢？也有很多不方便的地方，比如文章左右侧的广告，实在影响人的心情，此外还有审核等等的制约，思前想后，我决定自己开辟一个个人网站。</p>
+<p>当然不能从无到有手动开辟，自己能力有限，而且我的目的也是总结，总不能让自己以后把大把的时间浪费到维护网站上面去。于是我听从了大佬的建议，采用<code>hexo+github</code>的方式，<code>hexo</code>开辟网站，托管到<code>github</code>上面去。</p>
+<p>花里胡哨的页面也是最吸引我的原因之一，我采用了<code>butterfly</code>的主题，绝对美炸天！</p>
+<h2 id="过程"><a href="#过程" class="headerlink" title="过程"></a>过程</h2><p>过程当然是心酸+心酸+心酸，心态险些被搞没。至于搭建网站的教程，实话实说，看了n多篇技术总结，都号称史上最全，到最后还是觉得看官方文档最省事。</p>
+<p>当然自己也找到了一些好的文章，在此列出来希望对大家有帮助：</p>
+<p><code>hexo</code>安装文章：</p>
+<ul>
+<li><a href="https://www.jianshu.com/p/a1a4ebf0e5fc" target="_blank" rel="noopener">Hexo+Butterfly+Github+Coding搭建个人博客</a></li>
+<li><a href="https://hexo.io/" target="_blank" rel="noopener">hexo官方文档</a></li>
+</ul>
+<p><code>butterfly</code>主题系列文章：</p>
+<ol>
+<li><a href="https://jerryc.me/posts/21cfbf15/" target="_blank" rel="noopener">hexo-theme-butterfly 安装文档(一)快速开始</a></li>
+<li><a href="https://jerryc.me/posts/dc584b87/" target="_blank" rel="noopener">hexo-theme-butterfly 安装文档(二)主题页面</a></li>
+<li><a href="https://jerryc.me/posts/4aa8abbe/" target="_blank" rel="noopener">hexo-theme-butterfly 安装文档(三)主题配置</a></li>
+<li><a href="https://jerryc.me/posts/98d20436/" target="_blank" rel="noopener">hexo-theme-butterfly 安装文档(四)主题问答、打赏名单</a></li>
+<li><a href="https://jerryc.me/posts/198a4240/" target="_blank" rel="noopener">hexo-theme-butterfly 安装文档(五)更新日誌</a></li>
+</ol>
+<h2 id="收益"><a href="#收益" class="headerlink" title="收益"></a>收益</h2><p>没日没夜的折腾了两天，总能从其中学到什么：其一，当然是收获了又骚又实用的好网站；其二，学会了<code>git</code>+<code>github</code>的基本使用，常见的<code>git</code>命令也记得很熟；其三，收获了一种精神——永不放弃，哪有什么一帆风顺，加油，骚年！</p>
+<h2 id="不足"><a href="#不足" class="headerlink" title="不足"></a>不足</h2><p>自己的网站弄的也不是很成熟，还有很多功能没有上线，比如日历、赞赏等，自己没有买域名，只是托管到<code>github</code>上。</p>
+<h2 id="欢迎"><a href="#欢迎" class="headerlink" title="欢迎"></a>欢迎</h2><p><a href="https://haotianliu11.github.io/" target="_blank" rel="noopener">我的个人网站</a></p>
+<hr>
+<p><img src="https://imgkr.cn-bj.ufileos.com/148c824d-4eb8-48d3-9825-51625347b0f0.png" alt=""></p>
+]]></content>
+      <categories>
+        <category>博客搭建历程</category>
+      </categories>
+      <tags>
+        <tag>微信公众号文章——随笔</tag>
       </tags>
   </entry>
   <entry>
@@ -538,26 +537,6 @@
       </tags>
   </entry>
   <entry>
-    <title>CODEFORCES 1300 1360D.Buying Shovels</title>
-    <url>/2020/05/31/CODEFORCES1360D/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="1360D-Buying-Shovels"><a href="#1360D-Buying-Shovels" class="headerlink" title="1360D.Buying Shovels"></a>1360D.Buying Shovels</h1><h2 id="原题链接"><a href="#原题链接" class="headerlink" title="原题链接"></a>原题链接</h2><p><a href="https://codeforces.com/problemset/problem/1360/D" target="_blank" rel="noopener">1360D.Buying Shovels</a></p>
-<h2 id="题目大意"><a href="#题目大意" class="headerlink" title="题目大意"></a>题目大意</h2><p>第一行输入测试数目</p>
-<p>之后每一行为一组测试：  </p>
-<p>每组测试输入两个数：<code>n</code>和<code>k</code></p>
-<p><strong>描述</strong>：有<code>k</code>种包裹，第<code>i</code>个包裹里有<code>i</code>个铲子，只能选择一种包裹，可选这个包裹无限次，要求选择的包裹数最少，并且铲子和等于<code>n</code></p>
-<h2 id="解题思路"><a href="#解题思路" class="headerlink" title="解题思路"></a>解题思路</h2><p>根据数据范围可以看出是求质数问题，求<code>n</code>中的质数，要求此质数在<code>k</code>的范围内，<code>n/此质数</code>最小，意思就是选最大的可以除尽的包裹，得到的就是选择包裹数最少</p>
-<h2 id="解题代码"><a href="#解题代码" class="headerlink" title="解题代码"></a>解题代码</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;bits&#x2F;stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">    int t;</span><br><span class="line">    scanf(&quot;%d&quot;, &amp;t);</span><br><span class="line">    while (t--) &#123;</span><br><span class="line">        int n, k;</span><br><span class="line">        scanf(&quot;%d%d&quot;, &amp;n, &amp;k);</span><br><span class="line">        int ans &#x3D; n;</span><br><span class="line">        for (int i &#x3D; 1; i * i &lt;&#x3D; n; i++) &#123;</span><br><span class="line">            if (n % i &#x3D;&#x3D; 0) &#123;</span><br><span class="line">                if (i &lt;&#x3D; k)</span><br><span class="line">                    ans &#x3D; min(ans, n &#x2F; i);</span><br><span class="line">                if (n &#x2F; i &lt;&#x3D; k)</span><br><span class="line">                    ans &#x3D; min(ans, i);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        cout &lt;&lt; ans &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><img src="https://s1.ax1x.com/2020/05/31/t1moIH.jpg" alt=""></p>
-]]></content>
-      <categories>
-        <category>CODEFORCES</category>
-      </categories>
-      <tags>
-        <tag>acm/math</tag>
-        <tag>CODEFORCES1300</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>translate first day</title>
     <url>/2020/05/31/translate-first-day/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="A-week-of-distractions-from-Trump-shows-a-leader-in-crisis"><a href="#A-week-of-distractions-from-Trump-shows-a-leader-in-crisis" class="headerlink" title="A week of distractions from Trump shows a leader in crisis"></a>A week of distractions from Trump shows a leader in crisis</h1><p>(CNN)On Monday, as the nation marked Memorial Day, President Donald Trump mocked his campaign rival for wearing a face mask. On Wednesday, as the national death toll from coronavirus reached a wretched milestone, Trump and his family flew to Florida in an attempted focus on space travel.</p>
@@ -602,43 +581,79 @@
       </tags>
   </entry>
   <entry>
-    <title>HEXO+BUTTERFLY搭建骚气且实用的个人网站</title>
-    <url>/2020/05/27/HEXO-BUTTERFLY%E6%90%AD%E5%BB%BA%E9%AA%9A%E6%B0%94%E4%B8%94%E5%AE%9E%E7%94%A8%E7%9A%84%E4%B8%AA%E4%BA%BA%E7%BD%91%E7%AB%99/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>YOU CAN DRINK ALL YOU LIKE, BUT IN THE MORNING YOU GET HEADACHE WITH THE SAME PROBLEMS.</p>
-</blockquote>
-<hr>
-<h2 id="引子"><a href="#引子" class="headerlink" title="引子"></a>引子</h2><p>最近狂刷<code>codeforces</code>，但是逐渐发现自身一个问题，那就是刷过的题虽然在当天感觉很明白，但是隔一天，隔两天，就发现自己再遇到此题时又是一翻鏖战，这就是说明自己做过的题吸收的效率不够高，于是我就打算做一道题总结一道题。那么问题来了，在哪里总结呢？</p>
-<p>首先排除的是微信公众号，众所周知，微信公众号只能是自己分享东西的平台，而在这上面总结知识点就会引出很多问题，其一，每篇文章都要排版，其二，我的粉丝未必合此文章的胃口，其三，每天只能发布一篇文章，大大限制了自己的总结内容与时间分配。</p>
-<p>那么诸如<code>csdn</code>、博客园、掘金、知乎这种东西呢？也有很多不方便的地方，比如文章左右侧的广告，实在影响人的心情，此外还有审核等等的制约，思前想后，我决定自己开辟一个个人网站。</p>
-<p>当然不能从无到有手动开辟，自己能力有限，而且我的目的也是总结，总不能让自己以后把大把的时间浪费到维护网站上面去。于是我听从了大佬的建议，采用<code>hexo+github</code>的方式，<code>hexo</code>开辟网站，托管到<code>github</code>上面去。</p>
-<p>花里胡哨的页面也是最吸引我的原因之一，我采用了<code>butterfly</code>的主题，绝对美炸天！</p>
-<h2 id="过程"><a href="#过程" class="headerlink" title="过程"></a>过程</h2><p>过程当然是心酸+心酸+心酸，心态险些被搞没。至于搭建网站的教程，实话实说，看了n多篇技术总结，都号称史上最全，到最后还是觉得看官方文档最省事。</p>
-<p>当然自己也找到了一些好的文章，在此列出来希望对大家有帮助：</p>
-<p><code>hexo</code>安装文章：</p>
-<ul>
-<li><a href="https://www.jianshu.com/p/a1a4ebf0e5fc" target="_blank" rel="noopener">Hexo+Butterfly+Github+Coding搭建个人博客</a></li>
-<li><a href="https://hexo.io/" target="_blank" rel="noopener">hexo官方文档</a></li>
-</ul>
-<p><code>butterfly</code>主题系列文章：</p>
+    <title>计算机网络基础总结(1)</title>
+    <url>/2020/06/02/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80%E6%80%BB%E7%BB%93-1/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="计算机网络基础总结-1"><a href="#计算机网络基础总结-1" class="headerlink" title="计算机网络基础总结(1)"></a>计算机网络基础总结(1)</h1><ol>
+<li>局域网：覆盖范围小、自己花钱买设备、带宽固定、自己维护、100米、10M 100M 1000M<br>广域网：距离远、花钱租带宽<br>Internet：由ISP组成、有自己的机房、对网民提供访问Internet连接</li>
+<li>ISP：Internet服务提供商（Internet service provide）</li>
+<li>DNS：把网站域名解析成IP地址</li>
+<li>子网掩码：告诉计算机哪里是网络部分，哪里是主机部分</li>
+<li>路由器的作用是在不同网段转发数据</li>
+<li>计算机的网卡有mac地址（物理地址），全球唯一，mac地址在计算机出场时已经被固定在网卡中：48位二进制（12位十六进制）</li>
+<li><p>计算机访问过程：  </p>
+<p>先把要访问的域名发送给DNS服务器，DNS服务器把域名解析成IP地址返回  </p>
+<p>数据包由数据、原IP地址、目标IP地址组成  </p>
+<p>数据帧由数据、原IP地址、目标IP地址、此时的mac地址、下一个目的地的mac地址组成  </p>
+<p>计算机发送数据帧后，数据帧在运输的过程中两个mac地址不断变化，因此不断重新封装，但是数据包没变   </p>
+<p>数据帧在运输过程中不断经过路由器，路由器看数据包中的IP地址，决定下一步走哪个mac地址</p>
+<p>目标服务器收到请求后，往计算机回传数据，会把数据切割成小块，并给每一块编号，然后取一部分放到目标服务器的缓存当中，再然后在缓存中取出一块，加上此服务器IP地址、目标计算机IP地址、此时的mac地址、下一个目的地的mac开始发送，发送后，此数据块不会被缓存区删除，因为发送的过程中可能会丢失，当目标计算机收到此数据块放到计算机中的缓存区后，发送请求接受下一个数据块的消息到此服务器时，此数据块才会在缓存区被删除  </p>
+<p>当计算机的缓存满了时，会读取，然后再存缓存 </p>
+<p>第一张图说明：<br> <img src="https://ae01.alicdn.com/kf/Hdb3d351ef0844379b41ec593f99d16506.jpg" alt="">  </p>
+<p> 第二张图说明：<br> <img src="https://ae01.alicdn.com/kf/Hdb637a9eee4a485f886ec3430de942ddU.jpg" alt=""></p>
+</li>
+<li><p>OSI参考模型（国际标准把计算机通信进行的定义）</p>
 <ol>
-<li><a href="https://jerryc.me/posts/21cfbf15/" target="_blank" rel="noopener">hexo-theme-butterfly 安装文档(一)快速开始</a></li>
-<li><a href="https://jerryc.me/posts/dc584b87/" target="_blank" rel="noopener">hexo-theme-butterfly 安装文档(二)主题页面</a></li>
-<li><a href="https://jerryc.me/posts/4aa8abbe/" target="_blank" rel="noopener">hexo-theme-butterfly 安装文档(三)主题配置</a></li>
-<li><a href="https://jerryc.me/posts/98d20436/" target="_blank" rel="noopener">hexo-theme-butterfly 安装文档(四)主题问答、打赏名单</a></li>
-<li><a href="https://jerryc.me/posts/198a4240/" target="_blank" rel="noopener">hexo-theme-butterfly 安装文档(五)更新日誌</a></li>
+<li>应用层：所有能产生网络流量的程序</li>
+<li>表示层：在传输之前是否进行加密或压缩处理、传的是二进制还是ASCII码</li>
+<li>会话层：电脑和某服务器建立起的联系，比如电影前进后退进、查木马都是会话层的体现 netstat -n 命令可在终端查看此电脑建立的会话  </li>
+<li>传输层：可靠传输（比如某服务器传输数据到计算机、把数据分块传输，如果发送了某一块之后没收到请求下一块的信息，就会接着发送这个数据块，防止数据块丢失）、流量控制（比如服务器发送数据太快了，则计算机发消息告诉服务器调整发送速度）、不可靠传输（比如DNS解析域名，一个数据包就能说明问题与得到答案，不需要建立会话）</li>
+<li>网络层：负责选择最佳路径、规划IP地址</li>
+<li>数据链路层：帧的开始和结束、透明传输（将数据中与开头或结尾表示相同的部分进行转义）、差错校验（检错错误，数据中多加一部分数据进行校验，但不纠错，只检查，错误的就扔掉，纠错是在传输层进行）  </li>
+<li>物理层：接口标准、电器标准、如何在物理链路上传输更快的速度</li>
 </ol>
-<h2 id="收益"><a href="#收益" class="headerlink" title="收益"></a>收益</h2><p>没日没夜的折腾了两天，总能从其中学到什么：其一，当然是收获了又骚又实用的好网站；其二，学会了<code>git</code>+<code>github</code>的基本使用，常见的<code>git</code>命令也记得很熟；其三，收获了一种精神——永不放弃，哪有什么一帆风顺，加油，骚年！</p>
-<h2 id="不足"><a href="#不足" class="headerlink" title="不足"></a>不足</h2><p>自己的网站弄的也不是很成熟，还有很多功能没有上线，比如日历、赞赏等，自己没有买域名，只是托管到<code>github</code>上。</p>
-<h2 id="欢迎"><a href="#欢迎" class="headerlink" title="欢迎"></a>欢迎</h2><p><a href="https://haotianliu11.github.io/" target="_blank" rel="noopener">我的个人网站</a></p>
-<hr>
-<p><img src="https://imgkr.cn-bj.ufileos.com/148c824d-4eb8-48d3-9825-51625347b0f0.png" alt=""></p>
+</li>
+<li><p>每一层都是一个较为独立的模块，每一个模块变化都不会影响其他的模块；但每一层都有关系：物理层-&gt;数据链路层-&gt;网络层-&gt;传输层-&gt;会话层-&gt;表示层-&gt;应用层-&gt;人（-&gt;代表xx为xx提供服务） </p>
+</li>
+<li><p>网络出现故障，应该从最底层物理层往上一层一层进行检查  </p>
+<ol>
+<li>物理层故障：查看连接状态、查看发送和接收的数据包</li>
+<li>数据链路层故障：mac地址冲突、ADSL欠费、网速没办法协商一致、计算机连接到错误的VLAN(虚拟局域网)</li>
+<li>网络层故障：配置了错误的IP地址、子网掩码、配置错误的网关、路由器没有配置到达目标网络的路由、数据有没有通过各个网关到达指定位置  </li>
+<li>应用层故障：应用程序配置错误</li>
+</ol>
+</li>
+<li><p>打开终端输入命令ping一个网址，若数据有来有回，则证明网通了</p>
+</li>
+<li>OSI参考模型和网络安全<ol>
+<li>物理层安全</li>
+<li>数据链路层安全：ADSL账号密码、VLAN、交换机端口绑定mac地址</li>
+<li>网络层安全：在路由器上时使用ACL控制数据包流量、防火墙</li>
+<li>应用层安全：开发的应用程序没漏洞</li>
+</ol>
+</li>
+</ol>
+<p><img src="https://ae01.alicdn.com/kf/H66237f88bb294f1db97200f8cd552ddbd.jpg" alt=""></p>
 ]]></content>
       <categories>
-        <category>博客搭建历程</category>
+        <category>计算机网络基础</category>
       </categories>
       <tags>
-        <tag>微信公众号文章——随笔</tag>
+        <tag>计算机网络基础——韩立刚视频总结</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>LEETCODE1/PYTHON解法/两数之和</title>
+    <url>/2020/06/03/LEETCODE1-PYTHON%E8%A7%A3%E6%B3%95-%E4%B8%A4%E6%95%B0%E4%B9%8B%E5%92%8C/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="1-两数之和"><a href="#1-两数之和" class="headerlink" title="1.两数之和"></a><a href="https://leetcode-cn.com/problems/two-sum/" target="_blank" rel="noopener">1.两数之和</a></h1><h2 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">class Solution:</span><br><span class="line">    def twoSum(self, nums: List[int], target: int) -&gt; List[int]:</span><br><span class="line">        dic &#x3D; &#123;&#125;</span><br><span class="line">        for i in range(len(nums)):</span><br><span class="line">            if nums[i] in dic:</span><br><span class="line">                return [dic[nums[i]], i]</span><br><span class="line">            else:</span><br><span class="line">                dic[target - nums[i]] &#x3D; i</span><br></pre></td></tr></table></figure>
+<p><img src="https://ae01.alicdn.com/kf/He2534bd81da14f7cac54ae321362c2e1p.jpg" alt=""></p>
+]]></content>
+      <categories>
+        <category>LEETCODE/PYTHON</category>
+      </categories>
+      <tags>
+        <tag>PYTHON</tag>
+        <tag>LEETCODE</tag>
+        <tag>hash</tag>
       </tags>
   </entry>
 </search>

@@ -1,63 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>0x01位运算</title>
-    <url>/2020/05/28/0x01%E4%BD%8D%E8%BF%90%E7%AE%97/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="0x01-位-运-算"><a href="#0x01-位-运-算" class="headerlink" title="0x01 位 运 算"></a>0x01 位 运 算</h1><h2 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h2><ol>
-<li><p>用<code>xor</code>表示异或运算，在<code>m</code>位二进制数中，通常称最低位为<code>0</code>位，从右到左依此类推，最高位为<code>m-1</code>位。</p>
-</li>
-<li><p><code>|-1|</code>的原码为<code>00000001</code><br><code>|-1|</code>的反码为<code>11111110</code><br><code>-1</code>的补码为<code>11111111</code>，十六进制表示为<code>0xff</code><br><code>8</code>位二进制对应的最大值<code>127</code>的十六进制表示为<code>0x7f</code><br>在计算机中数字以其补码的形式保存，正数的补码等于其原码，负数的补码等于其对应正数的原码取反码再<code>+1</code></p>
-</li>
-<li><p>对于<code>32</code>位二进制数<code>C</code>(设十进制的值为<code>S</code>)，其按位取反得到的编码<code>~C</code>对应的十进制的值为<code>-1-S</code>(正负都满足此规律)</p>
-</li>
-<li><p>补码下每个数值都有唯一的表示方式，并且任意两个数值做加减法运算，都等价于在<code>32</code>位补码下做最高位不进位的二进制加减法运算。发生算术溢出时，<code>32</code>位无符号整数相当于自动对<code>2^32</code>取模，这也解释了有符号整数溢出时为何会出现负数的现象。</p>
-</li>
-<li><p>在算法竞赛中常用十六进制来表示一个常数，这样书写需要八个字符。<br>| 10进制 | 16进制 |<br>| :-: | :-: |<br>| 21 4748 3647 | 0x7f ff ff ff |<br>| 10 6110 9567 | 0x3f 3f 3f 3f |<br>| -1 | 0xff ff ff ff | </p>
-</li>
-<li><p><code>4</code>个字节的<code>int</code>表示的最大值为<code>21 4748 3647</code><br><code>4</code>个字节的<code>unsigned int</code>表示的最大值为<code>42 9496 7295</code> </p>
-</li>
-<li><p><code>0x3f 3f 3f 3f</code>是一个很有用的值，它满足两个条件：<br>其一，整数的两倍不超过int能表示的最大正整数<br>其二，二进制下每八位都相同<br>因此，我们可以用<code>memset(a, 0x3f, sizeof a)</code>来给<code>a</code>数组的每一个元素都赋值为正无穷，虽然<code>0x7f</code>能给每一个元素赋值成最大，但是为了避免溢出情况，推荐用<code>0x3f</code>。</p>
-<ol>
-<li><code>1 &lt;&lt; n = 2^n, n &lt;&lt; 1 = 2n</code><br><code>n &gt;&gt; 1 = n / 2.0 向下取整</code><br>需要注意的是，整数做<code>/</code>运算执行的是向<code>0</code>取整<br><code>(-3) &gt;&gt; 1 = -2, (-3) / 2 = -1</code></li>
-</ol>
-</li>
-<li><p>除非特殊提示，我们默认右移采用的是算术右移的实现方式</p>
-<blockquote>
-<p>逻辑右移不考虑符号位，右移一位，左边补零即可。<br> 算术右移考虑符号位，右移一位，若符号位为1，就在左边补1；否则，就补0。<br> 所以算术右移也可以进行有符号位的除法,右移n位就等于除2的n次方。<br> 例如，8位二进制数11001101分别右移一位。<br> 逻辑右移就是[0]1100110<br> 算术右移就是[1]1100110  </p>
-</blockquote>
-</li>
-</ol>
-<h2 id="状态压缩"><a href="#状态压缩" class="headerlink" title="状态压缩"></a>状态压缩</h2><p>二进制状态压缩是指将一个长度为<code>m</code>的<code>bool</code>数组用一个<code>m</code>位二进制整数表示并存储的方法，利用如下操作实现对原<code>bool</code>数组对应下标元素的存取。  </p>
-<ol>
-<li>取出整数<code>n</code>的第<code>k</code>位：<code>(n&gt;&gt;k)&amp;1</code></li>
-<li>取出整数<code>n</code>的后<code>k</code>位<code>(0到k-1位)</code>：<code>((1&lt;&lt;K)-1)&amp;n</code></li>
-<li>把整数<code>n</code>的第<code>k</code>位反转：<code>(1&lt;&lt;k) nor n</code></li>
-<li>把整数<code>n</code>的第<code>k</code>位赋值为<code>1</code>：<code>(1&lt;&lt;k)|n</code>  </li>
-<li>把整数<code>n</code>的第<code>k</code>位赋值为<code>0</code>：<code>(~(1&lt;&lt;k))&amp;n</code>  </li>
-</ol>
-<p>当<code>m</code>不大时，我们可以使用一个整数存储，当m很大时，我们可以用若干个整数存储<code>(int数组)</code>，也可以用<code>C++STL</code>为我们提供的<code>bitset</code>实现。</p>
-<h2 id="成对变换"><a href="#成对变换" class="headerlink" title="成对变换"></a>成对变换</h2><p>通过计算可发现，对于非负整数<code>n</code>:  </p>
-<ol>
-<li>当<code>n</code>为偶数时，<code>n xor 1 = n + 1</code></li>
-<li>当<code>n</code>为奇数时，<code>n xor 1 = n - 1</code></li>
-</ol>
-<p>因此<code>0与1</code>, <code>2与3</code>, <code>4与5</code> … 关于<code>xor 1</code>运算构成成对变换。  </p>
-<p>这一性质经常用于图论邻接表中边集的存储。在具有无向边(双向边)的图中把一对正反方向的边分别存储在邻接表数组的第<code>n</code>与<code>n+1</code>位置(其中<code>n</code>为偶数)，就可以通过<code>xor 1</code>的运算获得与当前边<code>(x,y)</code>反向的边<code>(y,x)</code>的存储位置。</p>
-<h2 id="lowbit运算"><a href="#lowbit运算" class="headerlink" title="lowbit运算"></a>lowbit运算</h2><p><code>lowbit(n)</code>定义为非负整数<code>n</code>在二进制表示下“最低位的1及其后边所有的0”构成的数值。  </p>
-<p>例子：<code>lowbit(10)=2</code>  </p>
-<p>其原理为：<code>lowbit(n)=n&amp;(~n-1)=n&amp;(-n)</code></p>
-<p><code>lowbit</code>运算配合<code>Hash</code>可以找出整数二进制下所有是<code>1</code>的位，所花费的时间与<code>1</code>的个数同级。为了达到这个目的，我们只需要不断把<code>n</code>赋值为<code>n-lowbit(n)</code>直至<code>n=0</code>。我们可以把每次减去的数(其一定为2的幂)求<code>log</code>得到对应的<code>1</code>所在的位数，因为<code>C++math.h</code>库中的<code>log</code>函数复杂度常数较大，所以我们可以预处理一个数组，通过<code>Hash</code>的方法代替<code>log</code>运算。  </p>
-<p>此外<code>lowbit</code>运算也是树状数组中的一个基本运算。</p>
-<p><img src="https://ae01.alicdn.com/kf/H270ec52cb1794e5cb700f741bdd71aafA.jpg" alt=""></p>
-]]></content>
-      <categories>
-        <category>算法竞赛进阶指南</category>
-      </categories>
-      <tags>
-        <tag>ACM</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>0x01位运算例题</title>
     <url>/2020/05/29/0x01%E4%BD%8D%E8%BF%90%E7%AE%97%E4%BE%8B%E9%A2%98/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="0x01位运算例题"><a href="#0x01位运算例题" class="headerlink" title="0x01位运算例题"></a>0x01位运算例题</h1><blockquote>
@@ -84,75 +27,6 @@
 <p>还差一题，未完待续</p>
 </blockquote>
 <p><img src="https://ae01.alicdn.com/kf/Hdd96bb61417945ca90a15b8b5b98b5a1g.jpg" alt=""></p>
-]]></content>
-      <categories>
-        <category>算法竞赛进阶指南</category>
-      </categories>
-      <tags>
-        <tag>ACM</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>0x04二分</title>
-    <url>/2020/05/31/0x04%E4%BA%8C%E5%88%86/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="0x04二分"><a href="#0x04二分" class="headerlink" title="0x04二分"></a>0x04二分</h1><h2 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h2><p>二分的基础的用法是在单调序列或单调函数中进行查找，因此当问题的答案具有单调性时，就可以通过二分把求解问题转换为判定（根据复杂度理论，判定的难度小于求解），进一步地，我们还可以扩展到通过三分法去解决单峰函数的极值以及相关问题</p>
-<p>对于整数域上的二分，需要注意中止边界、左右区间取舍时的开闭情况，避免漏掉答案或者造成死循环；对于实数域上的二分，需要注意精度问题</p>
-<h2 id="整数集合上的二分"><a href="#整数集合上的二分" class="headerlink" title="整数集合上的二分"></a>整数集合上的二分</h2><p>本文章的写法保证最终答案处于闭区间<code>[l,r]</code>以内，循环以<code>l=r</code>结束，每次二分的中间值<code>mid</code>会归属于左半段与右半段二者之一</p>
-<p><strong>模板如下</strong>：</p>
-<p>在单调递增序列<code>a</code>中查找<code>&gt;=x</code>的数中最小的一个（<code>x</code>或<code>x</code>的后继）<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">while (l &lt; r) &#123;</span><br><span class="line">    int mid &#x3D; (l + r) &gt;&gt; 1;</span><br><span class="line">    if (a[mid] &gt;&#x3D; x) r &#x3D; mid; else l &#x3D; mid + 1;</span><br><span class="line">&#125;</span><br><span class="line">return a[l];</span><br></pre></td></tr></table></figure><br>在单调递增序列<code>a</code>中查找<code>&lt;=x</code>的数中最大的一个（<code>x</code>或<code>x</code>的前驱）<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">while (l &lt; r) &#123;</span><br><span class="line">    int mid &#x3D; (l + r + 1) &gt;&gt; 1;</span><br><span class="line">    if (a[mid] &lt;&#x3D; x) l &#x3D; mid; else r &#x3D; mid - 1;</span><br><span class="line">&#125;</span><br><span class="line">return a[l];</span><br></pre></td></tr></table></figure></p>
-<blockquote>
-<p>如上面两段代码所示，这种二分写法可能会有两种形式：<br>1.缩小范围时，<code>r=mid</code>， <code>l=mid+1</code>，取中间值时，<code>mid=(l+r)&gt;&gt;1</code><br>2.缩小范围时，<code>l=mid</code>， <code>r=mid-1</code>，取中间值时，<code>mid=(l+r+1)&gt;&gt;1</code><br>如果不对<code>mid</code>的取法加以区分，假如第二段代码也采用<code>mid=(l+r)&gt;&gt;1</code>，那么当<code>r-l</code>等于<code>1</code>时，就有<code>mid=(l+r)&gt;&gt;1=l</code>，接下来若进入<code>l=mid</code>分支，可行区间未缩小，造成死循环；若进入<code>r=mid-1</code>分支，造成<code>l&gt;r</code>，循环不能以<code>l=r</code>结束；相反若<code>mid=(l+r+1)&gt;&gt;1</code> ，则第二段代码则正确得到结果。因此对两个形式采用配套的<code>mid</code>取法是必要的。此外还要注意：我们在二分实现中采用了右移运算符<code>&gt;&gt;1</code>，而不是整数除法<code>/2</code>。这是因为右移运算是向下取整，而整数除法是向<code>0</code>取整，在二分值域包含负数时后者不能正常工作。</p>
-</blockquote>
-<p><strong>我用一个例题来体现这两个模板的差别</strong>：<br><a href="https://www.acwing.com/problem/content/791/" target="_blank" rel="noopener">ACWING789.数的范围</a><br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;bits&#x2F;stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">const int MAXN &#x3D; 1e5 + 10;</span><br><span class="line">int nums[MAXN];</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">    int n, q;</span><br><span class="line">    scanf(&quot;%d%d&quot;, &amp;n, &amp;q);</span><br><span class="line">    for (int i &#x3D; 0; i &lt; n; i++) &#123;</span><br><span class="line">        scanf(&quot;%d&quot;, &amp;nums[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    while (q--) &#123;</span><br><span class="line">        int l &#x3D; 0, r &#x3D; n - 1;</span><br><span class="line">        int x;</span><br><span class="line">        scanf(&quot;%d&quot;, &amp;x);</span><br><span class="line">        while (l &lt; r) &#123;</span><br><span class="line">            int mid &#x3D; (l + r) &gt;&gt; 1;</span><br><span class="line">            if (nums[mid] &gt;&#x3D; x) r &#x3D; mid; else l &#x3D; mid + 1;</span><br><span class="line">        &#125;</span><br><span class="line">        if (nums[l] !&#x3D; x) printf(&quot;-1 -1\n&quot;);</span><br><span class="line">        else &#123;</span><br><span class="line">            cout &lt;&lt; l &lt;&lt; &quot; &quot;;</span><br><span class="line">            int l &#x3D; 0, r &#x3D; n - 1;</span><br><span class="line">            while (l &lt; r) &#123;</span><br><span class="line">                int mid &#x3D; (l + r + 1) &gt;&gt; 1;</span><br><span class="line">                if (nums[mid] &lt;&#x3D; x) l &#x3D; mid; else r &#x3D; mid - 1;</span><br><span class="line">            &#125;  </span><br><span class="line">            cout &lt;&lt; l &lt;&lt; endl;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>可以看出这两个模板的另一个区别：当目标值不止一个时，第一个模板是取到左边，也就是在单调递增序列<code>a</code>中查找<code>&gt;=x</code>的数中最小的一个；第二个模板是取到右边，也就是在单调递增序列<code>a</code>中查找<code>&lt;=x</code>的数中最大的一个；当目标值只有只有一个时，两个模板的结果没有差别  </p>
-<p>仔细分析这两种<code>mid</code>的取法，我们还发现：<code>mid=(l+r)&gt;&gt;1</code>不会取到<code>r</code>这个值，<code>mid=(l+r+1)&gt;&gt;1</code>不会取到<code>l</code>这个值，我们可以利用这一性质来处理无解的情况，把最初的二分区间分别扩大为<code>[1,n+1]</code>和<code>[0,n]</code>，把<code>a</code>数组的一个越界下标包含进来。如果最后二分终止于扩大后的这个越界下标上，则说明目标值不在<code>a</code>中；当然我们也可以直接看最终求得的<code>l</code>下标在<code>a</code>数组中对应的值是否为目标值  </p>
-<p>二分的终止条件就是<code>l==r</code>，该值就是答案所在位置</p>
-<p><code>C++STL</code>的<code>lower_bound</code>和<code>upper_bound</code>函数实现了在一个序列中二分查找某个整数<code>x</code>的后继</p>
-<blockquote>
-<p>未完待续</p>
-</blockquote>
-<p><img src="https://s1.ax1x.com/2020/05/31/t1moIH.jpg" alt=""></p>
-]]></content>
-      <categories>
-        <category>算法竞赛进阶指南</category>
-      </categories>
-      <tags>
-        <tag>ACM</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>0x07贪心</title>
-    <url>/2020/06/02/0x07%E8%B4%AA%E5%BF%83/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="0x07贪心"><a href="#0x07贪心" class="headerlink" title="0x07贪心"></a>0x07贪心</h1><h2 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h2><p>贪心是一种在每次决策时采取当前意义下最优策略的算法，因此，使用贪心法要求问题的整体最优性可以由局部最优性导出。贪心算法的正确性需要证明，常见的证明手段有：  </p>
-<ol>
-<li>微扰（邻项交换）<br>证明在任意局面下，任何对局部最优策略的微小改变都会造成整体结果的变差，经常用于以“排序”为贪心策略的证明</li>
-<li>范围缩放<br>证明任何对局部最优策略作用范围的扩展都不会造成整体结果的变差  </li>
-<li>决策包容性<br>证明在任意局面下，做出局部最优策略以后，在问题状态空间中的可达集合包含了作出其他任何决策后的可达集合。换言之，这个局部最优策略的可能性包含其他所有策略提供的可能性  </li>
-<li>反证法</li>
-<li>数学归纳法</li>
-</ol>
-<blockquote>
-<p>我们通过几道例题来介绍贪心算法的应用</p>
-</blockquote>
-<h2 id="ACWING110-防晒"><a href="#ACWING110-防晒" class="headerlink" title="ACWING110.防晒"></a><a href="https://www.acwing.com/problem/content/112/" target="_blank" rel="noopener">ACWING110.防晒</a></h2><p>按照<code>minSPF</code>递减的顺序把奶牛排序，依次考虑每头奶牛  </p>
-<p>对于每头奶牛，扫描一遍所有的防晒霜，在这头奶牛能用（能用指的是该防晒霜的强度符合这头奶牛的范围，并且瓶数还有剩余）的防晒霜里找<code>SPF</code>值最大的使用  </p>
-<p>以上算法的贪心策略是在满足条件的前提下每次选择<code>SPF</code>最大的防晒霜，这个策略正确的原因是：我们考虑这一步策略的作用范围扩展到后续其他奶牛之后产生的影响。每瓶防晒霜是否可用，会被<code>minSPF</code>和<code>maxSPF</code>两个条件限制，因为奶牛已经按照<code>minSPF</code>递减排序，所以每一个不低于当前奶牛<code>minSPF</code>值的防晒霜，都不会低于后面其他奶牛的<code>minSPF</code>。也就是说，对于当前奶牛可用的任意两瓶防晒霜<code>x</code>和<code>y</code>，如果<code>SFP[X]&lt;SFP[y]</code>，那么后面的奶牛只可能出现三种情况之一  </p>
-<ol>
-<li><p><code>x</code>和<code>y</code>都能用<br><img src="https://ae01.alicdn.com/kf/H2cc96d8dff754e51a734da64de4234dd0.jpg" alt=""></p>
-</li>
-<li><p><code>x</code>和<code>y</code>都不能用<br><img src="https://ae01.alicdn.com/kf/H9ee214eba1ab4d3db7de671fcec790cfN.jpg" alt=""></p>
-</li>
-<li><p><code>x</code>能用，<code>y</code>不能用<br><img src="https://ae01.alicdn.com/kf/H956b6a5e4b7743629416b5c1c262da0bn.jpg" alt=""></p>
-</li>
-</ol>
-<p>因此当前奶牛选择较大的<code>y</code>去用，对于整体的影响肯定比选择较小的<code>x</code>去用要好，另外，每头奶牛对答案的贡献至多是<code>1</code>，即使让当前奶牛放弃日光浴，留下防晒霜给后面的某一头奶牛去用，对答案的贡献也不会更大，综上所述，尽量满足当前的奶牛，并选择<code>SPF</code>值尽量大的防晒霜是一个正确的贪心策略</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;bits&#x2F;stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line">const int N &#x3D; 2510;</span><br><span class="line">typedef pair&lt;int, int&gt; PII;</span><br><span class="line">int n, m;</span><br><span class="line">PII cows[N];</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">    cin &gt;&gt; n &gt;&gt; m;</span><br><span class="line">    map&lt;int, int&gt; spfs;</span><br><span class="line">    for (int i &#x3D; 0; i &lt; n; i++) cin &gt;&gt; cows[i].first &gt;&gt; cows[i].second;</span><br><span class="line">    for (int i &#x3D; 0; i &lt; m; i++) &#123;</span><br><span class="line">        int spf, cover;</span><br><span class="line">        cin &gt;&gt; spf &gt;&gt; cover;</span><br><span class="line">        spfs[spf] +&#x3D; cover;</span><br><span class="line">    &#125;</span><br><span class="line">    sort(cows, cows + n);</span><br><span class="line">    int res &#x3D; 0;</span><br><span class="line">    spfs[0] &#x3D; spfs[1001] &#x3D; 1;</span><br><span class="line">    for (int i &#x3D; n - 1; i &gt;&#x3D; 0; i--) &#123;</span><br><span class="line">        auto spf &#x3D; spfs.upper_bound(cows[i].second);</span><br><span class="line">        spf--;</span><br><span class="line">        if (spf-&gt;first &gt;&#x3D; cows[i].first) &#123;</span><br><span class="line">            res++;</span><br><span class="line">            if (--spf-&gt;second &#x3D;&#x3D; 0)</span><br><span class="line">                spfs.erase(spf);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    cout &lt;&lt; res &lt;&lt; endl;</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="ACWING111-畜栏预定"><a href="#ACWING111-畜栏预定" class="headerlink" title="ACWING111.畜栏预定"></a><a href="https://www.acwing.com/problem/content/113/" target="_blank" rel="noopener">ACWING111.畜栏预定</a></h2><p>按照开始吃草的时间把牛排序，用小根堆维护所有畜栏中最后一头牛结束吃草的时间的最小值，每循环到一头牛，如果这头牛的吃草开始时间比这个小根堆的堆顶大，则把这个牛插入到这个小根堆堆顶对应的畜栏中，再重新维护小根堆；如果小根堆的堆顶比这头牛的开始吃草时间大，则新建一个畜栏，插入到小根堆中</p>
-<p>这种策略成功的原因在于：把每个畜栏的时间都充分利用，如果存在多个畜栏可以存放此牛，则选择最后一头牛结束吃草时间最小的畜栏，这样可以充分利用每个畜栏的时间；把每个牛的开始吃草时间从小到大排序的原因是，这样就可以让后面的牛插入在畜栏的后面，如果不排序，则每个畜栏前面可能有时间空隙放牛，这是不符合要求的，很难做出来</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;bits&#x2F;stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line">typedef pair&lt;int, int&gt; PII;</span><br><span class="line">const int N &#x3D; 50010;</span><br><span class="line"></span><br><span class="line">int n;</span><br><span class="line">int id[N];</span><br><span class="line">pair&lt;PII, int&gt; cows[N];</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">    cin &gt;&gt; n;</span><br><span class="line">    for (int i &#x3D; 0; i &lt; n; i++) &#123;</span><br><span class="line">        cin &gt;&gt; cows[i].first.first &gt;&gt; cows[i].first.second;</span><br><span class="line">        cows[i].second &#x3D; i;</span><br><span class="line">    &#125;</span><br><span class="line">    sort(cows, cows + n);</span><br><span class="line"></span><br><span class="line">    priority_queue&lt;PII, vector&lt;PII&gt;, greater&lt;PII&gt; &gt; heap;</span><br><span class="line">    for (int i &#x3D; 0; i &lt; n; i++) &#123;</span><br><span class="line">        if (heap.empty() || heap.top().first &gt;&#x3D; cows[i].first.first) &#123;</span><br><span class="line">            id[cows[i].second] &#x3D; heap.size() + 1;</span><br><span class="line">            heap.push(&#123;cows[i].first.second, heap.size() + 1&#125;);</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            auto stall &#x3D; heap.top();</span><br><span class="line">            heap.pop();</span><br><span class="line">            stall.first &#x3D; cows[i].first.second;</span><br><span class="line">            id[cows[i].second] &#x3D; stall.second;</span><br><span class="line">            heap.push(stall);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    cout &lt;&lt; heap.size() &lt;&lt; endl;</span><br><span class="line">    for (int i &#x3D; 0; i &lt; n; i++) cout &lt;&lt; id[i] &lt;&lt; endl;</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>未完待续</p>
-</blockquote>
-<p><img src="https://ae01.alicdn.com/kf/Hef70c4f4a75e40738e47ea16124d9091W.jpg" alt=""></p>
 ]]></content>
       <categories>
         <category>算法竞赛进阶指南</category>
@@ -234,6 +108,63 @@
       </tags>
   </entry>
   <entry>
+    <title>0x01位运算</title>
+    <url>/2020/05/28/0x01%E4%BD%8D%E8%BF%90%E7%AE%97/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="0x01-位-运-算"><a href="#0x01-位-运-算" class="headerlink" title="0x01 位 运 算"></a>0x01 位 运 算</h1><h2 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h2><ol>
+<li><p>用<code>xor</code>表示异或运算，在<code>m</code>位二进制数中，通常称最低位为<code>0</code>位，从右到左依此类推，最高位为<code>m-1</code>位。</p>
+</li>
+<li><p><code>|-1|</code>的原码为<code>00000001</code><br><code>|-1|</code>的反码为<code>11111110</code><br><code>-1</code>的补码为<code>11111111</code>，十六进制表示为<code>0xff</code><br><code>8</code>位二进制对应的最大值<code>127</code>的十六进制表示为<code>0x7f</code><br>在计算机中数字以其补码的形式保存，正数的补码等于其原码，负数的补码等于其对应正数的原码取反码再<code>+1</code></p>
+</li>
+<li><p>对于<code>32</code>位二进制数<code>C</code>(设十进制的值为<code>S</code>)，其按位取反得到的编码<code>~C</code>对应的十进制的值为<code>-1-S</code>(正负都满足此规律)</p>
+</li>
+<li><p>补码下每个数值都有唯一的表示方式，并且任意两个数值做加减法运算，都等价于在<code>32</code>位补码下做最高位不进位的二进制加减法运算。发生算术溢出时，<code>32</code>位无符号整数相当于自动对<code>2^32</code>取模，这也解释了有符号整数溢出时为何会出现负数的现象。</p>
+</li>
+<li><p>在算法竞赛中常用十六进制来表示一个常数，这样书写需要八个字符。<br>| 10进制 | 16进制 |<br>| :-: | :-: |<br>| 21 4748 3647 | 0x7f ff ff ff |<br>| 10 6110 9567 | 0x3f 3f 3f 3f |<br>| -1 | 0xff ff ff ff | </p>
+</li>
+<li><p><code>4</code>个字节的<code>int</code>表示的最大值为<code>21 4748 3647</code><br><code>4</code>个字节的<code>unsigned int</code>表示的最大值为<code>42 9496 7295</code> </p>
+</li>
+<li><p><code>0x3f 3f 3f 3f</code>是一个很有用的值，它满足两个条件：<br>其一，整数的两倍不超过int能表示的最大正整数<br>其二，二进制下每八位都相同<br>因此，我们可以用<code>memset(a, 0x3f, sizeof a)</code>来给<code>a</code>数组的每一个元素都赋值为正无穷，虽然<code>0x7f</code>能给每一个元素赋值成最大，但是为了避免溢出情况，推荐用<code>0x3f</code>。</p>
+<ol>
+<li><code>1 &lt;&lt; n = 2^n, n &lt;&lt; 1 = 2n</code><br><code>n &gt;&gt; 1 = n / 2.0 向下取整</code><br>需要注意的是，整数做<code>/</code>运算执行的是向<code>0</code>取整<br><code>(-3) &gt;&gt; 1 = -2, (-3) / 2 = -1</code></li>
+</ol>
+</li>
+<li><p>除非特殊提示，我们默认右移采用的是算术右移的实现方式</p>
+<blockquote>
+<p>逻辑右移不考虑符号位，右移一位，左边补零即可。<br> 算术右移考虑符号位，右移一位，若符号位为1，就在左边补1；否则，就补0。<br> 所以算术右移也可以进行有符号位的除法,右移n位就等于除2的n次方。<br> 例如，8位二进制数11001101分别右移一位。<br> 逻辑右移就是[0]1100110<br> 算术右移就是[1]1100110  </p>
+</blockquote>
+</li>
+</ol>
+<h2 id="状态压缩"><a href="#状态压缩" class="headerlink" title="状态压缩"></a>状态压缩</h2><p>二进制状态压缩是指将一个长度为<code>m</code>的<code>bool</code>数组用一个<code>m</code>位二进制整数表示并存储的方法，利用如下操作实现对原<code>bool</code>数组对应下标元素的存取。  </p>
+<ol>
+<li>取出整数<code>n</code>的第<code>k</code>位：<code>(n&gt;&gt;k)&amp;1</code></li>
+<li>取出整数<code>n</code>的后<code>k</code>位<code>(0到k-1位)</code>：<code>((1&lt;&lt;K)-1)&amp;n</code></li>
+<li>把整数<code>n</code>的第<code>k</code>位反转：<code>(1&lt;&lt;k) nor n</code></li>
+<li>把整数<code>n</code>的第<code>k</code>位赋值为<code>1</code>：<code>(1&lt;&lt;k)|n</code>  </li>
+<li>把整数<code>n</code>的第<code>k</code>位赋值为<code>0</code>：<code>(~(1&lt;&lt;k))&amp;n</code>  </li>
+</ol>
+<p>当<code>m</code>不大时，我们可以使用一个整数存储，当m很大时，我们可以用若干个整数存储<code>(int数组)</code>，也可以用<code>C++STL</code>为我们提供的<code>bitset</code>实现。</p>
+<h2 id="成对变换"><a href="#成对变换" class="headerlink" title="成对变换"></a>成对变换</h2><p>通过计算可发现，对于非负整数<code>n</code>:  </p>
+<ol>
+<li>当<code>n</code>为偶数时，<code>n xor 1 = n + 1</code></li>
+<li>当<code>n</code>为奇数时，<code>n xor 1 = n - 1</code></li>
+</ol>
+<p>因此<code>0与1</code>, <code>2与3</code>, <code>4与5</code> … 关于<code>xor 1</code>运算构成成对变换。  </p>
+<p>这一性质经常用于图论邻接表中边集的存储。在具有无向边(双向边)的图中把一对正反方向的边分别存储在邻接表数组的第<code>n</code>与<code>n+1</code>位置(其中<code>n</code>为偶数)，就可以通过<code>xor 1</code>的运算获得与当前边<code>(x,y)</code>反向的边<code>(y,x)</code>的存储位置。</p>
+<h2 id="lowbit运算"><a href="#lowbit运算" class="headerlink" title="lowbit运算"></a>lowbit运算</h2><p><code>lowbit(n)</code>定义为非负整数<code>n</code>在二进制表示下“最低位的1及其后边所有的0”构成的数值。  </p>
+<p>例子：<code>lowbit(10)=2</code>  </p>
+<p>其原理为：<code>lowbit(n)=n&amp;(~n-1)=n&amp;(-n)</code></p>
+<p><code>lowbit</code>运算配合<code>Hash</code>可以找出整数二进制下所有是<code>1</code>的位，所花费的时间与<code>1</code>的个数同级。为了达到这个目的，我们只需要不断把<code>n</code>赋值为<code>n-lowbit(n)</code>直至<code>n=0</code>。我们可以把每次减去的数(其一定为2的幂)求<code>log</code>得到对应的<code>1</code>所在的位数，因为<code>C++math.h</code>库中的<code>log</code>函数复杂度常数较大，所以我们可以预处理一个数组，通过<code>Hash</code>的方法代替<code>log</code>运算。  </p>
+<p>此外<code>lowbit</code>运算也是树状数组中的一个基本运算。</p>
+<p><img src="https://ae01.alicdn.com/kf/H270ec52cb1794e5cb700f741bdd71aafA.jpg" alt=""></p>
+]]></content>
+      <categories>
+        <category>算法竞赛进阶指南</category>
+      </categories>
+      <tags>
+        <tag>ACM</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>API之lowerer_bound/upper_bound用法</title>
     <url>/2020/06/02/API%E4%B9%8Blowerer-bound-upper-bound%E7%94%A8%E6%B3%95/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="API之lowerer-bound-upper-bound用法"><a href="#API之lowerer-bound-upper-bound用法" class="headerlink" title="API之lowerer_bound/upper_bound用法"></a>API之lowerer_bound/upper_bound用法</h1><h2 id="lower-bound"><a href="#lower-bound" class="headerlink" title="lower_bound()"></a>lower_bound()</h2><p><code>lower_bound(beg, end, val, comp)</code>  </p>
@@ -272,6 +203,48 @@
       </tags>
   </entry>
   <entry>
+    <title>0x07贪心</title>
+    <url>/2020/06/02/0x07%E8%B4%AA%E5%BF%83/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="0x07贪心"><a href="#0x07贪心" class="headerlink" title="0x07贪心"></a>0x07贪心</h1><h2 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h2><p>贪心是一种在每次决策时采取当前意义下最优策略的算法，因此，使用贪心法要求问题的整体最优性可以由局部最优性导出。贪心算法的正确性需要证明，常见的证明手段有：  </p>
+<ol>
+<li>微扰（邻项交换）<br>证明在任意局面下，任何对局部最优策略的微小改变都会造成整体结果的变差，经常用于以“排序”为贪心策略的证明</li>
+<li>范围缩放<br>证明任何对局部最优策略作用范围的扩展都不会造成整体结果的变差  </li>
+<li>决策包容性<br>证明在任意局面下，做出局部最优策略以后，在问题状态空间中的可达集合包含了作出其他任何决策后的可达集合。换言之，这个局部最优策略的可能性包含其他所有策略提供的可能性  </li>
+<li>反证法</li>
+<li>数学归纳法</li>
+</ol>
+<blockquote>
+<p>我们通过几道例题来介绍贪心算法的应用</p>
+</blockquote>
+<h2 id="ACWING110-防晒"><a href="#ACWING110-防晒" class="headerlink" title="ACWING110.防晒"></a><a href="https://www.acwing.com/problem/content/112/" target="_blank" rel="noopener">ACWING110.防晒</a></h2><p>按照<code>minSPF</code>递减的顺序把奶牛排序，依次考虑每头奶牛  </p>
+<p>对于每头奶牛，扫描一遍所有的防晒霜，在这头奶牛能用（能用指的是该防晒霜的强度符合这头奶牛的范围，并且瓶数还有剩余）的防晒霜里找<code>SPF</code>值最大的使用  </p>
+<p>以上算法的贪心策略是在满足条件的前提下每次选择<code>SPF</code>最大的防晒霜，这个策略正确的原因是：我们考虑这一步策略的作用范围扩展到后续其他奶牛之后产生的影响。每瓶防晒霜是否可用，会被<code>minSPF</code>和<code>maxSPF</code>两个条件限制，因为奶牛已经按照<code>minSPF</code>递减排序，所以每一个不低于当前奶牛<code>minSPF</code>值的防晒霜，都不会低于后面其他奶牛的<code>minSPF</code>。也就是说，对于当前奶牛可用的任意两瓶防晒霜<code>x</code>和<code>y</code>，如果<code>SFP[X]&lt;SFP[y]</code>，那么后面的奶牛只可能出现三种情况之一  </p>
+<ol>
+<li><p><code>x</code>和<code>y</code>都能用<br><img src="https://ae01.alicdn.com/kf/H2cc96d8dff754e51a734da64de4234dd0.jpg" alt=""></p>
+</li>
+<li><p><code>x</code>和<code>y</code>都不能用<br><img src="https://ae01.alicdn.com/kf/H9ee214eba1ab4d3db7de671fcec790cfN.jpg" alt=""></p>
+</li>
+<li><p><code>x</code>能用，<code>y</code>不能用<br><img src="https://ae01.alicdn.com/kf/H956b6a5e4b7743629416b5c1c262da0bn.jpg" alt=""></p>
+</li>
+</ol>
+<p>因此当前奶牛选择较大的<code>y</code>去用，对于整体的影响肯定比选择较小的<code>x</code>去用要好，另外，每头奶牛对答案的贡献至多是<code>1</code>，即使让当前奶牛放弃日光浴，留下防晒霜给后面的某一头奶牛去用，对答案的贡献也不会更大，综上所述，尽量满足当前的奶牛，并选择<code>SPF</code>值尽量大的防晒霜是一个正确的贪心策略</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;bits&#x2F;stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line">const int N &#x3D; 2510;</span><br><span class="line">typedef pair&lt;int, int&gt; PII;</span><br><span class="line">int n, m;</span><br><span class="line">PII cows[N];</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">    cin &gt;&gt; n &gt;&gt; m;</span><br><span class="line">    map&lt;int, int&gt; spfs;</span><br><span class="line">    for (int i &#x3D; 0; i &lt; n; i++) cin &gt;&gt; cows[i].first &gt;&gt; cows[i].second;</span><br><span class="line">    for (int i &#x3D; 0; i &lt; m; i++) &#123;</span><br><span class="line">        int spf, cover;</span><br><span class="line">        cin &gt;&gt; spf &gt;&gt; cover;</span><br><span class="line">        spfs[spf] +&#x3D; cover;</span><br><span class="line">    &#125;</span><br><span class="line">    sort(cows, cows + n);</span><br><span class="line">    int res &#x3D; 0;</span><br><span class="line">    spfs[0] &#x3D; spfs[1001] &#x3D; 1;</span><br><span class="line">    for (int i &#x3D; n - 1; i &gt;&#x3D; 0; i--) &#123;</span><br><span class="line">        auto spf &#x3D; spfs.upper_bound(cows[i].second);</span><br><span class="line">        spf--;</span><br><span class="line">        if (spf-&gt;first &gt;&#x3D; cows[i].first) &#123;</span><br><span class="line">            res++;</span><br><span class="line">            if (--spf-&gt;second &#x3D;&#x3D; 0)</span><br><span class="line">                spfs.erase(spf);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    cout &lt;&lt; res &lt;&lt; endl;</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="ACWING111-畜栏预定"><a href="#ACWING111-畜栏预定" class="headerlink" title="ACWING111.畜栏预定"></a><a href="https://www.acwing.com/problem/content/113/" target="_blank" rel="noopener">ACWING111.畜栏预定</a></h2><p>按照开始吃草的时间把牛排序，用小根堆维护所有畜栏中最后一头牛结束吃草的时间的最小值，每循环到一头牛，如果这头牛的吃草开始时间比这个小根堆的堆顶大，则把这个牛插入到这个小根堆堆顶对应的畜栏中，再重新维护小根堆；如果小根堆的堆顶比这头牛的开始吃草时间大，则新建一个畜栏，插入到小根堆中</p>
+<p>这种策略成功的原因在于：把每个畜栏的时间都充分利用，如果存在多个畜栏可以存放此牛，则选择最后一头牛结束吃草时间最小的畜栏，这样可以充分利用每个畜栏的时间；把每个牛的开始吃草时间从小到大排序的原因是，这样就可以让后面的牛插入在畜栏的后面，如果不排序，则每个畜栏前面可能有时间空隙放牛，这是不符合要求的，很难做出来</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;bits&#x2F;stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line">typedef pair&lt;int, int&gt; PII;</span><br><span class="line">const int N &#x3D; 50010;</span><br><span class="line"></span><br><span class="line">int n;</span><br><span class="line">int id[N];</span><br><span class="line">pair&lt;PII, int&gt; cows[N];</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">    cin &gt;&gt; n;</span><br><span class="line">    for (int i &#x3D; 0; i &lt; n; i++) &#123;</span><br><span class="line">        cin &gt;&gt; cows[i].first.first &gt;&gt; cows[i].first.second;</span><br><span class="line">        cows[i].second &#x3D; i;</span><br><span class="line">    &#125;</span><br><span class="line">    sort(cows, cows + n);</span><br><span class="line"></span><br><span class="line">    priority_queue&lt;PII, vector&lt;PII&gt;, greater&lt;PII&gt; &gt; heap;</span><br><span class="line">    for (int i &#x3D; 0; i &lt; n; i++) &#123;</span><br><span class="line">        if (heap.empty() || heap.top().first &gt;&#x3D; cows[i].first.first) &#123;</span><br><span class="line">            id[cows[i].second] &#x3D; heap.size() + 1;</span><br><span class="line">            heap.push(&#123;cows[i].first.second, heap.size() + 1&#125;);</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            auto stall &#x3D; heap.top();</span><br><span class="line">            heap.pop();</span><br><span class="line">            stall.first &#x3D; cows[i].first.second;</span><br><span class="line">            id[cows[i].second] &#x3D; stall.second;</span><br><span class="line">            heap.push(stall);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    cout &lt;&lt; heap.size() &lt;&lt; endl;</span><br><span class="line">    for (int i &#x3D; 0; i &lt; n; i++) cout &lt;&lt; id[i] &lt;&lt; endl;</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>未完待续</p>
+</blockquote>
+<p><img src="https://ae01.alicdn.com/kf/Hef70c4f4a75e40738e47ea16124d9091W.jpg" alt=""></p>
+]]></content>
+      <categories>
+        <category>算法竞赛进阶指南</category>
+      </categories>
+      <tags>
+        <tag>ACM</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>API之stringstream用法</title>
     <url>/2020/05/30/API%E4%B9%8Bstringstream%E7%94%A8%E6%B3%95/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="API之stringstream用法"><a href="#API之stringstream用法" class="headerlink" title="API之stringstream用法"></a>API之stringstream用法</h1><p>本文主要介绍 C++ 中 stringstream 类的常见用法。</p>
@@ -306,25 +279,6 @@
       </tags>
   </entry>
   <entry>
-    <title>CODEFORCES 800 1360B.Honest Coach</title>
-    <url>/2020/05/30/CODEFORCES1360B/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="1360B-Honest-Coach"><a href="#1360B-Honest-Coach" class="headerlink" title="1360B.Honest Coach"></a>1360B.Honest Coach</h1><h2 id="原题链接"><a href="#原题链接" class="headerlink" title="原题链接"></a>原题链接</h2><p><a href="https://codeforces.com/problemset/problem/1360/B?csrf_token=6ef612f8a17a9c506cca94a69af1a61e" target="_blank" rel="noopener">1360B.Honest Coach</a></p>
-<h2 id="题目大意"><a href="#题目大意" class="headerlink" title="题目大意"></a>题目大意</h2><p>第一行输入测试数目</p>
-<p>第二行输入队员个数</p>
-<p><strong>描述</strong>：把队员分成两队，每队最少为<code>1</code>人，求<code>abs</code>|第一个队的最大值减去第二个队的最小值|最小</p>
-<h2 id="解题思路"><a href="#解题思路" class="headerlink" title="解题思路"></a>解题思路</h2><p>贪心的思想，先排序，再贪心</p>
-<h2 id="解题代码"><a href="#解题代码" class="headerlink" title="解题代码"></a>解题代码</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line">#include &lt;algorithm&gt;</span><br><span class="line">#include &lt;iostream&gt;</span><br><span class="line">#include &lt;vector&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">int main() &#123;</span><br><span class="line">    int t;</span><br><span class="line">    scanf(&quot;%d&quot;, &amp;t);</span><br><span class="line">    while (t--) &#123;</span><br><span class="line">        int n;</span><br><span class="line">        scanf(&quot;%d&quot;, &amp;n);</span><br><span class="line">        vector&lt;int&gt; nums(n);</span><br><span class="line"></span><br><span class="line">        for (auto &amp;x : nums) &#123;</span><br><span class="line">            scanf(&quot;%d&quot;, &amp;x);</span><br><span class="line">        &#125;</span><br><span class="line">		    </span><br><span class="line">        sort(nums.begin(), nums.end());</span><br><span class="line">        int result &#x3D; 0x3f3f3f3f;</span><br><span class="line">        for (int i &#x3D; 1; i &lt; n; i++) &#123;</span><br><span class="line">            result &#x3D; min(result, abs(nums[i] - nums[i - 1]));</span><br><span class="line">        &#125;</span><br><span class="line">        printf(&quot;%d\n&quot;, result);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><img src="https://ae01.alicdn.com/kf/He2534bd81da14f7cac54ae321362c2e1p.jpg" alt=""></p>
-]]></content>
-      <categories>
-        <category>CODEFORCES</category>
-      </categories>
-      <tags>
-        <tag>CODEFORCES800</tag>
-        <tag>acm/greedy</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>CODEFORCES 1100 1360C.Similar Pairs</title>
     <url>/2020/05/31/CODEFORCES1360C/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="1360C-Similar-Pairs"><a href="#1360C-Similar-Pairs" class="headerlink" title="1360C.Similar Pairs"></a>1360C.Similar Pairs</h1><h2 id="原题链接"><a href="#原题链接" class="headerlink" title="原题链接"></a>原题链接</h2><p><a href="https://codeforces.com/problemset/problem/1360/C" target="_blank" rel="noopener">1360C.Similar Pairs</a></p>
@@ -341,27 +295,27 @@
         <category>CODEFORCES</category>
       </categories>
       <tags>
-        <tag>acm/greedy</tag>
         <tag>CODEFORCES1100</tag>
+        <tag>acm/greedy</tag>
       </tags>
   </entry>
   <entry>
-    <title>CODEFORCES 800 1360A.Minimal Square</title>
-    <url>/2020/05/28/CODEFORCES1360A/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="1360A-Minimal-Square"><a href="#1360A-Minimal-Square" class="headerlink" title="1360A.Minimal Square"></a>1360A.Minimal Square</h1><h2 id="原题链接"><a href="#原题链接" class="headerlink" title="原题链接"></a>原题链接</h2><p><a href="http://codeforces.com/problemset/problem/1360/A" target="_blank" rel="noopener">1360A.Minimal Square</a></p>
+    <title>CODEFORCES 800 1360B.Honest Coach</title>
+    <url>/2020/05/30/CODEFORCES1360B/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="1360B-Honest-Coach"><a href="#1360B-Honest-Coach" class="headerlink" title="1360B.Honest Coach"></a>1360B.Honest Coach</h1><h2 id="原题链接"><a href="#原题链接" class="headerlink" title="原题链接"></a>原题链接</h2><p><a href="https://codeforces.com/problemset/problem/1360/B?csrf_token=6ef612f8a17a9c506cca94a69af1a61e" target="_blank" rel="noopener">1360B.Honest Coach</a></p>
 <h2 id="题目大意"><a href="#题目大意" class="headerlink" title="题目大意"></a>题目大意</h2><p>第一行输入测试数目</p>
-<p>从第二行开始依次输入每个测试样例的<code>a</code>和<code>b</code></p>
-<p><strong>描述</strong>：<code>a</code>代表长，<code>b</code>代表宽，要求输出一个正方形的最小面积，这个正方形把两个相同的长方形(样例输入构成的长方形)覆盖，且这两个长方形不重合，每个长方形的边与正方形平行</p>
-<h2 id="解题思路"><a href="#解题思路" class="headerlink" title="解题思路"></a>解题思路</h2><p>求出长和宽的最小值乘以<code>2</code>，之后将所得的值与长和宽比较得出的最大值作为目标正方形的边长，再输出面积</p>
-<h2 id="解题代码"><a href="#解题代码" class="headerlink" title="解题代码"></a>解题代码</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;bits&#x2F;stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">int main() &#123;</span><br><span class="line">    int t;</span><br><span class="line">    scanf(&quot;%d&quot;, &amp;t);</span><br><span class="line">    while (t--) &#123;</span><br><span class="line">        int a, b;</span><br><span class="line">        scanf(&quot;%d%d&quot;, &amp;a, &amp;b);</span><br><span class="line">        int temp &#x3D; min(a, b);</span><br><span class="line">        int side &#x3D; 2 * temp;</span><br><span class="line">        int s &#x3D; pow(max(side, max(a, b)), 2);</span><br><span class="line">        printf(&quot;%d\n&quot;, s);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>第二行输入队员个数</p>
+<p><strong>描述</strong>：把队员分成两队，每队最少为<code>1</code>人，求<code>abs</code>|第一个队的最大值减去第二个队的最小值|最小</p>
+<h2 id="解题思路"><a href="#解题思路" class="headerlink" title="解题思路"></a>解题思路</h2><p>贪心的思想，先排序，再贪心</p>
+<h2 id="解题代码"><a href="#解题代码" class="headerlink" title="解题代码"></a>解题代码</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line">#include &lt;algorithm&gt;</span><br><span class="line">#include &lt;iostream&gt;</span><br><span class="line">#include &lt;vector&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">int main() &#123;</span><br><span class="line">    int t;</span><br><span class="line">    scanf(&quot;%d&quot;, &amp;t);</span><br><span class="line">    while (t--) &#123;</span><br><span class="line">        int n;</span><br><span class="line">        scanf(&quot;%d&quot;, &amp;n);</span><br><span class="line">        vector&lt;int&gt; nums(n);</span><br><span class="line"></span><br><span class="line">        for (auto &amp;x : nums) &#123;</span><br><span class="line">            scanf(&quot;%d&quot;, &amp;x);</span><br><span class="line">        &#125;</span><br><span class="line">		    </span><br><span class="line">        sort(nums.begin(), nums.end());</span><br><span class="line">        int result &#x3D; 0x3f3f3f3f;</span><br><span class="line">        for (int i &#x3D; 1; i &lt; n; i++) &#123;</span><br><span class="line">            result &#x3D; min(result, abs(nums[i] - nums[i - 1]));</span><br><span class="line">        &#125;</span><br><span class="line">        printf(&quot;%d\n&quot;, result);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p><img src="https://ae01.alicdn.com/kf/He2534bd81da14f7cac54ae321362c2e1p.jpg" alt=""></p>
 ]]></content>
       <categories>
         <category>CODEFORCES</category>
       </categories>
       <tags>
+        <tag>acm/greedy</tag>
         <tag>CODEFORCES800</tag>
-        <tag>acm/math</tag>
       </tags>
   </entry>
   <entry>
@@ -380,8 +334,35 @@
         <category>CODEFORCES</category>
       </categories>
       <tags>
-        <tag>acm/math</tag>
         <tag>CODEFORCES1300</tag>
+        <tag>acm/math</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>0x04二分</title>
+    <url>/2020/05/31/0x04%E4%BA%8C%E5%88%86/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="0x04二分"><a href="#0x04二分" class="headerlink" title="0x04二分"></a>0x04二分</h1><h2 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h2><p>二分的基础的用法是在单调序列或单调函数中进行查找，因此当问题的答案具有单调性时，就可以通过二分把求解问题转换为判定（根据复杂度理论，判定的难度小于求解），进一步地，我们还可以扩展到通过三分法去解决单峰函数的极值以及相关问题</p>
+<p>对于整数域上的二分，需要注意中止边界、左右区间取舍时的开闭情况，避免漏掉答案或者造成死循环；对于实数域上的二分，需要注意精度问题</p>
+<h2 id="整数集合上的二分"><a href="#整数集合上的二分" class="headerlink" title="整数集合上的二分"></a>整数集合上的二分</h2><p>本文章的写法保证最终答案处于闭区间<code>[l,r]</code>以内，循环以<code>l=r</code>结束，每次二分的中间值<code>mid</code>会归属于左半段与右半段二者之一</p>
+<p><strong>模板如下</strong>：</p>
+<p>在单调递增序列<code>a</code>中查找<code>&gt;=x</code>的数中最小的一个（<code>x</code>或<code>x</code>的后继）<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">while (l &lt; r) &#123;</span><br><span class="line">    int mid &#x3D; (l + r) &gt;&gt; 1;</span><br><span class="line">    if (a[mid] &gt;&#x3D; x) r &#x3D; mid; else l &#x3D; mid + 1;</span><br><span class="line">&#125;</span><br><span class="line">return a[l];</span><br></pre></td></tr></table></figure><br>在单调递增序列<code>a</code>中查找<code>&lt;=x</code>的数中最大的一个（<code>x</code>或<code>x</code>的前驱）<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">while (l &lt; r) &#123;</span><br><span class="line">    int mid &#x3D; (l + r + 1) &gt;&gt; 1;</span><br><span class="line">    if (a[mid] &lt;&#x3D; x) l &#x3D; mid; else r &#x3D; mid - 1;</span><br><span class="line">&#125;</span><br><span class="line">return a[l];</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>如上面两段代码所示，这种二分写法可能会有两种形式：<br>1.缩小范围时，<code>r=mid</code>， <code>l=mid+1</code>，取中间值时，<code>mid=(l+r)&gt;&gt;1</code><br>2.缩小范围时，<code>l=mid</code>， <code>r=mid-1</code>，取中间值时，<code>mid=(l+r+1)&gt;&gt;1</code><br>如果不对<code>mid</code>的取法加以区分，假如第二段代码也采用<code>mid=(l+r)&gt;&gt;1</code>，那么当<code>r-l</code>等于<code>1</code>时，就有<code>mid=(l+r)&gt;&gt;1=l</code>，接下来若进入<code>l=mid</code>分支，可行区间未缩小，造成死循环；若进入<code>r=mid-1</code>分支，造成<code>l&gt;r</code>，循环不能以<code>l=r</code>结束；相反若<code>mid=(l+r+1)&gt;&gt;1</code> ，则第二段代码则正确得到结果。因此对两个形式采用配套的<code>mid</code>取法是必要的。此外还要注意：我们在二分实现中采用了右移运算符<code>&gt;&gt;1</code>，而不是整数除法<code>/2</code>。这是因为右移运算是向下取整，而整数除法是向<code>0</code>取整，在二分值域包含负数时后者不能正常工作。</p>
+</blockquote>
+<p><strong>我用一个例题来体现这两个模板的差别</strong>：<br><a href="https://www.acwing.com/problem/content/791/" target="_blank" rel="noopener">ACWING789.数的范围</a><br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;bits&#x2F;stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">const int MAXN &#x3D; 1e5 + 10;</span><br><span class="line">int nums[MAXN];</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">    int n, q;</span><br><span class="line">    scanf(&quot;%d%d&quot;, &amp;n, &amp;q);</span><br><span class="line">    for (int i &#x3D; 0; i &lt; n; i++) &#123;</span><br><span class="line">        scanf(&quot;%d&quot;, &amp;nums[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    while (q--) &#123;</span><br><span class="line">        int l &#x3D; 0, r &#x3D; n - 1;</span><br><span class="line">        int x;</span><br><span class="line">        scanf(&quot;%d&quot;, &amp;x);</span><br><span class="line">        while (l &lt; r) &#123;</span><br><span class="line">            int mid &#x3D; (l + r) &gt;&gt; 1;</span><br><span class="line">            if (nums[mid] &gt;&#x3D; x) r &#x3D; mid; else l &#x3D; mid + 1;</span><br><span class="line">        &#125;</span><br><span class="line">        if (nums[l] !&#x3D; x) printf(&quot;-1 -1\n&quot;);</span><br><span class="line">        else &#123;</span><br><span class="line">            cout &lt;&lt; l &lt;&lt; &quot; &quot;;</span><br><span class="line">            int l &#x3D; 0, r &#x3D; n - 1;</span><br><span class="line">            while (l &lt; r) &#123;</span><br><span class="line">                int mid &#x3D; (l + r + 1) &gt;&gt; 1;</span><br><span class="line">                if (nums[mid] &lt;&#x3D; x) l &#x3D; mid; else r &#x3D; mid - 1;</span><br><span class="line">            &#125;  </span><br><span class="line">            cout &lt;&lt; l &lt;&lt; endl;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>可以看出这两个模板的另一个区别：当目标值不止一个时，第一个模板是取到左边，也就是在单调递增序列<code>a</code>中查找<code>&gt;=x</code>的数中最小的一个；第二个模板是取到右边，也就是在单调递增序列<code>a</code>中查找<code>&lt;=x</code>的数中最大的一个；当目标值只有只有一个时，两个模板的结果没有差别  </p>
+<p>仔细分析这两种<code>mid</code>的取法，我们还发现：<code>mid=(l+r)&gt;&gt;1</code>不会取到<code>r</code>这个值，<code>mid=(l+r+1)&gt;&gt;1</code>不会取到<code>l</code>这个值，我们可以利用这一性质来处理无解的情况，把最初的二分区间分别扩大为<code>[1,n+1]</code>和<code>[0,n]</code>，把<code>a</code>数组的一个越界下标包含进来。如果最后二分终止于扩大后的这个越界下标上，则说明目标值不在<code>a</code>中；当然我们也可以直接看最终求得的<code>l</code>下标在<code>a</code>数组中对应的值是否为目标值  </p>
+<p>二分的终止条件就是<code>l==r</code>，该值就是答案所在位置</p>
+<p><code>C++STL</code>的<code>lower_bound</code>和<code>upper_bound</code>函数实现了在一个序列中二分查找某个整数<code>x</code>的后继</p>
+<blockquote>
+<p>未完待续</p>
+</blockquote>
+<p><img src="https://s1.ax1x.com/2020/05/31/t1moIH.jpg" alt=""></p>
+]]></content>
+      <categories>
+        <category>算法竞赛进阶指南</category>
+      </categories>
+      <tags>
+        <tag>ACM</tag>
       </tags>
   </entry>
   <entry>
@@ -422,6 +403,21 @@
       </categories>
       <tags>
         <tag>微信公众号文章——随笔</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>LEETCODE1/PYTHON解法/两数之和</title>
+    <url>/2020/06/03/LEETCODE1-PYTHON%E8%A7%A3%E6%B3%95-%E4%B8%A4%E6%95%B0%E4%B9%8B%E5%92%8C/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="1-两数之和"><a href="#1-两数之和" class="headerlink" title="1.两数之和"></a><a href="https://leetcode-cn.com/problems/two-sum/" target="_blank" rel="noopener">1.两数之和</a></h1><h2 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">class Solution:</span><br><span class="line">    def twoSum(self, nums: List[int], target: int) -&gt; List[int]:</span><br><span class="line">        dic &#x3D; &#123;&#125;</span><br><span class="line">        for i in range(len(nums)):</span><br><span class="line">            if nums[i] in dic:</span><br><span class="line">                return [dic[nums[i]], i]</span><br><span class="line">            else:</span><br><span class="line">                dic[target - nums[i]] &#x3D; i</span><br></pre></td></tr></table></figure>
+<p><img src="https://ae01.alicdn.com/kf/He2534bd81da14f7cac54ae321362c2e1p.jpg" alt=""></p>
+]]></content>
+      <categories>
+        <category>LEETCODE/PYTHON</category>
+      </categories>
+      <tags>
+        <tag>LEETCODE</tag>
+        <tag>PYTHON</tag>
+        <tag>hash</tag>
       </tags>
   </entry>
   <entry>
@@ -537,6 +533,21 @@
       </tags>
   </entry>
   <entry>
+    <title>LEETCODE2/PYTHON解法/两数相加</title>
+    <url>/2020/06/03/LEETCODE2-PYTHON%E8%A7%A3%E6%B3%95-%E4%B8%A4%E6%95%B0%E7%9B%B8%E5%8A%A0/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="2-两数相加"><a href="#2-两数相加" class="headerlink" title="2.两数相加"></a><a href="https://leetcode-cn.com/problems/add-two-numbers/" target="_blank" rel="noopener">2.两数相加</a></h1><h2 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># Definition for singly-linked list.</span><br><span class="line"># class ListNode:</span><br><span class="line">#     def __init__(self, x):</span><br><span class="line">#         self.val &#x3D; x</span><br><span class="line">#         self.next &#x3D; None</span><br><span class="line"></span><br><span class="line">class Solution:</span><br><span class="line">    def addTwoNumbers(self, l1: ListNode, l2: ListNode) -&gt; ListNode:</span><br><span class="line">        dummy &#x3D; cur &#x3D;ListNode(0)</span><br><span class="line">        carry &#x3D; 0</span><br><span class="line">        while l1 or l2 or carry:</span><br><span class="line">            if l1:</span><br><span class="line">                carry +&#x3D; l1.val</span><br><span class="line">                l1 &#x3D; l1.next</span><br><span class="line">            if l2:</span><br><span class="line">                carry +&#x3D; l2.val</span><br><span class="line">                l2 &#x3D; l2.next</span><br><span class="line">            cur.next &#x3D; ListNode(carry%10)</span><br><span class="line">            cur &#x3D; cur.next</span><br><span class="line">            carry &#x2F;&#x2F;&#x3D;10</span><br><span class="line">        return dummy.next</span><br></pre></td></tr></table></figure>
+<p><img src="https://ae01.alicdn.com/kf/He2534bd81da14f7cac54ae321362c2e1p.jpg" alt=""></p>
+]]></content>
+      <categories>
+        <category>LEETCODE/PYTHON</category>
+      </categories>
+      <tags>
+        <tag>LEETCODE</tag>
+        <tag>PYTHON</tag>
+        <tag>ListNode</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>translate first day</title>
     <url>/2020/05/31/translate-first-day/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="A-week-of-distractions-from-Trump-shows-a-leader-in-crisis"><a href="#A-week-of-distractions-from-Trump-shows-a-leader-in-crisis" class="headerlink" title="A week of distractions from Trump shows a leader in crisis"></a>A week of distractions from Trump shows a leader in crisis</h1><p>(CNN)On Monday, as the nation marked Memorial Day, President Donald Trump mocked his campaign rival for wearing a face mask. On Wednesday, as the national death toll from coronavirus reached a wretched milestone, Trump and his family flew to Florida in an attempted focus on space travel.</p>
@@ -579,6 +590,27 @@
       <tags>
         <tag>TRANSLATE</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>LEETCODE3/PYTHON解法/无重复字符的最长子串</title>
+    <url>/2020/06/03/LEETCODE3-PYTHON%E8%A7%A3%E6%B3%95-%E6%97%A0%E9%87%8D%E5%A4%8D%E5%AD%97%E7%AC%A6%E7%9A%84%E6%9C%80%E9%95%BF%E5%AD%90%E4%B8%B2/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="3-无重复字符的最长子串"><a href="#3-无重复字符的最长子串" class="headerlink" title="3.无重复字符的最长子串"></a><a href="https://leetcode-cn.com/problems/longest-substring-without-repeating-characters/" target="_blank" rel="noopener">3.无重复字符的最长子串</a></h1><h2 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">class Solution:</span><br><span class="line">    def lengthOfLongestSubstring(self, s: str) -&gt; int:</span><br><span class="line">        d &#x3D; &#123;&#125;</span><br><span class="line">        p1 &#x3D; p2 &#x3D; m &#x3D; 0</span><br><span class="line">        </span><br><span class="line">        while p2 &lt; len(s):</span><br><span class="line">            if s[p2] not in d:</span><br><span class="line">                d[s[p2]] &#x3D; True</span><br><span class="line">                p2 +&#x3D; 1</span><br><span class="line">                m &#x3D; max(len(d), m)</span><br><span class="line">            else:</span><br><span class="line">                del d[s[p1]]</span><br><span class="line">                p1 +&#x3D; 1</span><br><span class="line">            </span><br><span class="line">        return m</span><br></pre></td></tr></table></figure>
+<p><img src="https://ae01.alicdn.com/kf/He2534bd81da14f7cac54ae321362c2e1p.jpg" alt=""></p>
+]]></content>
+      <categories>
+        <category>LEETCODE/PYTHON</category>
+      </categories>
+      <tags>
+        <tag>LEETCODE</tag>
+        <tag>PYTHON</tag>
+        <tag>window</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>计算机网络基础总结(2)</title>
+    <url>/2020/06/03/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80%E6%80%BB%E7%BB%93-2/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="计算机网络基础总结-2"><a href="#计算机网络基础总结-2" class="headerlink" title="计算机网络基础总结(2)"></a>计算机网络基础总结(2)</h1><p>1. </p>
+]]></content>
   </entry>
   <entry>
     <title>计算机网络基础总结(1)</title>
@@ -642,18 +674,22 @@
       </tags>
   </entry>
   <entry>
-    <title>LEETCODE1/PYTHON解法/两数之和</title>
-    <url>/2020/06/03/LEETCODE1-PYTHON%E8%A7%A3%E6%B3%95-%E4%B8%A4%E6%95%B0%E4%B9%8B%E5%92%8C/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="1-两数之和"><a href="#1-两数之和" class="headerlink" title="1.两数之和"></a><a href="https://leetcode-cn.com/problems/two-sum/" target="_blank" rel="noopener">1.两数之和</a></h1><h2 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">class Solution:</span><br><span class="line">    def twoSum(self, nums: List[int], target: int) -&gt; List[int]:</span><br><span class="line">        dic &#x3D; &#123;&#125;</span><br><span class="line">        for i in range(len(nums)):</span><br><span class="line">            if nums[i] in dic:</span><br><span class="line">                return [dic[nums[i]], i]</span><br><span class="line">            else:</span><br><span class="line">                dic[target - nums[i]] &#x3D; i</span><br></pre></td></tr></table></figure>
+    <title>CODEFORCES 800 1360A.Minimal Square</title>
+    <url>/2020/05/28/CODEFORCES1360A/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="1360A-Minimal-Square"><a href="#1360A-Minimal-Square" class="headerlink" title="1360A.Minimal Square"></a>1360A.Minimal Square</h1><h2 id="原题链接"><a href="#原题链接" class="headerlink" title="原题链接"></a>原题链接</h2><p><a href="http://codeforces.com/problemset/problem/1360/A" target="_blank" rel="noopener">1360A.Minimal Square</a></p>
+<h2 id="题目大意"><a href="#题目大意" class="headerlink" title="题目大意"></a>题目大意</h2><p>第一行输入测试数目</p>
+<p>从第二行开始依次输入每个测试样例的<code>a</code>和<code>b</code></p>
+<p><strong>描述</strong>：<code>a</code>代表长，<code>b</code>代表宽，要求输出一个正方形的最小面积，这个正方形把两个相同的长方形(样例输入构成的长方形)覆盖，且这两个长方形不重合，每个长方形的边与正方形平行</p>
+<h2 id="解题思路"><a href="#解题思路" class="headerlink" title="解题思路"></a>解题思路</h2><p>求出长和宽的最小值乘以<code>2</code>，之后将所得的值与长和宽比较得出的最大值作为目标正方形的边长，再输出面积</p>
+<h2 id="解题代码"><a href="#解题代码" class="headerlink" title="解题代码"></a>解题代码</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;bits&#x2F;stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">int main() &#123;</span><br><span class="line">    int t;</span><br><span class="line">    scanf(&quot;%d&quot;, &amp;t);</span><br><span class="line">    while (t--) &#123;</span><br><span class="line">        int a, b;</span><br><span class="line">        scanf(&quot;%d%d&quot;, &amp;a, &amp;b);</span><br><span class="line">        int temp &#x3D; min(a, b);</span><br><span class="line">        int side &#x3D; 2 * temp;</span><br><span class="line">        int s &#x3D; pow(max(side, max(a, b)), 2);</span><br><span class="line">        printf(&quot;%d\n&quot;, s);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p><img src="https://ae01.alicdn.com/kf/He2534bd81da14f7cac54ae321362c2e1p.jpg" alt=""></p>
 ]]></content>
       <categories>
-        <category>LEETCODE/PYTHON</category>
+        <category>CODEFORCES</category>
       </categories>
       <tags>
-        <tag>PYTHON</tag>
-        <tag>LEETCODE</tag>
-        <tag>hash</tag>
+        <tag>CODEFORCES800</tag>
+        <tag>acm/math</tag>
       </tags>
   </entry>
 </search>

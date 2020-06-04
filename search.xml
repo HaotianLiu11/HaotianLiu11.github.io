@@ -1,41 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>0x01位运算例题</title>
-    <url>/2020/05/29/0x01%E4%BD%8D%E8%BF%90%E7%AE%97%E4%BE%8B%E9%A2%98/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="0x01位运算例题"><a href="#0x01位运算例题" class="headerlink" title="0x01位运算例题"></a>0x01位运算例题</h1><blockquote>
-<p>点击每道题题目即可获取原题链接</p>
-</blockquote>
-<h2 id="a-b"><a href="#a-b" class="headerlink" title="a^b"></a><a href="https://www.acwing.com/problem/content/91/" target="_blank" rel="noopener">a^b</a></h2><h3 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h3><p><code>long long</code>可以表示的最大值为<code>922 3372 0368 5477 5807</code><br><code>unsigned long long</code>可以表示的最大值为<code>1844 6744 0737 0955 1615</code>  </p>
-<p>由此观之<code>a^b</code>大于<code>ULL</code>类型可以表示的最大值，所以要用快速幂的思想来求解这道题。</p>
-<p><img src="https://ae01.alicdn.com/kf/H4fabba6e8a6644e88cb9ee4fe512f4ecH.jpg" alt=""><br>且取模的性质如下</p>
-<ul>
-<li>(a + b) % p = (a % p + b % p) % p</li>
-<li>(a - b) % p = (a % p - b % p) % p </li>
-<li>(a <em> b) % p = (a % p </em> b % p) % p </li>
-<li>a ^ b % p = ((a % p)^b) % p </li>
-</ul>
-<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;bits&#x2F;stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">int power(int a, int b, int c) &#123;</span><br><span class="line">    int ans &#x3D; 1 % c;</span><br><span class="line">    for (; b; b &gt;&gt;&#x3D; 1) &#123;</span><br><span class="line">        if (b &amp; 1) ans &#x3D; (long long)ans * a % c;</span><br><span class="line">        a &#x3D; (long long)a * a % c;</span><br><span class="line">    &#125;</span><br><span class="line">    return ans;</span><br><span class="line">&#125;</span><br><span class="line">int main() &#123;</span><br><span class="line">    int a, b, p;</span><br><span class="line">    scanf(&quot;%d%d%d&quot;, &amp;a, &amp;b, &amp;p);</span><br><span class="line">    int ans &#x3D; power(a, b, p);</span><br><span class="line">    printf(&quot;%d&quot;, ans);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="复杂度"><a href="#复杂度" class="headerlink" title="复杂度"></a>复杂度</h3><p>我们可以用<code>b&amp;1</code>运算表示<code>b</code>的二进制下的最低位，并用<code>b&gt;&gt;1</code>来舍去最低位。在递归的过程中把<code>&gt;&gt;</code>和<code>&amp;</code>结合，其时间复杂度为<code>O(logb)</code></p>
-<h2 id="64位整数乘法"><a href="#64位整数乘法" class="headerlink" title="64位整数乘法"></a><a href="https://www.acwing.com/problem/content/92/" target="_blank" rel="noopener">64位整数乘法</a></h2><h3 id="代码-1"><a href="#代码-1" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;bits&#x2F;stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">typedef long long LL;</span><br><span class="line">LL power(LL a, LL b, LL c) &#123;</span><br><span class="line">    LL ans &#x3D; 0;</span><br><span class="line">    for (; b; b &gt;&gt;&#x3D; 1) &#123;</span><br><span class="line">        if (b &amp; 1) ans &#x3D; (ans + a) % c;</span><br><span class="line">        a &#x3D; a * 2 % c;</span><br><span class="line">    &#125;</span><br><span class="line">    return ans;</span><br><span class="line">&#125;</span><br><span class="line">int main() &#123;</span><br><span class="line">    LL a, b, p;</span><br><span class="line">    scanf(&quot;%lld%lld%lld&quot;, &amp;a, &amp;b, &amp;p);</span><br><span class="line">    LL ans &#x3D; power(a, b, p);</span><br><span class="line">    printf(&quot;%lld&quot;, ans);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="复杂度-1"><a href="#复杂度-1" class="headerlink" title="复杂度"></a>复杂度</h3><p>我们可以用<code>b&amp;1</code>运算表示<code>b</code>的二进制下的最低位，并用<code>b&gt;&gt;1</code>来舍去最低位。在递归的过程中把<code>&gt;&gt;</code>和<code>&amp;</code>结合，其时间复杂度为<code>O(logb)</code>，与上一题不同的是位数问题，但是每次<code>%p</code>之后都能保证不超过<code>2*10^18</code>，在<code>long long</code>的范围内</p>
-<h2 id="最短Hamilton路径"><a href="#最短Hamilton路径" class="headerlink" title="最短Hamilton路径"></a><a href="https://www.acwing.com/problem/content/93/" target="_blank" rel="noopener">最短Hamilton路径</a></h2><h3 id="分析-1"><a href="#分析-1" class="headerlink" title="分析"></a>分析</h3><p>我们可以采用朴素算法,其时间复杂度为<code>O(n*n!)</code>，<code>n!</code>为枚举<code>n</code>个点的全排列，<code>n</code>代表枚举路径的长度求得结果，这个算法的时间复杂度太高，不符合。而我们可以用二进制状态压缩<code>DP</code>来把时间复杂度优化到<code>O((n^2)*(2^n))</code>,我们用<code>F[i,j]</code>表示点被经过的状态对应二进制数<code>i</code>，且目前处于点<code>j</code>的最短路径   </p>
-<p>在起点时<code>F[1,0]=0</code>，即目前处于点<code>0</code>且只经过了点<code>0</code>的最短路径为<code>0</code>。为方便起见，我们将数组中其他元素设为无穷大，最终目的是求<code>F[(1&lt;&lt;n),n-1]</code>的值，即经过所有点且最终处于<code>n-1</code>的最短路径</p>
-<p>在任意时刻，有公式<code>F[i,j]=min(F[i,j],F[i^(1&lt;&lt;j),k]+weight[k,j])</code>，根据分析可得<code>k</code>一定是倒数第二个经过的点。我们枚举<code>k</code>，当<code>k</code>对应在<code>i</code>的二进制为<code>1</code>时，我们讨论这种情况并比较</p>
-<h3 id="代码-2"><a href="#代码-2" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;bits&#x2F;stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">const int N &#x3D; 20, M &#x3D; 1 &lt;&lt; 20;</span><br><span class="line">int weight[N][N], F[M][N];</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">    int n;</span><br><span class="line">    scanf(&quot;%d&quot;, &amp;n);</span><br><span class="line">    for (int i &#x3D; 0; i &lt; n; i++)</span><br><span class="line">        for (int j &#x3D; 0; j &lt; n; j++)</span><br><span class="line">            scanf(&quot;%d&quot;, &amp;weight[i][j]);</span><br><span class="line"></span><br><span class="line">    memset(F, 0x3f, sizeof F);</span><br><span class="line">    F[1][0] &#x3D; 0;</span><br><span class="line">    for (int i &#x3D; 1; i &lt; 1 &lt;&lt; n; i++)</span><br><span class="line">        for (int j &#x3D; 0; j &lt; n; j++)</span><br><span class="line">            if (i &gt;&gt; j &amp; 1)</span><br><span class="line">                for (int k &#x3D; 0; k &lt; n; k++)</span><br><span class="line">                    if ((i ^ 1 &lt;&lt; j) &gt;&gt; k &amp; 1)</span><br><span class="line">                        F[i][j] &#x3D; min(F[i][j], F[i ^ 1 &lt;&lt; j][k] + weight[k][j]);</span><br><span class="line"></span><br><span class="line">    printf(&quot;%d&quot;, F[(1 &lt;&lt; n) - 1][n - 1]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>还差一题，未完待续</p>
-</blockquote>
-<p><img src="https://ae01.alicdn.com/kf/Hdd96bb61417945ca90a15b8b5b98b5a1g.jpg" alt=""></p>
-]]></content>
-      <categories>
-        <category>算法竞赛进阶指南</category>
-      </categories>
-      <tags>
-        <tag>ACM</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>0x01位运算</title>
     <url>/2020/05/28/0x01%E4%BD%8D%E8%BF%90%E7%AE%97/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="0x01-位-运-算"><a href="#0x01-位-运-算" class="headerlink" title="0x01 位 运 算"></a>0x01 位 运 算</h1><h2 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h2><ol>
@@ -192,6 +157,41 @@
       </tags>
   </entry>
   <entry>
+    <title>0x01位运算例题</title>
+    <url>/2020/05/29/0x01%E4%BD%8D%E8%BF%90%E7%AE%97%E4%BE%8B%E9%A2%98/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="0x01位运算例题"><a href="#0x01位运算例题" class="headerlink" title="0x01位运算例题"></a>0x01位运算例题</h1><blockquote>
+<p>点击每道题题目即可获取原题链接</p>
+</blockquote>
+<h2 id="a-b"><a href="#a-b" class="headerlink" title="a^b"></a><a href="https://www.acwing.com/problem/content/91/" target="_blank" rel="noopener">a^b</a></h2><h3 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h3><p><code>long long</code>可以表示的最大值为<code>922 3372 0368 5477 5807</code><br><code>unsigned long long</code>可以表示的最大值为<code>1844 6744 0737 0955 1615</code>  </p>
+<p>由此观之<code>a^b</code>大于<code>ULL</code>类型可以表示的最大值，所以要用快速幂的思想来求解这道题。</p>
+<p><img src="https://ae01.alicdn.com/kf/H4fabba6e8a6644e88cb9ee4fe512f4ecH.jpg" alt=""><br>且取模的性质如下</p>
+<ul>
+<li>(a + b) % p = (a % p + b % p) % p</li>
+<li>(a - b) % p = (a % p - b % p) % p </li>
+<li>(a <em> b) % p = (a % p </em> b % p) % p </li>
+<li>a ^ b % p = ((a % p)^b) % p </li>
+</ul>
+<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;bits&#x2F;stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">int power(int a, int b, int c) &#123;</span><br><span class="line">    int ans &#x3D; 1 % c;</span><br><span class="line">    for (; b; b &gt;&gt;&#x3D; 1) &#123;</span><br><span class="line">        if (b &amp; 1) ans &#x3D; (long long)ans * a % c;</span><br><span class="line">        a &#x3D; (long long)a * a % c;</span><br><span class="line">    &#125;</span><br><span class="line">    return ans;</span><br><span class="line">&#125;</span><br><span class="line">int main() &#123;</span><br><span class="line">    int a, b, p;</span><br><span class="line">    scanf(&quot;%d%d%d&quot;, &amp;a, &amp;b, &amp;p);</span><br><span class="line">    int ans &#x3D; power(a, b, p);</span><br><span class="line">    printf(&quot;%d&quot;, ans);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="复杂度"><a href="#复杂度" class="headerlink" title="复杂度"></a>复杂度</h3><p>我们可以用<code>b&amp;1</code>运算表示<code>b</code>的二进制下的最低位，并用<code>b&gt;&gt;1</code>来舍去最低位。在递归的过程中把<code>&gt;&gt;</code>和<code>&amp;</code>结合，其时间复杂度为<code>O(logb)</code></p>
+<h2 id="64位整数乘法"><a href="#64位整数乘法" class="headerlink" title="64位整数乘法"></a><a href="https://www.acwing.com/problem/content/92/" target="_blank" rel="noopener">64位整数乘法</a></h2><h3 id="代码-1"><a href="#代码-1" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;bits&#x2F;stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">typedef long long LL;</span><br><span class="line">LL power(LL a, LL b, LL c) &#123;</span><br><span class="line">    LL ans &#x3D; 0;</span><br><span class="line">    for (; b; b &gt;&gt;&#x3D; 1) &#123;</span><br><span class="line">        if (b &amp; 1) ans &#x3D; (ans + a) % c;</span><br><span class="line">        a &#x3D; a * 2 % c;</span><br><span class="line">    &#125;</span><br><span class="line">    return ans;</span><br><span class="line">&#125;</span><br><span class="line">int main() &#123;</span><br><span class="line">    LL a, b, p;</span><br><span class="line">    scanf(&quot;%lld%lld%lld&quot;, &amp;a, &amp;b, &amp;p);</span><br><span class="line">    LL ans &#x3D; power(a, b, p);</span><br><span class="line">    printf(&quot;%lld&quot;, ans);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="复杂度-1"><a href="#复杂度-1" class="headerlink" title="复杂度"></a>复杂度</h3><p>我们可以用<code>b&amp;1</code>运算表示<code>b</code>的二进制下的最低位，并用<code>b&gt;&gt;1</code>来舍去最低位。在递归的过程中把<code>&gt;&gt;</code>和<code>&amp;</code>结合，其时间复杂度为<code>O(logb)</code>，与上一题不同的是位数问题，但是每次<code>%p</code>之后都能保证不超过<code>2*10^18</code>，在<code>long long</code>的范围内</p>
+<h2 id="最短Hamilton路径"><a href="#最短Hamilton路径" class="headerlink" title="最短Hamilton路径"></a><a href="https://www.acwing.com/problem/content/93/" target="_blank" rel="noopener">最短Hamilton路径</a></h2><h3 id="分析-1"><a href="#分析-1" class="headerlink" title="分析"></a>分析</h3><p>我们可以采用朴素算法,其时间复杂度为<code>O(n*n!)</code>，<code>n!</code>为枚举<code>n</code>个点的全排列，<code>n</code>代表枚举路径的长度求得结果，这个算法的时间复杂度太高，不符合。而我们可以用二进制状态压缩<code>DP</code>来把时间复杂度优化到<code>O((n^2)*(2^n))</code>,我们用<code>F[i,j]</code>表示点被经过的状态对应二进制数<code>i</code>，且目前处于点<code>j</code>的最短路径   </p>
+<p>在起点时<code>F[1,0]=0</code>，即目前处于点<code>0</code>且只经过了点<code>0</code>的最短路径为<code>0</code>。为方便起见，我们将数组中其他元素设为无穷大，最终目的是求<code>F[(1&lt;&lt;n),n-1]</code>的值，即经过所有点且最终处于<code>n-1</code>的最短路径</p>
+<p>在任意时刻，有公式<code>F[i,j]=min(F[i,j],F[i^(1&lt;&lt;j),k]+weight[k,j])</code>，根据分析可得<code>k</code>一定是倒数第二个经过的点。我们枚举<code>k</code>，当<code>k</code>对应在<code>i</code>的二进制为<code>1</code>时，我们讨论这种情况并比较</p>
+<h3 id="代码-2"><a href="#代码-2" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;bits&#x2F;stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">const int N &#x3D; 20, M &#x3D; 1 &lt;&lt; 20;</span><br><span class="line">int weight[N][N], F[M][N];</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">    int n;</span><br><span class="line">    scanf(&quot;%d&quot;, &amp;n);</span><br><span class="line">    for (int i &#x3D; 0; i &lt; n; i++)</span><br><span class="line">        for (int j &#x3D; 0; j &lt; n; j++)</span><br><span class="line">            scanf(&quot;%d&quot;, &amp;weight[i][j]);</span><br><span class="line"></span><br><span class="line">    memset(F, 0x3f, sizeof F);</span><br><span class="line">    F[1][0] &#x3D; 0;</span><br><span class="line">    for (int i &#x3D; 1; i &lt; 1 &lt;&lt; n; i++)</span><br><span class="line">        for (int j &#x3D; 0; j &lt; n; j++)</span><br><span class="line">            if (i &gt;&gt; j &amp; 1)</span><br><span class="line">                for (int k &#x3D; 0; k &lt; n; k++)</span><br><span class="line">                    if ((i ^ 1 &lt;&lt; j) &gt;&gt; k &amp; 1)</span><br><span class="line">                        F[i][j] &#x3D; min(F[i][j], F[i ^ 1 &lt;&lt; j][k] + weight[k][j]);</span><br><span class="line"></span><br><span class="line">    printf(&quot;%d&quot;, F[(1 &lt;&lt; n) - 1][n - 1]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>还差一题，未完待续</p>
+</blockquote>
+<p><img src="https://ae01.alicdn.com/kf/Hdd96bb61417945ca90a15b8b5b98b5a1g.jpg" alt=""></p>
+]]></content>
+      <categories>
+        <category>算法竞赛进阶指南</category>
+      </categories>
+      <tags>
+        <tag>ACM</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>0x07贪心</title>
     <url>/2020/06/02/0x07%E8%B4%AA%E5%BF%83/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="0x07贪心"><a href="#0x07贪心" class="headerlink" title="0x07贪心"></a>0x07贪心</h1><h2 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h2><p>贪心是一种在每次决策时采取当前意义下最优策略的算法，因此，使用贪心法要求问题的整体最优性可以由局部最优性导出。贪心算法的正确性需要证明，常见的证明手段有：  </p>
@@ -272,6 +272,79 @@
       </tags>
   </entry>
   <entry>
+    <title>API之to_string用法</title>
+    <url>/2020/06/04/API%E4%B9%8Bto-string%E7%94%A8%E6%B3%95/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="API之to-string用法"><a href="#API之to-string用法" class="headerlink" title="API之to_string用法"></a>API之to_string用法</h1><h2 id="函数原型"><a href="#函数原型" class="headerlink" title="函数原型"></a>函数原型</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">string to_string (int val);</span><br><span class="line">string to_string (long val);</span><br><span class="line">string to_string (long long val);</span><br><span class="line">string to_string (unsigned val);</span><br><span class="line">string to_string (unsigned long val);</span><br><span class="line">string to_string (unsigned long long val);</span><br><span class="line">string to_string (float val);</span><br><span class="line">string to_string (double val);</span><br><span class="line">string to_string (long double val);</span><br></pre></td></tr></table></figure>
+<h2 id="功能"><a href="#功能" class="headerlink" title="功能"></a>功能</h2><p>将数值转化为字符串。返回对应的字符串。</p>
+<h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;iostream&gt;</span><br><span class="line">#include &lt;string&gt;</span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">    string pi &#x3D; &quot;pi is &quot; + std::to_string(3.1415926);</span><br><span class="line">    string perfect &#x3D; to_string(1 + 2 + 4 + 7 + 14) + &quot; is a perfect number&quot;;</span><br><span class="line">    cout &lt;&lt; pi &lt;&lt; &#39;\n&#39;;</span><br><span class="line">    cout &lt;&lt; perfect &lt;&lt; &#39;\n&#39;;</span><br><span class="line">    system(&quot;pause&quot;);</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>结果：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">pi is 3.141593</span><br><span class="line">28 is a perfect number</span><br></pre></td></tr></table></figure><br><img src="https://ae01.alicdn.com/kf/H0b4d4cb9ed5441f7b122f043b18076c9H.jpg" alt=""></p>
+]]></content>
+      <categories>
+        <category>C/C++常用API</category>
+      </categories>
+      <tags>
+        <tag>C/C++常用API</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>CODEFORCES 1100 1360C.Similar Pairs</title>
+    <url>/2020/05/31/CODEFORCES1360C/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="1360C-Similar-Pairs"><a href="#1360C-Similar-Pairs" class="headerlink" title="1360C.Similar Pairs"></a>1360C.Similar Pairs</h1><h2 id="原题链接"><a href="#原题链接" class="headerlink" title="原题链接"></a>原题链接</h2><p><a href="https://codeforces.com/problemset/problem/1360/C" target="_blank" rel="noopener">1360C.Similar Pairs</a></p>
+<h2 id="题目大意"><a href="#题目大意" class="headerlink" title="题目大意"></a>题目大意</h2><p>第一行输入测试数目</p>
+<p>之后每两行为一组测试：  </p>
+<p>第二行输入每组测试的元素个数  </p>
+<p>第三行输入每组的元素  </p>
+<p><strong>描述</strong>：当两个数奇偶相同或者绝对值相差<code>1</code>则称这两个数为<code>1</code>组，每次测试给你偶数个数，问所有元素是否有与它配对的数</p>
+<h2 id="解题思路"><a href="#解题思路" class="headerlink" title="解题思路"></a>解题思路</h2><p>因为一共有偶数个数，所以当奇数元素个数为偶数时，偶数元素个数也一定为偶数，则一定可以两两配对；如果奇数元素个数和偶数元素个数都为奇数时，检查是否存在一个奇数和一个偶数相减的绝对值为<code>1</code>的情况，如果存在这种情况，则一定可以两两配对，如果不存在，则不能两两配对</p>
+<h2 id="解题代码"><a href="#解题代码" class="headerlink" title="解题代码"></a>解题代码</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;bits&#x2F;stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">int nums[55];</span><br><span class="line">int main() &#123;</span><br><span class="line">    int t;</span><br><span class="line">    scanf(&quot;%d&quot;, &amp;t);</span><br><span class="line">    while (t--) &#123;</span><br><span class="line">        memset(nums, 0, sizeof nums);</span><br><span class="line">        int n;</span><br><span class="line">        scanf(&quot;%d&quot;, &amp;n);</span><br><span class="line">        int sum &#x3D; 0;</span><br><span class="line">        for (int i &#x3D; 0; i &lt; n; i++) &#123;</span><br><span class="line">            scanf(&quot;%d&quot;, &amp;nums[i]);</span><br><span class="line">            if (nums[i] % 2)</span><br><span class="line">                sum++;</span><br><span class="line">        &#125;</span><br><span class="line">        if (sum % 2 &#x3D;&#x3D; 0) printf(&quot;YES\n&quot;);</span><br><span class="line">        else &#123;</span><br><span class="line">            sort(nums, nums+n);</span><br><span class="line">            int flag &#x3D; 0;</span><br><span class="line">            for (int i &#x3D; 1; i &lt; n; i++) &#123;</span><br><span class="line">                if (abs(nums[i] - nums[i - 1] &#x3D;&#x3D; 1)) &#123;</span><br><span class="line">                    printf(&quot;YES\n&quot;);</span><br><span class="line">                    flag &#x3D; 1;</span><br><span class="line">                    break;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            if (flag &#x3D;&#x3D; 0)</span><br><span class="line">                printf(&quot;NO\n&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://s1.ax1x.com/2020/05/31/t1moIH.jpg" alt=""></p>
+]]></content>
+      <categories>
+        <category>CODEFORCES</category>
+      </categories>
+      <tags>
+        <tag>CODEFORCES1100</tag>
+        <tag>acm/greedy</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>0x06倍增</title>
+    <url>/2020/06/03/0x06%E5%80%8D%E5%A2%9E/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="0x06倍增"><a href="#0x06倍增" class="headerlink" title="0x06倍增"></a>0x06倍增</h1><h2 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h2><p>倍增，字面意思就是“成倍的增长”。这是指我们在进行递推时，如果状态空间很大，通常的线性递推无法满足时间与空间复杂度的要求，那么我们可以通过成倍增长的方式，只递推状态空间中在<code>2</code>的整数次幂位置上的值作为代表。当需要其他位置上的值时，我们通过“任意整数可以表示成若干个<code>2</code>的次幂项的和”这一性质 ，使用之前求出的代表值拼成所需的值。所以使用倍增算法也要求我们递推的问题的状态空间关于<code>2</code>的次幂具有可划分性  </p>
+<p>“倍增”与“二进制划分”两个思想相互结合，降低了求解很多问题的时间与空间复杂度。我们之前学习的快速幂其实就是“倍增”与“二进制划分”思想的一种体现。在此文章中，我们研究序列上的倍增问题，包括求解<code>RMQ</code>（区间最值）问题的<code>ST</code>算法，关于求解最近公共祖先<code>LCA</code>等在树上的倍增应用，我将在后续文章进行探讨   </p>
+<p>试想这样一个问题：给定一个长度为<code>N</code>的数列<code>A</code>，然后进行若干次询问，每次给定一个整数<code>T</code>，求出最大的<code>k</code>，满足数列<code>A</code>中前<code>k</code>个数的和小于等于<code>T</code>。你的算法必须是在线的（必须即时回答每一个询问，不能等待收到所有询问后再统一处理），假设<code>T</code>小于等于数组<code>A</code>中所有数的和  </p>
+<p>朴素做法当然是从前向后枚举<code>K</code>，每次询问花费的时间与答案的大小有关，最坏情况为<code>O(N)</code>  </p>
+<p>如果我们能够先花费<code>O(N)</code>的时间预处理<code>A</code>数组的前缀和数组<code>S</code>，就可以二分<code>K</code>的位置，比较<code>S[K]</code>与<code>T</code>的大小来确定二分上下界的变化，每次询问花费的时间都是<code>O(logN)</code>。这个算法在平均情况下表现很好，但是它的缺点是如果每次询问给定的整数<code>T</code>都非常小，造成答案<code>K</code>也非常小，那么该算法可能还不如从前往后枚举更优（因为假如每次只怼前<code>3</code>个，此时<code>O(log)</code>的算法可能不如<code>O(3)</code>的好）   </p>
+<p>我们可以设计这样一种倍增算法：  </p>
+<ol>
+<li>令<code>p=1</code>，<code>k=0</code>，<code>sum=0</code>  </li>
+<li>比较<code>A</code>数组中<code>k</code>之后的<code>p</code>个数的和与<code>T</code>的关系，也就是说，如果<code>sum+S[k+p]-S[k]&lt;=T</code>，则令<code>sum+=S[k+p]-S[k]</code>，<code>k+=p</code>，<code>p*=2</code>，即累加上<code>p</code>个数的和，然后把<code>p</code>的跨度增长一倍，如果<code>sum+S[k+p]-S[k]&gt;T</code>，则另<code>p/=2</code>  </li>
+<li>重复上一步，直至<code>p</code>的值变为<code>0</code>，此时<code>k</code>就是答案  </li>
+</ol>
+<p>这个算法始终在答案大小的范围内实施“倍增”与“二进制划分”的思想，通过若干长度为<code>2</code>的次幂的区间拼成最后的<code>k</code>，时间复杂度级别为答案的对数，能够应对<code>T</code>的各种大小情况  </p>
+<h2 id="ACWING109-天才ACM"><a href="#ACWING109-天才ACM" class="headerlink" title="ACWING109.天才ACM"></a><a href="https://www.acwing.com/problem/content/111/" target="_blank" rel="noopener">ACWING109.天才ACM</a></h2><p>首先，对于一个集合<code>S</code>，显然应该取<code>S</code>中最大的<code>M</code>个数和最小的<code>M</code>个数，最大的和最小的构成一对、次大和次小构成一对…这样求出的校验值最大。而为了让数组<code>A</code>分成的段数最少，每一段都应该在校验值不超过<code>T</code>的情况下，尽量包含更多的数，所以我们从头开始对<code>A</code>进行分段，让每一段尽量长，到达结尾时分成的段数就是答案   </p>
+<p>于是，需要解决的问题是：当确定一个左端点<code>L</code>之后，右端点<code>R</code>在满足<code>A[L]到A[R]</code>的校验值不超过<code>T</code>的前提下，最大能取到多少   </p>
+<p>求长度为<code>N</code>的一段校验值需要排序配对，时间复杂度为<code>O(NlogN)</code>。当校验值上限<code>T</code>比较小时，如果在整个<code>L到N</code>的区间二分右端点<code>R</code>，二分第一步就要检验<code>(N-L)/2</code>这么长的一段，最终右端点<code>R</code>却可能只扩展了一点儿，浪费了很多时间。与上一道题目一样，我们需要一个与右端点<code>R</code>扩展的长度相适应的算法———倍增   </p>
+<p>可以采用与上一题类似的倍增过程：  </p>
+<ol>
+<li>初始化<code>p=1</code>，<code>R=L</code></li>
+<li>求出<code>[L,R+p]</code>这一段区间的校验值，若检验值小于等于<code>T</code>，则<code>R+=P</code>，<code>p*=2</code>，否则<code>P/=2</code>   </li>
+<li>重复上一步，直到<code>p</code>的值变为<code>0</code>，此时<code>R</code>即为所求  </li>
+</ol>
+<p><strong>代码</strong>：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;bits&#x2F;stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line">#define ll long long</span><br><span class="line">#define fir(i, a, b) for (int i &#x3D; a; i &lt;&#x3D; b; i++)</span><br><span class="line">#define sqr(a) (a) * (a)</span><br><span class="line">#define IOS                  \</span><br><span class="line">    ios::sync_with_stdio(0); \</span><br><span class="line">    cin.tie(0);              \</span><br><span class="line">    cout.tie(0);</span><br><span class="line"></span><br><span class="line">const int N &#x3D; 5e5 + 10;</span><br><span class="line">int n, m, p[N], ans, l, r;</span><br><span class="line">ll b[N], a[N], k;</span><br><span class="line"></span><br><span class="line">void merge(int l, int mid, int r) &#123;</span><br><span class="line">    int i &#x3D; l, j &#x3D; mid, k &#x3D; l;</span><br><span class="line">    while (i &lt; mid &amp;&amp; j &lt;&#x3D; r)</span><br><span class="line">        if (a[i] &lt;&#x3D; a[j])</span><br><span class="line">            b[k++] &#x3D; a[i++];</span><br><span class="line">        else</span><br><span class="line">            b[k++] &#x3D; a[j++];</span><br><span class="line">    while (i &lt; mid)</span><br><span class="line">        b[k++] &#x3D; a[i++];</span><br><span class="line">    while (j &lt;&#x3D; r)</span><br><span class="line">        b[k++] &#x3D; a[j++];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">bool check(int l, int mid, int r) &#123;</span><br><span class="line">    fir(i, mid, r)</span><br><span class="line">        a[i] &#x3D; p[i];</span><br><span class="line">    sort(a + mid, a + r + 1);</span><br><span class="line">    merge(l, mid, r);</span><br><span class="line">    ll sum &#x3D; 0;</span><br><span class="line">    for (int i &#x3D; 1; i &lt;&#x3D; r - l + 1 &gt;&gt; 1 &amp;&amp; i &lt;&#x3D; m; i++)</span><br><span class="line">        sum +&#x3D; sqr(b[r - i + 1] - b[l + i - 1]);</span><br><span class="line">    if (sum &lt;&#x3D; k) &#123;</span><br><span class="line">        for (int i &#x3D; l; i &lt;&#x3D; r; i++)</span><br><span class="line">            a[i] &#x3D; b[i];</span><br><span class="line">        return true;</span><br><span class="line">    &#125; else</span><br><span class="line">        return false;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void init() &#123;</span><br><span class="line">    l &#x3D; r &#x3D; 0;</span><br><span class="line">    ans &#x3D; 0;</span><br><span class="line">    cin &gt;&gt; n &gt;&gt; m &gt;&gt; k;</span><br><span class="line">    fir(i, 1, n)</span><br><span class="line">        cin &gt;&gt; p[i];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void work() &#123;</span><br><span class="line">    int len &#x3D; 1;</span><br><span class="line">    l &#x3D; r &#x3D; 1;</span><br><span class="line">    a[l] &#x3D; p[l];</span><br><span class="line">    while (r &lt;&#x3D; n)</span><br><span class="line">        if (!len) &#123;</span><br><span class="line">            len &#x3D; 1;</span><br><span class="line">            ans++;</span><br><span class="line">            l &#x3D; (++r);</span><br><span class="line">            a[l] &#x3D; p[l];</span><br><span class="line">        &#125; else if (r + len &lt;&#x3D; n &amp;&amp; check(l, r + 1, r + len)) &#123;</span><br><span class="line">            r +&#x3D; len;</span><br><span class="line">            len &lt;&lt;&#x3D; 1;</span><br><span class="line">            if (r &#x3D;&#x3D; n)</span><br><span class="line">                break;</span><br><span class="line">        &#125; else</span><br><span class="line">            len &gt;&gt;&#x3D; 1;</span><br><span class="line">    if (r &#x3D;&#x3D; n)</span><br><span class="line">        ans++;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">    IOS;</span><br><span class="line">    int t;</span><br><span class="line">    cin &gt;&gt; t;</span><br><span class="line">    while (t--) &#123;</span><br><span class="line">        init();</span><br><span class="line">        work();</span><br><span class="line">        cout &lt;&lt; ans &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>这题的代码差点儿把我杀死，不写了，未完待续</p>
+</blockquote>
+<p><img src="https://ae01.alicdn.com/kf/Hef994b8d2de64cc38bd77fc14c753637d.jpg" alt=""></p>
+]]></content>
+      <categories>
+        <category>算法竞赛进阶指南</category>
+      </categories>
+      <tags>
+        <tag>ACM</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>API之stringstream用法</title>
     <url>/2020/05/30/API%E4%B9%8Bstringstream%E7%94%A8%E6%B3%95/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="API之stringstream用法"><a href="#API之stringstream用法" class="headerlink" title="API之stringstream用法"></a>API之stringstream用法</h1><p>本文主要介绍 C++ 中 stringstream 类的常见用法。</p>
@@ -325,40 +398,18 @@
       </tags>
   </entry>
   <entry>
-    <title>0x06倍增</title>
-    <url>/2020/06/03/0x06%E5%80%8D%E5%A2%9E/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="0x06倍增"><a href="#0x06倍增" class="headerlink" title="0x06倍增"></a>0x06倍增</h1><h2 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h2><p>倍增，字面意思就是“成倍的增长”。这是指我们在进行递推时，如果状态空间很大，通常的线性递推无法满足时间与空间复杂度的要求，那么我们可以通过成倍增长的方式，只递推状态空间中在<code>2</code>的整数次幂位置上的值作为代表。当需要其他位置上的值时，我们通过“任意整数可以表示成若干个<code>2</code>的次幂项的和”这一性质 ，使用之前求出的代表值拼成所需的值。所以使用倍增算法也要求我们递推的问题的状态空间关于<code>2</code>的次幂具有可划分性  </p>
-<p>“倍增”与“二进制划分”两个思想相互结合，降低了求解很多问题的时间与空间复杂度。我们之前学习的快速幂其实就是“倍增”与“二进制划分”思想的一种体现。在此文章中，我们研究序列上的倍增问题，包括求解<code>RMQ</code>（区间最值）问题的<code>ST</code>算法，关于求解最近公共祖先<code>LCA</code>等在树上的倍增应用，我将在后续文章进行探讨   </p>
-<p>试想这样一个问题：给定一个长度为<code>N</code>的数列<code>A</code>，然后进行若干次询问，每次给定一个整数<code>T</code>，求出最大的<code>k</code>，满足数列<code>A</code>中前<code>k</code>个数的和小于等于<code>T</code>。你的算法必须是在线的（必须即时回答每一个询问，不能等待收到所有询问后再统一处理），假设<code>T</code>小于等于数组<code>A</code>中所有数的和  </p>
-<p>朴素做法当然是从前向后枚举<code>K</code>，每次询问花费的时间与答案的大小有关，最坏情况为<code>O(N)</code>  </p>
-<p>如果我们能够先花费<code>O(N)</code>的时间预处理<code>A</code>数组的前缀和数组<code>S</code>，就可以二分<code>K</code>的位置，比较<code>S[K]</code>与<code>T</code>的大小来确定二分上下界的变化，每次询问花费的时间都是<code>O(logN)</code>。这个算法在平均情况下表现很好，但是它的缺点是如果每次询问给定的整数<code>T</code>都非常小，造成答案<code>K</code>也非常小，那么该算法可能还不如从前往后枚举更优（因为假如每次只怼前<code>3</code>个，此时<code>O(log)</code>的算法可能不如<code>O(3)</code>的好）   </p>
-<p>我们可以设计这样一种倍增算法：  </p>
-<ol>
-<li>令<code>p=1</code>，<code>k=0</code>，<code>sum=0</code>  </li>
-<li>比较<code>A</code>数组中<code>k</code>之后的<code>p</code>个数的和与<code>T</code>的关系，也就是说，如果<code>sum+S[k+p]-S[k]&lt;=T</code>，则令<code>sum+=S[k+p]-S[k]</code>，<code>k+=p</code>，<code>p*=2</code>，即累加上<code>p</code>个数的和，然后把<code>p</code>的跨度增长一倍，如果<code>sum+S[k+p]-S[k]&gt;T</code>，则另<code>p/=2</code>  </li>
-<li>重复上一步，直至<code>p</code>的值变为<code>0</code>，此时<code>k</code>就是答案  </li>
-</ol>
-<p>这个算法始终在答案大小的范围内实施“倍增”与“二进制划分”的思想，通过若干长度为<code>2</code>的次幂的区间拼成最后的<code>k</code>，时间复杂度级别为答案的对数，能够应对<code>T</code>的各种大小情况  </p>
-<h2 id="ACWING109-天才ACM"><a href="#ACWING109-天才ACM" class="headerlink" title="ACWING109.天才ACM"></a><a href="https://www.acwing.com/problem/content/111/" target="_blank" rel="noopener">ACWING109.天才ACM</a></h2><p>首先，对于一个集合<code>S</code>，显然应该取<code>S</code>中最大的<code>M</code>个数和最小的<code>M</code>个数，最大的和最小的构成一对、次大和次小构成一对…这样求出的校验值最大。而为了让数组<code>A</code>分成的段数最少，每一段都应该在校验值不超过<code>T</code>的情况下，尽量包含更多的数，所以我们从头开始对<code>A</code>进行分段，让每一段尽量长，到达结尾时分成的段数就是答案   </p>
-<p>于是，需要解决的问题是：当确定一个左端点<code>L</code>之后，右端点<code>R</code>在满足<code>A[L]到A[R]</code>的校验值不超过<code>T</code>的前提下，最大能取到多少   </p>
-<p>求长度为<code>N</code>的一段校验值需要排序配对，时间复杂度为<code>O(NlogN)</code>。当校验值上限<code>T</code>比较小时，如果在整个<code>L到N</code>的区间二分右端点<code>R</code>，二分第一步就要检验<code>(N-L)/2</code>这么长的一段，最终右端点<code>R</code>却可能只扩展了一点儿，浪费了很多时间。与上一道题目一样，我们需要一个与右端点<code>R</code>扩展的长度相适应的算法———倍增   </p>
-<p>可以采用与上一题类似的倍增过程：  </p>
-<ol>
-<li>初始化<code>p=1</code>，<code>R=L</code></li>
-<li>求出<code>[L,R+p]</code>这一段区间的校验值，若检验值小于等于<code>T</code>，则<code>R+=P</code>，<code>p*=2</code>，否则<code>P/=2</code>   </li>
-<li>重复上一步，直到<code>p</code>的值变为<code>0</code>，此时<code>R</code>即为所求  </li>
-</ol>
-<p><strong>代码</strong>：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;bits&#x2F;stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line">#define ll long long</span><br><span class="line">#define fir(i, a, b) for (int i &#x3D; a; i &lt;&#x3D; b; i++)</span><br><span class="line">#define sqr(a) (a) * (a)</span><br><span class="line">#define IOS                  \</span><br><span class="line">    ios::sync_with_stdio(0); \</span><br><span class="line">    cin.tie(0);              \</span><br><span class="line">    cout.tie(0);</span><br><span class="line"></span><br><span class="line">const int N &#x3D; 5e5 + 10;</span><br><span class="line">int n, m, p[N], ans, l, r;</span><br><span class="line">ll b[N], a[N], k;</span><br><span class="line"></span><br><span class="line">void merge(int l, int mid, int r) &#123;</span><br><span class="line">    int i &#x3D; l, j &#x3D; mid, k &#x3D; l;</span><br><span class="line">    while (i &lt; mid &amp;&amp; j &lt;&#x3D; r)</span><br><span class="line">        if (a[i] &lt;&#x3D; a[j])</span><br><span class="line">            b[k++] &#x3D; a[i++];</span><br><span class="line">        else</span><br><span class="line">            b[k++] &#x3D; a[j++];</span><br><span class="line">    while (i &lt; mid)</span><br><span class="line">        b[k++] &#x3D; a[i++];</span><br><span class="line">    while (j &lt;&#x3D; r)</span><br><span class="line">        b[k++] &#x3D; a[j++];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">bool check(int l, int mid, int r) &#123;</span><br><span class="line">    fir(i, mid, r)</span><br><span class="line">        a[i] &#x3D; p[i];</span><br><span class="line">    sort(a + mid, a + r + 1);</span><br><span class="line">    merge(l, mid, r);</span><br><span class="line">    ll sum &#x3D; 0;</span><br><span class="line">    for (int i &#x3D; 1; i &lt;&#x3D; r - l + 1 &gt;&gt; 1 &amp;&amp; i &lt;&#x3D; m; i++)</span><br><span class="line">        sum +&#x3D; sqr(b[r - i + 1] - b[l + i - 1]);</span><br><span class="line">    if (sum &lt;&#x3D; k) &#123;</span><br><span class="line">        for (int i &#x3D; l; i &lt;&#x3D; r; i++)</span><br><span class="line">            a[i] &#x3D; b[i];</span><br><span class="line">        return true;</span><br><span class="line">    &#125; else</span><br><span class="line">        return false;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void init() &#123;</span><br><span class="line">    l &#x3D; r &#x3D; 0;</span><br><span class="line">    ans &#x3D; 0;</span><br><span class="line">    cin &gt;&gt; n &gt;&gt; m &gt;&gt; k;</span><br><span class="line">    fir(i, 1, n)</span><br><span class="line">        cin &gt;&gt; p[i];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void work() &#123;</span><br><span class="line">    int len &#x3D; 1;</span><br><span class="line">    l &#x3D; r &#x3D; 1;</span><br><span class="line">    a[l] &#x3D; p[l];</span><br><span class="line">    while (r &lt;&#x3D; n)</span><br><span class="line">        if (!len) &#123;</span><br><span class="line">            len &#x3D; 1;</span><br><span class="line">            ans++;</span><br><span class="line">            l &#x3D; (++r);</span><br><span class="line">            a[l] &#x3D; p[l];</span><br><span class="line">        &#125; else if (r + len &lt;&#x3D; n &amp;&amp; check(l, r + 1, r + len)) &#123;</span><br><span class="line">            r +&#x3D; len;</span><br><span class="line">            len &lt;&lt;&#x3D; 1;</span><br><span class="line">            if (r &#x3D;&#x3D; n)</span><br><span class="line">                break;</span><br><span class="line">        &#125; else</span><br><span class="line">            len &gt;&gt;&#x3D; 1;</span><br><span class="line">    if (r &#x3D;&#x3D; n)</span><br><span class="line">        ans++;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">    IOS;</span><br><span class="line">    int t;</span><br><span class="line">    cin &gt;&gt; t;</span><br><span class="line">    while (t--) &#123;</span><br><span class="line">        init();</span><br><span class="line">        work();</span><br><span class="line">        cout &lt;&lt; ans &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<blockquote>
-<p>这题的代码差点儿把我杀死，不写了，未完待续</p>
-</blockquote>
-<p><img src="https://ae01.alicdn.com/kf/Hef994b8d2de64cc38bd77fc14c753637d.jpg" alt=""></p>
+    <title>LEETCODE1/PYTHON解法/两数之和</title>
+    <url>/2020/06/03/LEETCODE1-PYTHON%E8%A7%A3%E6%B3%95-%E4%B8%A4%E6%95%B0%E4%B9%8B%E5%92%8C/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="1-两数之和"><a href="#1-两数之和" class="headerlink" title="1.两数之和"></a><a href="https://leetcode-cn.com/problems/two-sum/" target="_blank" rel="noopener">1.两数之和</a></h1><h2 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">class Solution:</span><br><span class="line">    def twoSum(self, nums: List[int], target: int) -&gt; List[int]:</span><br><span class="line">        dic &#x3D; &#123;&#125;</span><br><span class="line">        for i in range(len(nums)):</span><br><span class="line">            if nums[i] in dic:</span><br><span class="line">                return [dic[nums[i]], i]</span><br><span class="line">            else:</span><br><span class="line">                dic[target - nums[i]] &#x3D; i</span><br></pre></td></tr></table></figure>
+<p><img src="https://ae01.alicdn.com/kf/He2534bd81da14f7cac54ae321362c2e1p.jpg" alt=""></p>
 ]]></content>
       <categories>
-        <category>算法竞赛进阶指南</category>
+        <category>LEETCODE/PYTHON</category>
       </categories>
       <tags>
-        <tag>ACM</tag>
+        <tag>LEETCODE</tag>
+        <tag>PYTHON</tag>
+        <tag>hash</tag>
       </tags>
   </entry>
   <entry>
@@ -376,29 +427,8 @@
         <category>CODEFORCES</category>
       </categories>
       <tags>
+        <tag>acm/greedy</tag>
         <tag>CODEFORCES800</tag>
-        <tag>acm/greedy</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>CODEFORCES 1100 1360C.Similar Pairs</title>
-    <url>/2020/05/31/CODEFORCES1360C/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="1360C-Similar-Pairs"><a href="#1360C-Similar-Pairs" class="headerlink" title="1360C.Similar Pairs"></a>1360C.Similar Pairs</h1><h2 id="原题链接"><a href="#原题链接" class="headerlink" title="原题链接"></a>原题链接</h2><p><a href="https://codeforces.com/problemset/problem/1360/C" target="_blank" rel="noopener">1360C.Similar Pairs</a></p>
-<h2 id="题目大意"><a href="#题目大意" class="headerlink" title="题目大意"></a>题目大意</h2><p>第一行输入测试数目</p>
-<p>之后每两行为一组测试：  </p>
-<p>第二行输入每组测试的元素个数  </p>
-<p>第三行输入每组的元素  </p>
-<p><strong>描述</strong>：当两个数奇偶相同或者绝对值相差<code>1</code>则称这两个数为<code>1</code>组，每次测试给你偶数个数，问所有元素是否有与它配对的数</p>
-<h2 id="解题思路"><a href="#解题思路" class="headerlink" title="解题思路"></a>解题思路</h2><p>因为一共有偶数个数，所以当奇数元素个数为偶数时，偶数元素个数也一定为偶数，则一定可以两两配对；如果奇数元素个数和偶数元素个数都为奇数时，检查是否存在一个奇数和一个偶数相减的绝对值为<code>1</code>的情况，如果存在这种情况，则一定可以两两配对，如果不存在，则不能两两配对</p>
-<h2 id="解题代码"><a href="#解题代码" class="headerlink" title="解题代码"></a>解题代码</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;bits&#x2F;stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">int nums[55];</span><br><span class="line">int main() &#123;</span><br><span class="line">    int t;</span><br><span class="line">    scanf(&quot;%d&quot;, &amp;t);</span><br><span class="line">    while (t--) &#123;</span><br><span class="line">        memset(nums, 0, sizeof nums);</span><br><span class="line">        int n;</span><br><span class="line">        scanf(&quot;%d&quot;, &amp;n);</span><br><span class="line">        int sum &#x3D; 0;</span><br><span class="line">        for (int i &#x3D; 0; i &lt; n; i++) &#123;</span><br><span class="line">            scanf(&quot;%d&quot;, &amp;nums[i]);</span><br><span class="line">            if (nums[i] % 2)</span><br><span class="line">                sum++;</span><br><span class="line">        &#125;</span><br><span class="line">        if (sum % 2 &#x3D;&#x3D; 0) printf(&quot;YES\n&quot;);</span><br><span class="line">        else &#123;</span><br><span class="line">            sort(nums, nums+n);</span><br><span class="line">            int flag &#x3D; 0;</span><br><span class="line">            for (int i &#x3D; 1; i &lt; n; i++) &#123;</span><br><span class="line">                if (abs(nums[i] - nums[i - 1] &#x3D;&#x3D; 1)) &#123;</span><br><span class="line">                    printf(&quot;YES\n&quot;);</span><br><span class="line">                    flag &#x3D; 1;</span><br><span class="line">                    break;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            if (flag &#x3D;&#x3D; 0)</span><br><span class="line">                printf(&quot;NO\n&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><img src="https://s1.ax1x.com/2020/05/31/t1moIH.jpg" alt=""></p>
-]]></content>
-      <categories>
-        <category>CODEFORCES</category>
-      </categories>
-      <tags>
-        <tag>acm/greedy</tag>
-        <tag>CODEFORCES1100</tag>
       </tags>
   </entry>
   <entry>
@@ -422,18 +452,18 @@
       </tags>
   </entry>
   <entry>
-    <title>API之to_string用法</title>
-    <url>/2020/06/04/API%E4%B9%8Bto-string%E7%94%A8%E6%B3%95/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="API之to-string用法"><a href="#API之to-string用法" class="headerlink" title="API之to_string用法"></a>API之to_string用法</h1><h2 id="函数原型"><a href="#函数原型" class="headerlink" title="函数原型"></a>函数原型</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">string to_string (int val);</span><br><span class="line">string to_string (long val);</span><br><span class="line">string to_string (long long val);</span><br><span class="line">string to_string (unsigned val);</span><br><span class="line">string to_string (unsigned long val);</span><br><span class="line">string to_string (unsigned long long val);</span><br><span class="line">string to_string (float val);</span><br><span class="line">string to_string (double val);</span><br><span class="line">string to_string (long double val);</span><br></pre></td></tr></table></figure>
-<h2 id="功能"><a href="#功能" class="headerlink" title="功能"></a>功能</h2><p>将数值转化为字符串。返回对应的字符串。</p>
-<h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;iostream&gt;</span><br><span class="line">#include &lt;string&gt;</span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">    string pi &#x3D; &quot;pi is &quot; + std::to_string(3.1415926);</span><br><span class="line">    string perfect &#x3D; to_string(1 + 2 + 4 + 7 + 14) + &quot; is a perfect number&quot;;</span><br><span class="line">    cout &lt;&lt; pi &lt;&lt; &#39;\n&#39;;</span><br><span class="line">    cout &lt;&lt; perfect &lt;&lt; &#39;\n&#39;;</span><br><span class="line">    system(&quot;pause&quot;);</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>结果：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">pi is 3.141593</span><br><span class="line">28 is a perfect number</span><br></pre></td></tr></table></figure><br><img src="https://ae01.alicdn.com/kf/H0b4d4cb9ed5441f7b122f043b18076c9H.jpg" alt=""></p>
+    <title>LEETCODE2/PYTHON解法/两数相加</title>
+    <url>/2020/06/03/LEETCODE2-PYTHON%E8%A7%A3%E6%B3%95-%E4%B8%A4%E6%95%B0%E7%9B%B8%E5%8A%A0/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="2-两数相加"><a href="#2-两数相加" class="headerlink" title="2.两数相加"></a><a href="https://leetcode-cn.com/problems/add-two-numbers/" target="_blank" rel="noopener">2.两数相加</a></h1><h2 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># Definition for singly-linked list.</span><br><span class="line"># class ListNode:</span><br><span class="line">#     def __init__(self, x):</span><br><span class="line">#         self.val &#x3D; x</span><br><span class="line">#         self.next &#x3D; None</span><br><span class="line"></span><br><span class="line">class Solution:</span><br><span class="line">    def addTwoNumbers(self, l1: ListNode, l2: ListNode) -&gt; ListNode:</span><br><span class="line">        dummy &#x3D; cur &#x3D;ListNode(0)</span><br><span class="line">        carry &#x3D; 0</span><br><span class="line">        while l1 or l2 or carry:</span><br><span class="line">            if l1:</span><br><span class="line">                carry +&#x3D; l1.val</span><br><span class="line">                l1 &#x3D; l1.next</span><br><span class="line">            if l2:</span><br><span class="line">                carry +&#x3D; l2.val</span><br><span class="line">                l2 &#x3D; l2.next</span><br><span class="line">            cur.next &#x3D; ListNode(carry%10)</span><br><span class="line">            cur &#x3D; cur.next</span><br><span class="line">            carry &#x2F;&#x2F;&#x3D;10</span><br><span class="line">        return dummy.next</span><br></pre></td></tr></table></figure>
+<p><img src="https://ae01.alicdn.com/kf/He2534bd81da14f7cac54ae321362c2e1p.jpg" alt=""></p>
 ]]></content>
       <categories>
-        <category>C/C++常用API</category>
+        <category>LEETCODE/PYTHON</category>
       </categories>
       <tags>
-        <tag>C/C++常用API</tag>
+        <tag>LEETCODE</tag>
+        <tag>PYTHON</tag>
+        <tag>ListNode</tag>
       </tags>
   </entry>
   <entry>
@@ -477,9 +507,9 @@
       </tags>
   </entry>
   <entry>
-    <title>LEETCODE1/PYTHON解法/两数之和</title>
-    <url>/2020/06/03/LEETCODE1-PYTHON%E8%A7%A3%E6%B3%95-%E4%B8%A4%E6%95%B0%E4%B9%8B%E5%92%8C/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="1-两数之和"><a href="#1-两数之和" class="headerlink" title="1.两数之和"></a><a href="https://leetcode-cn.com/problems/two-sum/" target="_blank" rel="noopener">1.两数之和</a></h1><h2 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">class Solution:</span><br><span class="line">    def twoSum(self, nums: List[int], target: int) -&gt; List[int]:</span><br><span class="line">        dic &#x3D; &#123;&#125;</span><br><span class="line">        for i in range(len(nums)):</span><br><span class="line">            if nums[i] in dic:</span><br><span class="line">                return [dic[nums[i]], i]</span><br><span class="line">            else:</span><br><span class="line">                dic[target - nums[i]] &#x3D; i</span><br></pre></td></tr></table></figure>
+    <title>LEETCODE5/PYTHON解法/最长回文串</title>
+    <url>/2020/06/03/LEETCODE5-PYTHON%E8%A7%A3%E6%B3%95-%E6%9C%80%E9%95%BF%E5%9B%9E%E6%96%87%E4%B8%B2/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="5-最长回文子串"><a href="#5-最长回文子串" class="headerlink" title="5. 最长回文子串"></a><a href="https://leetcode-cn.com/problems/longest-palindromic-substring/" target="_blank" rel="noopener">5. 最长回文子串</a></h1><h2 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">class Solution:</span><br><span class="line">    def longestPalindrome(self, s: str) -&gt; str:</span><br><span class="line">        p &#x3D; &#39;&#39;</span><br><span class="line">        for i in range(len(s)):</span><br><span class="line">            p1 &#x3D; self.get_palindrome(s, i, i+1)</span><br><span class="line">            p2 &#x3D; self.get_palindrome(s, i, i)</span><br><span class="line">            p &#x3D; max([p, p1, p2], key&#x3D;lambda x: len(x))</span><br><span class="line">        return p</span><br><span class="line">    </span><br><span class="line">    def get_palindrome(self, s: str, l: int, r: int) -&gt; str:</span><br><span class="line">        while l &gt;&#x3D; 0 and r &lt; len(s) and s[l] &#x3D;&#x3D; s[r]:</span><br><span class="line">            l -&#x3D; 1</span><br><span class="line">            r +&#x3D; 1</span><br><span class="line">        return s[l+1:r]</span><br></pre></td></tr></table></figure>
 <p><img src="https://ae01.alicdn.com/kf/He2534bd81da14f7cac54ae321362c2e1p.jpg" alt=""></p>
 ]]></content>
       <categories>
@@ -488,7 +518,6 @@
       <tags>
         <tag>LEETCODE</tag>
         <tag>PYTHON</tag>
-        <tag>hash</tag>
       </tags>
   </entry>
   <entry>
@@ -507,10 +536,10 @@
       </tags>
   </entry>
   <entry>
-    <title>LEETCODE2/PYTHON解法/两数相加</title>
-    <url>/2020/06/03/LEETCODE2-PYTHON%E8%A7%A3%E6%B3%95-%E4%B8%A4%E6%95%B0%E7%9B%B8%E5%8A%A0/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="2-两数相加"><a href="#2-两数相加" class="headerlink" title="2.两数相加"></a><a href="https://leetcode-cn.com/problems/add-two-numbers/" target="_blank" rel="noopener">2.两数相加</a></h1><h2 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># Definition for singly-linked list.</span><br><span class="line"># class ListNode:</span><br><span class="line">#     def __init__(self, x):</span><br><span class="line">#         self.val &#x3D; x</span><br><span class="line">#         self.next &#x3D; None</span><br><span class="line"></span><br><span class="line">class Solution:</span><br><span class="line">    def addTwoNumbers(self, l1: ListNode, l2: ListNode) -&gt; ListNode:</span><br><span class="line">        dummy &#x3D; cur &#x3D;ListNode(0)</span><br><span class="line">        carry &#x3D; 0</span><br><span class="line">        while l1 or l2 or carry:</span><br><span class="line">            if l1:</span><br><span class="line">                carry +&#x3D; l1.val</span><br><span class="line">                l1 &#x3D; l1.next</span><br><span class="line">            if l2:</span><br><span class="line">                carry +&#x3D; l2.val</span><br><span class="line">                l2 &#x3D; l2.next</span><br><span class="line">            cur.next &#x3D; ListNode(carry%10)</span><br><span class="line">            cur &#x3D; cur.next</span><br><span class="line">            carry &#x2F;&#x2F;&#x3D;10</span><br><span class="line">        return dummy.next</span><br></pre></td></tr></table></figure>
-<p><img src="https://ae01.alicdn.com/kf/He2534bd81da14f7cac54ae321362c2e1p.jpg" alt=""></p>
+    <title>LEETCODE6/PYTHON解法/Z字形变换</title>
+    <url>/2020/06/04/LEETCODE6-PYTHON%E8%A7%A3%E6%B3%95-Z%E5%AD%97%E5%BD%A2%E5%8F%98%E6%8D%A2/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="6-Z字形变换"><a href="#6-Z字形变换" class="headerlink" title="6.Z字形变换"></a><a href="https://leetcode-cn.com/problems/zigzag-conversion/" target="_blank" rel="noopener">6.Z字形变换</a></h1><h2 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">class Solution:</span><br><span class="line">    def convert(self, S: str, R: int) -&gt; str:</span><br><span class="line">        if R &#x3D;&#x3D; 1 or R &gt; len(S):  # corner case</span><br><span class="line">            return S</span><br><span class="line">        res, i, step &#x3D; [&#39;&#39; for r in range(R)], 0, 0  # a string for each line</span><br><span class="line">        for s in S:</span><br><span class="line">            res[i] +&#x3D; s</span><br><span class="line">            if i &#x3D;&#x3D; 0:  # first row</span><br><span class="line">                step &#x3D; 1  # down</span><br><span class="line">            if i &#x3D;&#x3D; R - 1:  # last row</span><br><span class="line">                step &#x3D; -1  # up</span><br><span class="line">            i +&#x3D; step</span><br><span class="line">        return &quot;&quot;.join(res)</span><br></pre></td></tr></table></figure>
+<p><img src="https://ae01.alicdn.com/kf/Hfcd7e2903a7c4c7fa83684713e6c0b37b.jpg" alt=""></p>
 ]]></content>
       <categories>
         <category>LEETCODE/PYTHON</category>
@@ -518,7 +547,60 @@
       <tags>
         <tag>LEETCODE</tag>
         <tag>PYTHON</tag>
-        <tag>ListNode</tag>
+        <tag>math</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>LEETCODE8/PYTHON解法/字符串转换整数</title>
+    <url>/2020/06/04/LEETCODE8-PYTHON%E8%A7%A3%E6%B3%95-%E5%AD%97%E7%AC%A6%E4%B8%B2%E8%BD%AC%E6%8D%A2%E6%95%B4%E6%95%B0/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="8-字符串转换整数"><a href="#8-字符串转换整数" class="headerlink" title="8.字符串转换整数"></a><a href="https://leetcode-cn.com/problems/string-to-integer-atoi/" target="_blank" rel="noopener">8.字符串转换整数</a></h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">class Solution:</span><br><span class="line">    def myAtoi(self, str: str) -&gt; int:</span><br><span class="line">        def helper(x):</span><br><span class="line">            if not x: return 0</span><br><span class="line">            ret &#x3D; 0</span><br><span class="line">            for i in x:</span><br><span class="line">                if not i.isdigit(): return ret</span><br><span class="line">                ret &#x3D; ret *10 + int(i)</span><br><span class="line">            return ret</span><br><span class="line"></span><br><span class="line">        s &#x3D; str.strip()</span><br><span class="line">        if not s: return 0</span><br><span class="line">        elif s[0] &#x3D;&#x3D; &#39;+&#39;: return min(2**31-1,helper(s[1:]))</span><br><span class="line">        elif s[0] &#x3D;&#x3D; &#39;-&#39;: return max(-2**31,-helper(s[1:]))</span><br><span class="line">        elif s[0].isdigit(): return min(2**31-1,helper(s))</span><br><span class="line">        else: return 0</span><br></pre></td></tr></table></figure>
+<p><img src="https://ae01.alicdn.com/kf/Hfcd7e2903a7c4c7fa83684713e6c0b37b.jpg" alt=""></p>
+]]></content>
+      <categories>
+        <category>LEETCODE/PYTHON</category>
+      </categories>
+      <tags>
+        <tag>LEETCODE</tag>
+        <tag>PYTHON</tag>
+        <tag>string</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>PYTHON中isdigit()、isalpha()、isalnum()三个函数的区别和注意点</title>
+    <url>/2020/06/04/PYTHON%E4%B8%ADisdigit-%E3%80%81isalpha-%E3%80%81isalnum-%E4%B8%89%E4%B8%AA%E5%87%BD%E6%95%B0%E7%9A%84%E5%8C%BA%E5%88%AB%E5%92%8C%E6%B3%A8%E6%84%8F%E7%82%B9/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="PYTHON中isdigit-、isalpha-、isalnum-三个函数的区别和注意点"><a href="#PYTHON中isdigit-、isalpha-、isalnum-三个函数的区别和注意点" class="headerlink" title="PYTHON中isdigit()、isalpha()、isalnum()三个函数的区别和注意点"></a>PYTHON中isdigit()、isalpha()、isalnum()三个函数的区别和注意点</h1><h2 id="isdigit"><a href="#isdigit" class="headerlink" title="isdigit()"></a>isdigit()</h2><p><code>python</code>关于<code>isdigit()</code>内置函数的官方定义：  </p>
+<blockquote>
+<p>S.isdigit() -&gt; bool<br>        Return True if all characters in S are digits<br>        and there is at least one character in S, False otherwise.    </p>
+</blockquote>
+<p>翻译：</p>
+<p><code>S.isdigit()</code>返回的是布尔值：<code>True</code>、<code>False</code><br><code>S</code>字符串中至少有一个字符且如果<code>S</code>中的所有字符都是数字，那么返回结果就是<code>True</code>；否则，就返回<code>False</code>   </p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">S1 &#x3D; &#39;12345&#39;       #纯数字</span><br><span class="line">S2 &#x3D; &#39;①②&#39;          #带圈的数字</span><br><span class="line">S3 &#x3D; &#39;汉字&#39;        #汉字</span><br><span class="line">S4 &#x3D; &#39;%#￥&#39;        #特殊符号</span><br><span class="line">S5 &#x3D; &#39;12345a&#39;      #数字和字母</span><br><span class="line"></span><br><span class="line">print(S1.isdigit())</span><br><span class="line">print(S2.isdigit())</span><br><span class="line">print(S3.isdigit())</span><br><span class="line">print(S4.isdigit())</span><br><span class="line">print(S5.isdigit())</span><br><span class="line"></span><br><span class="line"># 执行结果：</span><br><span class="line">True     </span><br><span class="line">True</span><br><span class="line">False</span><br><span class="line">False</span><br><span class="line">False</span><br></pre></td></tr></table></figure>
+<h2 id="isalpha"><a href="#isalpha" class="headerlink" title="isalpha()"></a>isalpha()</h2><p><code>python</code>关于<code>isalpha()</code>内置函数的官方定义：</p>
+<blockquote>
+<p>S.isalpha() -&gt; bool<br>        Return True if all characters in S are alphabetic<br>        and there is at least one character in S, False otherwise.</p>
+</blockquote>
+<p>翻译：<br><code>S.isalpha()</code>返回的是布尔值：<code>True</code>、<code>False</code><br><code>S</code>字符串中至少有一个字符且如果S中的所有字符都是字母，那么返回结果就是<code>True</code>；否则，就返回<code>False</code>   </p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">S1 &#x3D; &#39;abc汉字&#39;     #汉字+字母</span><br><span class="line">S2 &#x3D; &#39;ab字134&#39;     #包含数字</span><br><span class="line">S3 &#x3D; &#39;*&amp;&amp;&#39;         #特殊符号</span><br><span class="line"></span><br><span class="line">print(S1.isalpha())</span><br><span class="line">print(S2.isalpha())</span><br><span class="line">print(S3.isalpha())</span><br><span class="line"></span><br><span class="line">#执行结果</span><br><span class="line">True</span><br><span class="line">False</span><br><span class="line">False</span><br></pre></td></tr></table></figure>
+<h2 id="isalnum"><a href="#isalnum" class="headerlink" title="isalnum()"></a>isalnum()</h2><p><code>python</code>关于<code>isalnum()</code>内置函数的官方定义：  </p>
+<blockquote>
+<p>S.isalnum() -&gt; bool<br>        Return True if all characters in S are alphanumeric<br>        and there is at least one character in S, False otherwise.</p>
+</blockquote>
+<p>翻译：  </p>
+<p><code>S.isalnum()</code>返回的是布尔值：<code>True</code>、<code>False</code><br><code>S</code>中至少有一个字符且如果<code>S</code>中的所有字符都是字母数字，那么返回结果就是<code>True</code>；否则，就返回<code>False</code></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">S1 &#x3D; &#39;abc汉字1&#39;    #字母+汉字+数字</span><br><span class="line">S2 &#x3D; &#39;①②③&#39;      #带圈的数字</span><br><span class="line">S3 &#x3D; &#39;%……&amp;&#39;       #特殊符号</span><br><span class="line"></span><br><span class="line">print(S1.isalnum())</span><br><span class="line">print(S2.isalnum())</span><br><span class="line">print(S3.isalnum())</span><br><span class="line"></span><br><span class="line">#执行结果</span><br><span class="line">True</span><br><span class="line">True</span><br><span class="line">False</span><br></pre></td></tr></table></figure>
+<h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><ol>
+<li><p><code>python</code>官方定义中的字母：大家默认为英文字母+汉字即可</p>
+</li>
+<li><p><code>python</code>官方定义中的数字：大家默认为<code>Unicode</code>数字、<code>byte</code>数字（单字节）、全角数字（双字节）、罗马数字、带圈的数字即可</p>
+</li>
+</ol>
+<p><img src="https://ae01.alicdn.com/kf/H270ec52cb1794e5cb700f741bdd71aafA.jpg" alt=""></p>
+]]></content>
+      <categories>
+        <category>PYTHON</category>
+      </categories>
+      <tags>
+        <tag>PYTHON</tag>
       </tags>
   </entry>
   <entry>
@@ -535,6 +617,140 @@
         <tag>PYTHON</tag>
         <tag>sort</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>LEETCODE7/PYTHON解法/整数反转</title>
+    <url>/2020/06/04/LEETCODE7-PYTHON%E8%A7%A3%E6%B3%95-%E6%95%B4%E6%95%B0%E5%8F%8D%E8%BD%AC/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="7-整数反转"><a href="#7-整数反转" class="headerlink" title="7.整数反转"></a><a href="https://leetcode-cn.com/problems/reverse-integer/" target="_blank" rel="noopener">7.整数反转</a></h1><h2 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">class Solution:</span><br><span class="line">    def reverse(self, x: int) -&gt; int:</span><br><span class="line">        result &#x3D; int(str(x)[::-1]) if x &gt;&#x3D; 0 else -int(str(x)[1:][::-1])</span><br><span class="line"></span><br><span class="line">        if -2**31 &lt;&#x3D; result &lt;&#x3D; (2**31)-1:</span><br><span class="line">            return result</span><br><span class="line">        else:</span><br><span class="line">            return 0</span><br></pre></td></tr></table></figure>
+<p><img src="https://ae01.alicdn.com/kf/Hfcd7e2903a7c4c7fa83684713e6c0b37b.jpg" alt=""></p>
+]]></content>
+      <categories>
+        <category>LEETCODE/PYTHON</category>
+      </categories>
+      <tags>
+        <tag>LEETCODE</tag>
+        <tag>PYTHON</tag>
+        <tag>string</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>PYTHON中join函数的用法</title>
+    <url>/2020/06/04/PYTHON%E4%B8%ADjoin%E5%87%BD%E6%95%B0%E7%9A%84%E7%94%A8%E6%B3%95/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="PYTHON中join函数的用法"><a href="#PYTHON中join函数的用法" class="headerlink" title="PYTHON中join函数的用法"></a>PYTHON中join函数的用法</h1><p>Python中有<code>.join()</code>和<code>os.path.join()</code>两个函数，具体作用如下：  </p>
+<p><code>.join()</code>：连接字符串数组。将字符串、元组、列表中的元素以指定的字符(分隔符)连接生成一个新的字符串<br><code>os.path.join()</code>：将多个路径组合后返回</p>
+<h2 id="对序列进行操作（分别使用’-‘、’-‘与’-’作为分隔符）"><a href="#对序列进行操作（分别使用’-‘、’-‘与’-’作为分隔符）" class="headerlink" title="对序列进行操作（分别使用’ ‘、’-‘与’:’作为分隔符）"></a>对序列进行操作（分别使用’ ‘、’-‘与’:’作为分隔符）</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">a&#x3D;[&#39;1&#39;,&#39;2&#39;,&#39;3&#39;,&#39;4&#39;,&#39;5&#39;]</span><br><span class="line"></span><br><span class="line">&gt;&gt; &#39; &#39;.join(a)</span><br><span class="line"></span><br><span class="line">1 2 3 4 5</span><br><span class="line"></span><br><span class="line">&gt;&gt; &#39;&#39;.join(a)</span><br><span class="line"></span><br><span class="line">12345</span><br><span class="line"></span><br><span class="line">&gt;&gt;&#39;-&#39;.jion(a)</span><br><span class="line"></span><br><span class="line">1-2-3-4-5</span><br><span class="line"></span><br><span class="line">&gt;&gt;&#39;.&#39;.join(a)</span><br><span class="line"></span><br><span class="line">1.2.3.4.5</span><br></pre></td></tr></table></figure>
+<h2 id="对字符串进行操作（分别使用’-‘、’-‘与’-’作为分隔符）"><a href="#对字符串进行操作（分别使用’-‘、’-‘与’-’作为分隔符）" class="headerlink" title="对字符串进行操作（分别使用’ ‘、’-‘与’:’作为分隔符）"></a>对字符串进行操作（分别使用’ ‘、’-‘与’:’作为分隔符）</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">b&#x3D;&#39;hello world&#39;</span><br><span class="line"></span><br><span class="line">&gt;&gt; &#39; &#39;.join(b)</span><br><span class="line"></span><br><span class="line">h e l l o   w o r l d</span><br><span class="line"></span><br><span class="line">&gt;&gt;&#39;-&#39; .join(b)</span><br><span class="line"></span><br><span class="line">h-e-l-l-o- -w-o-r-l-d</span><br><span class="line"></span><br><span class="line">&gt;&gt;&#39;:&#39;.jion(b)</span><br><span class="line"></span><br><span class="line">h:e:l:l:o: :w:o:r:l:d</span><br></pre></td></tr></table></figure>
+<h2 id="对元组进行操作（分别使用’-‘、’-‘与’-’作为分隔符）"><a href="#对元组进行操作（分别使用’-‘、’-‘与’-’作为分隔符）" class="headerlink" title="对元组进行操作（分别使用’ ‘、’-‘与’:’作为分隔符）"></a>对元组进行操作（分别使用’ ‘、’-‘与’:’作为分隔符）</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">c&#x3D;(&#39;1&#39;,&#39;2&#39;,&#39;3&#39;,&#39;4&#39;,&#39;5&#39;)</span><br><span class="line"></span><br><span class="line">&gt;&gt;&#39; &#39;.join(c)</span><br><span class="line"></span><br><span class="line">1 2 3 4 5</span><br><span class="line"></span><br><span class="line">&gt;&gt;&#39;-&#39;.join(c)</span><br><span class="line"></span><br><span class="line">1-2-3-4-5</span><br><span class="line"></span><br><span class="line">&gt;&gt;&#39;:&#39;.join(c)</span><br><span class="line"></span><br><span class="line">1:2:3:4:5</span><br></pre></td></tr></table></figure>
+<h2 id="对字典进行无序操作（分别使用’-‘、’-‘与’-’作为分隔符）"><a href="#对字典进行无序操作（分别使用’-‘、’-‘与’-’作为分隔符）" class="headerlink" title="对字典进行无序操作（分别使用’ ‘、’-‘与’:’作为分隔符）"></a>对字典进行无序操作（分别使用’ ‘、’-‘与’:’作为分隔符）</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">d&#x3D;&#123;&#39;name1&#39;:&#39;a&#39;,&#39;name2&#39;:&#39;b&#39;,&#39;name3&#39;:&#39;c&#39;,&#39;name4&#39;:&#39;d&#39;&#125;</span><br><span class="line"></span><br><span class="line">&gt;&gt;&#39; &#39;.jion(d)</span><br><span class="line"></span><br><span class="line">name1 name2 name3 name4</span><br><span class="line"></span><br><span class="line">&gt;&gt;&#39;-&#39;.join(d)</span><br><span class="line"></span><br><span class="line">name1-name2-name3-name4</span><br><span class="line"></span><br><span class="line">&gt;&gt;&#39;:&#39;.join(d)</span><br><span class="line"></span><br><span class="line">name1:name2:name3:name4</span><br></pre></td></tr></table></figure>
+<h2 id="对目录进行操作"><a href="#对目录进行操作" class="headerlink" title="对目录进行操作"></a>对目录进行操作</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import os</span><br><span class="line"></span><br><span class="line">os.path.join(&#39;&#x2F;hello&#x2F;&#39;,&#39;good&#x2F;date&#39;,&#39;datbody&#39;)</span><br><span class="line"></span><br><span class="line">hello&#x2F;good&#x2F;date&#x2F;datbody</span><br></pre></td></tr></table></figure>
+<p><img src="https://ae01.alicdn.com/kf/Hfcd7e2903a7c4c7fa83684713e6c0b37b.jpg" alt=""></p>
+]]></content>
+      <categories>
+        <category>PYTHON</category>
+      </categories>
+      <tags>
+        <tag>PYTHON</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>PYTHON中strip()、lstrip()、rstrip()用法详解</title>
+    <url>/2020/06/04/PYTHON%E4%B8%ADstrip-%E3%80%81lstrip-%E3%80%81rstrip-%E7%94%A8%E6%B3%95%E8%AF%A6%E8%A7%A3/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="PYTHON中strip-、lstrip-、rstrip-用法详解"><a href="#PYTHON中strip-、lstrip-、rstrip-用法详解" class="headerlink" title="PYTHON中strip()、lstrip()、rstrip()用法详解"></a>PYTHON中strip()、lstrip()、rstrip()用法详解</h1><p>Python中有三个去除头尾字符、空白符的函数，它们依次为:</p>
+<p><code>strip</code>： 用来去除头尾字符、空白符(换行、回车、制表符、空格)<br><code>lstrip</code>：用来去除开头字符、空白符(换行、回车、制表符、空格)<br><code>rstrip</code>：用来去除结尾字符、空白符(换行、回车、制表符、空格)    </p>
+<p><strong>注意</strong>：这些函数都只会删除头和尾的字符，中间的不会删除</p>
+<p>用法分别为：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">string.strip([chars])</span><br><span class="line">string.lstrip([chars])</span><br><span class="line">string.rstrip([chars])</span><br></pre></td></tr></table></figure></p>
+<p>参数<code>chars</code>是可选的，当<code>chars</code>为空，默认删除<code>string</code>头尾的空白符   </p>
+<p>当<code>chars</code>不为空时，函数会被<code>chars</code>解成一个个的字符，然后将这些字符去掉    </p>
+<p>它返回的是去除头尾字符(或空白符)的<code>string</code>副本，<code>string</code>本身不会发生改变</p>
+<p>举例说明如下：</p>
+<ol>
+<li><p>当chars为空时，默认删除空白符</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&gt;&gt;&gt; str &#x3D; &#39; ab cd &#39;</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; str.strip() #删除头尾空格</span><br><span class="line">&#39;ab cd&#39;</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; str.lstrip() #删除开头空格</span><br><span class="line">&#39;ab cd &#39;</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; str.rstrip() #删除结尾空格</span><br><span class="line">&#39; ab cd&#39;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>当chars不为空时，函数会被chars解成一个个的字符，然后将这些字符去掉</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&gt;&gt;&gt; str2 &#x3D; &#39;1a2b12c21&#39;</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; str2.strip(&#39;12&#39;) #删除头尾的1和2</span><br><span class="line">&#39;a2b12c&#39;</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; str2.lstrip(&#39;12&#39;) #删除开头的1和2</span><br><span class="line">&#39;a2b12c21&#39;</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; str2.rstrip(&#39;12&#39;) #删除结尾的1和2</span><br><span class="line">&#39;1a2b12c&#39;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p><img src="https://ae01.alicdn.com/kf/Hfcd7e2903a7c4c7fa83684713e6c0b37b.jpg" alt=""></p>
+]]></content>
+      <categories>
+        <category>PYTHON</category>
+      </categories>
+      <tags>
+        <tag>PYTHON</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>LEETCODE双周赛26</title>
+    <url>/2020/06/04/LEETCODE%E5%8F%8C%E5%91%A8%E8%B5%9B26/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="LEETCODE双周赛26"><a href="#LEETCODE双周赛26" class="headerlink" title="LEETCODE双周赛26"></a>LEETCODE双周赛26</h1><h2 id="1446-连续字符"><a href="#1446-连续字符" class="headerlink" title="1446.连续字符"></a><a href="https://leetcode-cn.com/problems/consecutive-characters/submissions/" target="_blank" rel="noopener">1446.连续字符</a></h2><h3 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h3><blockquote>
+<p>双指针（滑动窗口）</p>
+</blockquote>
+<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    int maxPower(string s) &#123;</span><br><span class="line">        int maxn &#x3D; -0x3f3f3f3f;</span><br><span class="line">        for (int i &#x3D; 0; i &lt; s.size();) &#123;</span><br><span class="line">            int j &#x3D; i + 1;</span><br><span class="line">            while (j &lt; s.size() &amp;&amp; s[i] &#x3D;&#x3D; s[j]) j++;</span><br><span class="line">            maxn &#x3D; max(maxn, j - i);</span><br><span class="line">            i &#x3D; j;</span><br><span class="line">        &#125;            </span><br><span class="line">        </span><br><span class="line">        return maxn;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="1447-最简分数"><a href="#1447-最简分数" class="headerlink" title="1447.最简分数"></a><a href="https://leetcode-cn.com/problems/simplified-fractions/" target="_blank" rel="noopener">1447.最简分数</a></h2><h3 id="思路-1"><a href="#思路-1" class="headerlink" title="思路"></a>思路</h3><blockquote>
+<p>gcd+遍历</p>
+</blockquote>
+<h3 id="代码-1"><a href="#代码-1" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">    int gcd(int x, int y) &#123;</span><br><span class="line">        return y ? gcd(y, x % y) : x;</span><br><span class="line">    &#125;</span><br><span class="line">public:</span><br><span class="line">    vector&lt;string&gt; simplifiedFractions(int n) &#123;</span><br><span class="line">        vector&lt;string&gt; result;</span><br><span class="line">        for (int i &#x3D; 1; i &lt; n; i++) &#123;</span><br><span class="line">            for (int j &#x3D; i + 1; j &lt;&#x3D; n; j++) &#123;</span><br><span class="line">                if (gcd(j, i) &#x3D;&#x3D; 1)</span><br><span class="line">                    result.push_back(to_string(i) + &quot;&#x2F;&quot; + to_string(j));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return result;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="1448-统计二叉树中好节点的数目"><a href="#1448-统计二叉树中好节点的数目" class="headerlink" title="1448.统计二叉树中好节点的数目"></a><a href="https://leetcode-cn.com/problems/count-good-nodes-in-binary-tree/" target="_blank" rel="noopener">1448.统计二叉树中好节点的数目</a></h2><h3 id="思路-2"><a href="#思路-2" class="headerlink" title="思路"></a>思路</h3><blockquote>
+<p>简简单单的dfs，记录遍历的节点的最大值</p>
+</blockquote>
+<h3 id="代码-2"><a href="#代码-2" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;**</span><br><span class="line"> * Definition for a binary tree node.</span><br><span class="line"> * struct TreeNode &#123;</span><br><span class="line"> *     int val;</span><br><span class="line"> *     TreeNode *left;</span><br><span class="line"> *     TreeNode *right;</span><br><span class="line"> *     TreeNode() : val(0), left(nullptr), right(nullptr) &#123;&#125;</span><br><span class="line"> *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) &#123;&#125;</span><br><span class="line"> *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) &#123;&#125;</span><br><span class="line"> * &#125;;</span><br><span class="line"> *&#x2F;</span><br><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    int goodNodes(TreeNode* root) &#123;</span><br><span class="line">        return dfs(root, INT_MIN);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    int dfs(TreeNode* root, int maxn) &#123;</span><br><span class="line">        if (!root) return 0;</span><br><span class="line">        int ans &#x3D; maxn &lt;&#x3D; root-&gt;val;</span><br><span class="line">        if (root-&gt;left) ans +&#x3D; dfs(root-&gt;left, max(maxn, root-&gt;val));</span><br><span class="line">        if (root-&gt;right) ans +&#x3D; dfs(root-&gt;right, max(maxn, root-&gt;val));</span><br><span class="line">        return ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="1449-数位成本和为目标值的最大数字"><a href="#1449-数位成本和为目标值的最大数字" class="headerlink" title="1449.数位成本和为目标值的最大数字"></a><a href="https://leetcode-cn.com/problems/form-largest-integer-with-digits-that-add-up-to-target/" target="_blank" rel="noopener">1449.数位成本和为目标值的最大数字</a></h2><h3 id="思路-3"><a href="#思路-3" class="headerlink" title="思路"></a>思路</h3><blockquote>
+<p>完全背包</p>
+</blockquote>
+<h3 id="代码-3"><a href="#代码-3" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">   public:</span><br><span class="line">    string largestNumber(vector&lt;int&gt;&amp; cost, int target) &#123;</span><br><span class="line">        vector&lt;vector&lt;int&gt;&gt; f(10, vector&lt;int&gt;(target + 1));</span><br><span class="line"></span><br><span class="line">        for (int i &#x3D; 1; i &lt;&#x3D; target; i++) f[0][i] &#x3D; -1e8;</span><br><span class="line">        for (int i &#x3D; 1; i &lt;&#x3D; 9; i++)</span><br><span class="line">            for (int j &#x3D; 0; j &lt;&#x3D; target; j++) &#123;</span><br><span class="line">                f[i][j] &#x3D; f[i - 1][j];</span><br><span class="line">                if (j &gt;&#x3D; cost[i - 1]) f[i][j] &#x3D; max(f[i][j], f[i][j - cost[i - 1]] + 1);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        if (f[9][target] &lt; 1) return &quot;0&quot;;</span><br><span class="line">        string res;</span><br><span class="line"></span><br><span class="line">        for (int i &#x3D; 9, j &#x3D; target; i; i--)</span><br><span class="line">            while (j &gt;&#x3D; cost[i - 1] &amp;&amp; f[i][j] &#x3D;&#x3D; f[i][j - cost[i - 1]] + 1) &#123;</span><br><span class="line">                res +&#x3D; to_string(i);</span><br><span class="line">                j -&#x3D; cost[i - 1];</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        return res;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p><img src="https://ae01.alicdn.com/kf/Hdd96bb61417945ca90a15b8b5b98b5a1g.jpg" alt=""></p>
+]]></content>
+      <categories>
+        <category>LEETCODE周赛</category>
+      </categories>
+      <tags>
+        <tag>LEETCODE周赛</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>PYTHON中max函数的lambda表达式用法</title>
+    <url>/2020/06/03/PYTHON%E4%B8%ADmax%E5%87%BD%E6%95%B0%E7%9A%84lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F%E7%94%A8%E6%B3%95/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="PYTHON中max函数的lambda表达式用法"><a href="#PYTHON中max函数的lambda表达式用法" class="headerlink" title="PYTHON中max函数的lambda表达式用法"></a>PYTHON中max函数的lambda表达式用法</h1><h2 id="引入"><a href="#引入" class="headerlink" title="引入"></a>引入</h2><p>由一道<code>leetcode</code>题来引入<code>PYTHON</code>中<code>max</code>函数的<code>lambda</code>表达式用法<br><a href="https://leetcode-cn.com/problems/longest-palindromic-substring/" target="_blank" rel="noopener">5. 最长回文子串</a></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">class Solution:</span><br><span class="line">    def longestPalindrome(self, s: str) -&gt; str:</span><br><span class="line">        p &#x3D; &#39;&#39;</span><br><span class="line">        for i in range(len(s)):</span><br><span class="line">            p1 &#x3D; self.get_palindrome(s, i, i+1)</span><br><span class="line">            p2 &#x3D; self.get_palindrome(s, i, i)</span><br><span class="line">            p &#x3D; max([p, p1, p2], key&#x3D;lambda x: len(x))</span><br><span class="line">        return p</span><br><span class="line">    </span><br><span class="line">    def get_palindrome(self, s: str, l: int, r: int) -&gt; str:</span><br><span class="line">        while l &gt;&#x3D; 0 and r &lt; len(s) and s[l] &#x3D;&#x3D; s[r]:</span><br><span class="line">            l -&#x3D; 1</span><br><span class="line">            r +&#x3D; 1</span><br><span class="line">        return s[l+1:r]</span><br></pre></td></tr></table></figure>
+<p><code>max([p, p1, p2], key=lambda x: len(x))</code>的含义就是本文章的内容</p>
+<h2 id="lambda表达式介绍"><a href="#lambda表达式介绍" class="headerlink" title="lambda表达式介绍"></a>lambda表达式介绍</h2><p>在学习<code>python</code>的过程中，<code>lambda</code>的语法时常会使人感到困惑，<code>lambda</code>是什么，为什么要使用<code>lambda</code>，是不是必须使用<code>lambda</code>？</p>
+<ol>
+<li><code>lambda</code>是什么？<br>我们来看此表达式：<code>g = lambda x:x+1</code>，看一下执行的结果：<code>g(1)==2</code>、<code>g(2)==3</code>,当然，你也可以这样使用：<code>lambda x:x+1(1)</code>，结果为<code>2</code><br>可以这样认为,<code>lambda</code>作为一个表达式，定义了一个匿名函数，上例的代码<code>x</code>为入口参数，<code>x+1</code>为函数体，用函数来表示为:<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">def g(x):</span><br><span class="line">    return x+1</span><br></pre></td></tr></table></figure></li>
+<li><code>lambda</code>定义了一个匿名函数</li>
+<li><code>lambda</code>并不会带来程序运行效率的提高，只会使代码更简洁</li>
+<li>如果可以使用<code>for...in...if</code>来完成的，坚决不用<code>lambda</code></li>
+<li>如果使用<code>lambda</code>，<code>lambda</code>内不要包含循环，如果有，我宁愿定义函数来完成，使代码获得可重用性和更好的可读性。</li>
+<li>总结：<code>lambda</code>是为了减少单行函数的定义而存在的</li>
+</ol>
+<h2 id="max函数中的lambda表达式"><a href="#max函数中的lambda表达式" class="headerlink" title="max函数中的lambda表达式"></a>max函数中的lambda表达式</h2><p>现在回到我们的max函数中，就十分容易理解了:<br>函数形式：<code>max( x ,key=lambda a : b )</code>，x可以是任何数值，可以有多个x值<br>这个函数的意思是：我们先把x值带入lambda函数转换成b值，然后再将b值进行比较<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">haha0&#x3D;max(&#39;az&#39;,&#39;za&#39;, key&#x3D;lambda a: a[0])</span><br><span class="line">haha1&#x3D;max(&#39;az&#39;,&#39;za&#39;, key&#x3D;lambda a: a[1])</span><br><span class="line">haha2&#x3D;max(range(10),key&#x3D;lambda a:a&gt;3)</span><br><span class="line"> </span><br><span class="line">print(haha0)        #输出za</span><br><span class="line">print(haha1)        #输出az</span><br><span class="line">print(haha2)        #输出4</span><br></pre></td></tr></table></figure></p>
+<p>以<code>haha0</code>为例子：我们传入<code>az</code>，<code>za</code>，为了方便解释称之为虚拟比较，但是因为我们引入了<code>lambda</code>表达式，所以，我们实际上比较的是，<code>az</code>中的第一位<code>a</code>和<code>za</code>中第一位的<code>z</code>，由<code>ascii</code>码表可以知道<code>a</code>是小于<code>z</code>的，所以在这里最大的是<code>z</code>，那么我们返回的就是<code>z</code>的虚拟比较变量，也就是本来的<code>za</code>。</p>
+<p><code>haha2</code>的用法十分少见，实际上比较的是:<br><code>F F F T T T T T T T ( False 和 True )</code></p>
+<p><code>T</code>是肯定比<code>F</code>大的，但是一堆<code>True</code>哪里能互相比较大小呢，所以就输出第一个<code>True</code>值的虚拟比较变量，也就是<code>4</code></p>
+<p><code>max</code>中带有<code>lambda</code>的这个写法的意义在于代码变得更简洁</p>
+<p>假如我们有一个字典，里面记录着人名和相应年龄，现在我们想要在里面筛选出年龄最大的那个人的一条字典记录<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">x&#x3D;&#123;&quot;老王&quot; :18 , &quot;小李&quot;:99&#125;</span><br><span class="line">haha3&#x3D;max(x.items(), key&#x3D;lambda a: a[1])</span><br><span class="line">print(haha3)        #输出(&#39;小李&#39;, 99)</span><br></pre></td></tr></table></figure></p>
+<p>要注意使用字典的话一定要x.items()，不能直接输入x值，达不到我们想要的效果   </p>
+<p>其实我们大可不必这么写，直接从字典中提取出年龄列表进行比较：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">x&#x3D;&#123;&quot;老王&quot; :18 , &quot;小李&quot;:99&#125;</span><br><span class="line">y&#x3D;[]</span><br><span class="line">for name,age in x.items():</span><br><span class="line">    y.append(age)</span><br><span class="line">haha4&#x3D;max(y)</span><br><span class="line">print(haha4)</span><br></pre></td></tr></table></figure></p>
+<p>只是这样写是比较麻烦以及浪费内存的不是么？我想这就是<code>max</code>函数中设置<code>lambda</code>表达式的意义  </p>
+<p>再举两个例子：    </p>
+<ol>
+<li>取第一维<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">num &#x3D; [(1,2.5), (1.5, 3.2), (1.3, 4.0), (2.2, 1.8)]</span><br><span class="line">y,z &#x3D; max(num, key&#x3D;lambda x:x[0])</span><br><span class="line">print(y, z)      #结果为2.2 1.8</span><br></pre></td></tr></table></figure></li>
+<li>取第二维<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">num &#x3D; [(1,2.5), (1.5, 3.2), (1.3, 4.0), (2.2, 1.8)]</span><br><span class="line">y,z &#x3D; max(num, key&#x3D;lambda x:x[1])</span><br><span class="line">print(y, z)      #结果为1.3 4.0</span><br></pre></td></tr></table></figure>
+<img src="https://ae01.alicdn.com/kf/H12f0feac72244f349b51fc9f740d048fh.jpg" alt=""></li>
+</ol>
+]]></content>
+      <categories>
+        <category>PYTHON</category>
+      </categories>
+      <tags>
+        <tag>PYTHON</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>计算机网络基础总结(2)</title>
+    <url>/2020/06/03/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80%E6%80%BB%E7%BB%93-2/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="计算机网络基础总结-2"><a href="#计算机网络基础总结-2" class="headerlink" title="计算机网络基础总结(2)"></a>计算机网络基础总结(2)</h1><p>1. </p>
+]]></content>
   </entry>
   <entry>
     <title>python基础总结——mosh版本</title>
@@ -649,136 +865,6 @@
       </tags>
   </entry>
   <entry>
-    <title>LEETCODE5/PYTHON解法/最长回文串</title>
-    <url>/2020/06/03/LEETCODE5-PYTHON%E8%A7%A3%E6%B3%95-%E6%9C%80%E9%95%BF%E5%9B%9E%E6%96%87%E4%B8%B2/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="5-最长回文子串"><a href="#5-最长回文子串" class="headerlink" title="5. 最长回文子串"></a><a href="https://leetcode-cn.com/problems/longest-palindromic-substring/" target="_blank" rel="noopener">5. 最长回文子串</a></h1><h2 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">class Solution:</span><br><span class="line">    def longestPalindrome(self, s: str) -&gt; str:</span><br><span class="line">        p &#x3D; &#39;&#39;</span><br><span class="line">        for i in range(len(s)):</span><br><span class="line">            p1 &#x3D; self.get_palindrome(s, i, i+1)</span><br><span class="line">            p2 &#x3D; self.get_palindrome(s, i, i)</span><br><span class="line">            p &#x3D; max([p, p1, p2], key&#x3D;lambda x: len(x))</span><br><span class="line">        return p</span><br><span class="line">    </span><br><span class="line">    def get_palindrome(self, s: str, l: int, r: int) -&gt; str:</span><br><span class="line">        while l &gt;&#x3D; 0 and r &lt; len(s) and s[l] &#x3D;&#x3D; s[r]:</span><br><span class="line">            l -&#x3D; 1</span><br><span class="line">            r +&#x3D; 1</span><br><span class="line">        return s[l+1:r]</span><br></pre></td></tr></table></figure>
-<p><img src="https://ae01.alicdn.com/kf/He2534bd81da14f7cac54ae321362c2e1p.jpg" alt=""></p>
-]]></content>
-      <categories>
-        <category>LEETCODE/PYTHON</category>
-      </categories>
-      <tags>
-        <tag>LEETCODE</tag>
-        <tag>PYTHON</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>LEETCODE双周赛26</title>
-    <url>/2020/06/04/LEETCODE%E5%8F%8C%E5%91%A8%E8%B5%9B26/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="LEETCODE双周赛26"><a href="#LEETCODE双周赛26" class="headerlink" title="LEETCODE双周赛26"></a>LEETCODE双周赛26</h1><h2 id="1446-连续字符"><a href="#1446-连续字符" class="headerlink" title="1446.连续字符"></a><a href="https://leetcode-cn.com/problems/consecutive-characters/submissions/" target="_blank" rel="noopener">1446.连续字符</a></h2><h3 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h3><blockquote>
-<p>双指针（滑动窗口）</p>
-</blockquote>
-<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    int maxPower(string s) &#123;</span><br><span class="line">        int maxn &#x3D; -0x3f3f3f3f;</span><br><span class="line">        for (int i &#x3D; 0; i &lt; s.size();) &#123;</span><br><span class="line">            int j &#x3D; i + 1;</span><br><span class="line">            while (j &lt; s.size() &amp;&amp; s[i] &#x3D;&#x3D; s[j]) j++;</span><br><span class="line">            maxn &#x3D; max(maxn, j - i);</span><br><span class="line">            i &#x3D; j;</span><br><span class="line">        &#125;            </span><br><span class="line">        </span><br><span class="line">        return maxn;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<h2 id="1447-最简分数"><a href="#1447-最简分数" class="headerlink" title="1447.最简分数"></a><a href="https://leetcode-cn.com/problems/simplified-fractions/" target="_blank" rel="noopener">1447.最简分数</a></h2><h3 id="思路-1"><a href="#思路-1" class="headerlink" title="思路"></a>思路</h3><blockquote>
-<p>gcd+遍历</p>
-</blockquote>
-<h3 id="代码-1"><a href="#代码-1" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">    int gcd(int x, int y) &#123;</span><br><span class="line">        return y ? gcd(y, x % y) : x;</span><br><span class="line">    &#125;</span><br><span class="line">public:</span><br><span class="line">    vector&lt;string&gt; simplifiedFractions(int n) &#123;</span><br><span class="line">        vector&lt;string&gt; result;</span><br><span class="line">        for (int i &#x3D; 1; i &lt; n; i++) &#123;</span><br><span class="line">            for (int j &#x3D; i + 1; j &lt;&#x3D; n; j++) &#123;</span><br><span class="line">                if (gcd(j, i) &#x3D;&#x3D; 1)</span><br><span class="line">                    result.push_back(to_string(i) + &quot;&#x2F;&quot; + to_string(j));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return result;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<h2 id="1448-统计二叉树中好节点的数目"><a href="#1448-统计二叉树中好节点的数目" class="headerlink" title="1448.统计二叉树中好节点的数目"></a><a href="https://leetcode-cn.com/problems/count-good-nodes-in-binary-tree/" target="_blank" rel="noopener">1448.统计二叉树中好节点的数目</a></h2><h3 id="思路-2"><a href="#思路-2" class="headerlink" title="思路"></a>思路</h3><blockquote>
-<p>简简单单的dfs，记录遍历的节点的最大值</p>
-</blockquote>
-<h3 id="代码-2"><a href="#代码-2" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;**</span><br><span class="line"> * Definition for a binary tree node.</span><br><span class="line"> * struct TreeNode &#123;</span><br><span class="line"> *     int val;</span><br><span class="line"> *     TreeNode *left;</span><br><span class="line"> *     TreeNode *right;</span><br><span class="line"> *     TreeNode() : val(0), left(nullptr), right(nullptr) &#123;&#125;</span><br><span class="line"> *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) &#123;&#125;</span><br><span class="line"> *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) &#123;&#125;</span><br><span class="line"> * &#125;;</span><br><span class="line"> *&#x2F;</span><br><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    int goodNodes(TreeNode* root) &#123;</span><br><span class="line">        return dfs(root, INT_MIN);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    int dfs(TreeNode* root, int maxn) &#123;</span><br><span class="line">        if (!root) return 0;</span><br><span class="line">        int ans &#x3D; maxn &lt;&#x3D; root-&gt;val;</span><br><span class="line">        if (root-&gt;left) ans +&#x3D; dfs(root-&gt;left, max(maxn, root-&gt;val));</span><br><span class="line">        if (root-&gt;right) ans +&#x3D; dfs(root-&gt;right, max(maxn, root-&gt;val));</span><br><span class="line">        return ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<h2 id="1449-数位成本和为目标值的最大数字"><a href="#1449-数位成本和为目标值的最大数字" class="headerlink" title="1449.数位成本和为目标值的最大数字"></a><a href="https://leetcode-cn.com/problems/form-largest-integer-with-digits-that-add-up-to-target/" target="_blank" rel="noopener">1449.数位成本和为目标值的最大数字</a></h2><h3 id="思路-3"><a href="#思路-3" class="headerlink" title="思路"></a>思路</h3><blockquote>
-<p>完全背包</p>
-</blockquote>
-<h3 id="代码-3"><a href="#代码-3" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">   public:</span><br><span class="line">    string largestNumber(vector&lt;int&gt;&amp; cost, int target) &#123;</span><br><span class="line">        vector&lt;vector&lt;int&gt;&gt; f(10, vector&lt;int&gt;(target + 1));</span><br><span class="line"></span><br><span class="line">        for (int i &#x3D; 1; i &lt;&#x3D; target; i++) f[0][i] &#x3D; -1e8;</span><br><span class="line">        for (int i &#x3D; 1; i &lt;&#x3D; 9; i++)</span><br><span class="line">            for (int j &#x3D; 0; j &lt;&#x3D; target; j++) &#123;</span><br><span class="line">                f[i][j] &#x3D; f[i - 1][j];</span><br><span class="line">                if (j &gt;&#x3D; cost[i - 1]) f[i][j] &#x3D; max(f[i][j], f[i][j - cost[i - 1]] + 1);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        if (f[9][target] &lt; 1) return &quot;0&quot;;</span><br><span class="line">        string res;</span><br><span class="line"></span><br><span class="line">        for (int i &#x3D; 9, j &#x3D; target; i; i--)</span><br><span class="line">            while (j &gt;&#x3D; cost[i - 1] &amp;&amp; f[i][j] &#x3D;&#x3D; f[i][j - cost[i - 1]] + 1) &#123;</span><br><span class="line">                res +&#x3D; to_string(i);</span><br><span class="line">                j -&#x3D; cost[i - 1];</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        return res;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p><img src="https://ae01.alicdn.com/kf/Hdd96bb61417945ca90a15b8b5b98b5a1g.jpg" alt=""></p>
-]]></content>
-      <categories>
-        <category>LEETCODE周赛</category>
-      </categories>
-      <tags>
-        <tag>LEETCODE周赛</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>PYTHON中max函数的lambda表达式用法</title>
-    <url>/2020/06/03/PYTHON%E4%B8%ADmax%E5%87%BD%E6%95%B0%E7%9A%84lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F%E7%94%A8%E6%B3%95/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="PYTHON中max函数的lambda表达式用法"><a href="#PYTHON中max函数的lambda表达式用法" class="headerlink" title="PYTHON中max函数的lambda表达式用法"></a>PYTHON中max函数的lambda表达式用法</h1><h2 id="引入"><a href="#引入" class="headerlink" title="引入"></a>引入</h2><p>由一道<code>leetcode</code>题来引入<code>PYTHON</code>中<code>max</code>函数的<code>lambda</code>表达式用法<br><a href="https://leetcode-cn.com/problems/longest-palindromic-substring/" target="_blank" rel="noopener">5. 最长回文子串</a></p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">class Solution:</span><br><span class="line">    def longestPalindrome(self, s: str) -&gt; str:</span><br><span class="line">        p &#x3D; &#39;&#39;</span><br><span class="line">        for i in range(len(s)):</span><br><span class="line">            p1 &#x3D; self.get_palindrome(s, i, i+1)</span><br><span class="line">            p2 &#x3D; self.get_palindrome(s, i, i)</span><br><span class="line">            p &#x3D; max([p, p1, p2], key&#x3D;lambda x: len(x))</span><br><span class="line">        return p</span><br><span class="line">    </span><br><span class="line">    def get_palindrome(self, s: str, l: int, r: int) -&gt; str:</span><br><span class="line">        while l &gt;&#x3D; 0 and r &lt; len(s) and s[l] &#x3D;&#x3D; s[r]:</span><br><span class="line">            l -&#x3D; 1</span><br><span class="line">            r +&#x3D; 1</span><br><span class="line">        return s[l+1:r]</span><br></pre></td></tr></table></figure>
-<p><code>max([p, p1, p2], key=lambda x: len(x))</code>的含义就是本文章的内容</p>
-<h2 id="lambda表达式介绍"><a href="#lambda表达式介绍" class="headerlink" title="lambda表达式介绍"></a>lambda表达式介绍</h2><p>在学习<code>python</code>的过程中，<code>lambda</code>的语法时常会使人感到困惑，<code>lambda</code>是什么，为什么要使用<code>lambda</code>，是不是必须使用<code>lambda</code>？</p>
-<ol>
-<li><code>lambda</code>是什么？<br>我们来看此表达式：<code>g = lambda x:x+1</code>，看一下执行的结果：<code>g(1)==2</code>、<code>g(2)==3</code>,当然，你也可以这样使用：<code>lambda x:x+1(1)</code>，结果为<code>2</code><br>可以这样认为,<code>lambda</code>作为一个表达式，定义了一个匿名函数，上例的代码<code>x</code>为入口参数，<code>x+1</code>为函数体，用函数来表示为:<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">def g(x):</span><br><span class="line">    return x+1</span><br></pre></td></tr></table></figure></li>
-<li><code>lambda</code>定义了一个匿名函数</li>
-<li><code>lambda</code>并不会带来程序运行效率的提高，只会使代码更简洁</li>
-<li>如果可以使用<code>for...in...if</code>来完成的，坚决不用<code>lambda</code></li>
-<li>如果使用<code>lambda</code>，<code>lambda</code>内不要包含循环，如果有，我宁愿定义函数来完成，使代码获得可重用性和更好的可读性。</li>
-<li>总结：<code>lambda</code>是为了减少单行函数的定义而存在的</li>
-</ol>
-<h2 id="max函数中的lambda表达式"><a href="#max函数中的lambda表达式" class="headerlink" title="max函数中的lambda表达式"></a>max函数中的lambda表达式</h2><p>现在回到我们的max函数中，就十分容易理解了:<br>函数形式：<code>max( x ,key=lambda a : b )</code>，x可以是任何数值，可以有多个x值<br>这个函数的意思是：我们先把x值带入lambda函数转换成b值，然后再将b值进行比较<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">haha0&#x3D;max(&#39;az&#39;,&#39;za&#39;, key&#x3D;lambda a: a[0])</span><br><span class="line">haha1&#x3D;max(&#39;az&#39;,&#39;za&#39;, key&#x3D;lambda a: a[1])</span><br><span class="line">haha2&#x3D;max(range(10),key&#x3D;lambda a:a&gt;3)</span><br><span class="line"> </span><br><span class="line">print(haha0)        #输出za</span><br><span class="line">print(haha1)        #输出az</span><br><span class="line">print(haha2)        #输出4</span><br></pre></td></tr></table></figure></p>
-<p>以<code>haha0</code>为例子：我们传入<code>az</code>，<code>za</code>，为了方便解释称之为虚拟比较，但是因为我们引入了<code>lambda</code>表达式，所以，我们实际上比较的是，<code>az</code>中的第一位<code>a</code>和<code>za</code>中第一位的<code>z</code>，由<code>ascii</code>码表可以知道<code>a</code>是小于<code>z</code>的，所以在这里最大的是<code>z</code>，那么我们返回的就是<code>z</code>的虚拟比较变量，也就是本来的<code>za</code>。</p>
-<p><code>haha2</code>的用法十分少见，实际上比较的是:<br><code>F F F T T T T T T T ( False 和 True )</code></p>
-<p><code>T</code>是肯定比<code>F</code>大的，但是一堆<code>True</code>哪里能互相比较大小呢，所以就输出第一个<code>True</code>值的虚拟比较变量，也就是<code>4</code></p>
-<p><code>max</code>中带有<code>lambda</code>的这个写法的意义在于代码变得更简洁</p>
-<p>假如我们有一个字典，里面记录着人名和相应年龄，现在我们想要在里面筛选出年龄最大的那个人的一条字典记录<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">x&#x3D;&#123;&quot;老王&quot; :18 , &quot;小李&quot;:99&#125;</span><br><span class="line">haha3&#x3D;max(x.items(), key&#x3D;lambda a: a[1])</span><br><span class="line">print(haha3)        #输出(&#39;小李&#39;, 99)</span><br></pre></td></tr></table></figure></p>
-<p>要注意使用字典的话一定要x.items()，不能直接输入x值，达不到我们想要的效果   </p>
-<p>其实我们大可不必这么写，直接从字典中提取出年龄列表进行比较：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">x&#x3D;&#123;&quot;老王&quot; :18 , &quot;小李&quot;:99&#125;</span><br><span class="line">y&#x3D;[]</span><br><span class="line">for name,age in x.items():</span><br><span class="line">    y.append(age)</span><br><span class="line">haha4&#x3D;max(y)</span><br><span class="line">print(haha4)</span><br></pre></td></tr></table></figure></p>
-<p>只是这样写是比较麻烦以及浪费内存的不是么？我想这就是<code>max</code>函数中设置<code>lambda</code>表达式的意义  </p>
-<p>再举两个例子：    </p>
-<ol>
-<li>取第一维<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">num &#x3D; [(1,2.5), (1.5, 3.2), (1.3, 4.0), (2.2, 1.8)]</span><br><span class="line">y,z &#x3D; max(num, key&#x3D;lambda x:x[0])</span><br><span class="line">print(y, z)      #结果为2.2 1.8</span><br></pre></td></tr></table></figure></li>
-<li>取第二维<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">num &#x3D; [(1,2.5), (1.5, 3.2), (1.3, 4.0), (2.2, 1.8)]</span><br><span class="line">y,z &#x3D; max(num, key&#x3D;lambda x:x[1])</span><br><span class="line">print(y, z)      #结果为1.3 4.0</span><br></pre></td></tr></table></figure>
-<img src="https://ae01.alicdn.com/kf/H12f0feac72244f349b51fc9f740d048fh.jpg" alt=""></li>
-</ol>
-]]></content>
-      <categories>
-        <category>PYTHON</category>
-      </categories>
-      <tags>
-        <tag>PYTHON</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>translate first day</title>
-    <url>/2020/05/31/translate-first-day/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="A-week-of-distractions-from-Trump-shows-a-leader-in-crisis"><a href="#A-week-of-distractions-from-Trump-shows-a-leader-in-crisis" class="headerlink" title="A week of distractions from Trump shows a leader in crisis"></a>A week of distractions from Trump shows a leader in crisis</h1><p>(CNN)On Monday, as the nation marked Memorial Day, President Donald Trump mocked his campaign rival for wearing a face mask. On Wednesday, as the national death toll from coronavirus reached a wretched milestone, Trump and his family flew to Florida in an attempted focus on space travel.</p>
-<p>By Friday, as smoke was lifting in Minneapolis after a night of racial unrest, he announced the United States would withdraw from the World Health Organization. A day later, after another night of protests, he declared himself safe inside his heavily fortified mansion and insinuated his own supporters would rally outside that evening.</p>
-<p>In between, there was a dark suggestion of murder, false conspiracies about voting through the mail, a fight over where to hold his nominating convention and a dramatic escalation of ill will with the very social media platform that facilitated almost all the other diversions in the first place.</p>
-<p>Trump’s efforts to change the subject at moments of peril have been a hallmark of his entire career in politics and, when successful, a constant source of frustration for his rivals. But rarely have they appeared more blatant or off-key than now, as a battered nation emerges from a pandemic that has left more than 100,000 dead and as racial unrest brews again.<br>That it is all happening five months before Trump faces an election in which polls show him trailing only heightens the sense of a leader in crisis, even as he insists he has a handle on both matters and attempts to proceed as planned with his presidency. Trump, cognizant of his precarious political position, has retrenched.</p>
-<p>Unwilling or unable to strike a unifying tone, Trump lashed out Saturday morning when he criticized the Democratic mayors of Washington and Minneapolis while appearing to summon his own supporters to rally outside the White House.</p>
-<p>After announcing his was safe, warning he was protected by “vicious dogs” and “ominous weapons,” Trump provided a play-by-play of Friday evening’s protests, of which he said he’d “watched every move.” Trump wrote: “Tonight, I understand, is MAGA NIGHT AT THE WHITE HOUSE???”</p>
-<p>Advisers insist Trump is focused on reviving the country after three months of pandemic that have led, along with the six-figure death toll, to record levels of unemployment and entire industries shuttered. Trump has aggressively pushed for states to reopen even when they don’t necessarily meet the parameters set out by his task force, which has seen its meetings sharply curtailed and its health experts’ public roles reduced.</p>
-<p>At the same time, Trump has sought over the past week to shine the presidential spotlight into dustier corners filled with festering racial grievances and antique conspiracies, all of which have been debunked. He has waged feuds old and new and unveiled strategically timed policy announcements at a moment when his leadership is being questioned.</p>
-<p>The events that unfolded after the President issued a tweet early Friday laden with racist overtones underscored the degree to which he has used inflammatory statements to ignite controversy and enthuse his supporters, even as he denied later that those were his intentions.</p>
-<p>Aides spent Friday debating whether Trump should address the situation in Minnesota during a planned appearance in the Rose Garden, which had been called to announce new actions against China and the US withdrawal from the World Health Organization.</p>
-<p>Some of his advisers encouraged him to speak about Minnesota because his election-year rival had already delivered an address on the topic. Others were more skeptical, convinced Trump would only face more questions about his tweet that used a phrase first uttered by a Miami police chief in 1967 to describe a crackdown in black neighborhoods.</p>
-<p>More than 12 hours after tweeting “when the looting starts, the shooting starts” as images of Minneapolis fire and riots played on cable news, Trump insisted on Twitter that his message was not, in fact, a reference to brutal civil rights-era police tactics. But he ignored the topic in the Rose Garden, choosing instead to focus on China and retreating to the Oval Office as reporters shouted questions.</p>
-<p>It was only around 5 p.m. ET — after a full day of public silence — that Trump announced he’d spoken with the family of George Floyd, the black man who had died after being pinned to the ground by his neck by a white police officer.</p>
-<p>“It certainly looked like there was no excuse for it,” he said of the violent arrest during a roundtable event meant to focus on coronavirus.</p>
-<p>The episode followed Trump’s longtime model of igniting controversy before retreating hours later. If anything, leaving his message lingering without explanation was a diversion in itself and another example of Trump’s inability — or unwillingness — to put aside the divisive itch he’s long cultivated.</p>
-<p>The role of national consoler has never come easily to Trump, nor have attempts at unifying a country riven by politics and ideology. In many instances he’s simply shown no interest in assuming the tone or accepting the responsibilities that US presidents have shouldered throughout history.</p>
-<p>He doesn’t believe it’s up to him to demonstrate responsible mask-wearing, and he retweeted a message earlier this week that appeared to mock former Vice President Joe Biden’s mask-and-aviators ensemble.</p>
-<p>Most of the country may say Trump should wear a mask in public — a Quinnipiac University poll this week put the figure at 67% — but among white men the number stands only at 49%, enough for his stance to pass political muster with his most reliable bloc of supporters.</p>
-<p>As coronavirus began ravaging parts of the country, he did declare himself a wartime President waging battle against the “invisible enemy.” But with war comes death — in this case, more US deaths than the Vietnam and Korean wars combined — and Trump was slow to acknowledge the 100,000 milestone reached midweek.</p>
-<p>He was aboard Air Force One when the death toll officially ticked into six digits, returning to Washington after his plans to witness the first manned US space launch in nearly a decade had been thwarted by the weather.</p>
-<p>He had hoped that the trip, with his entire family in tow, would help shift a national storyline from the miserable pandemic toward a more optimistic one of scientific potential. But the launch was scrubbed when thunderstorms rolled in and Trump was forced to return to Washington.</p>
-<p>The President didn’t address the grim figure as he returned to the White House with the first lady on Wednesday.</p>
-<p>He finally tweeted about it on Thursday morning, deeming it “a very sad milestone.” But he did not make time to address it in person.</p>
-<p>Instead, he has wielded sinister conspiracies and false allegations.</p>
-<p>He’s railed against vote-by-mail, which many governors are seeking to expand amid a highly contagious viral pandemic and which has not proved to be rife with fraud. Despite his issues with the practice, Trump himself voted by mail in February, even though he was in Florida — the state where he votes — on the day that early voting locations opened and drove past one that’s across from his golf course at least six times.</p>
-<p>He has actively worked to relitigate the circumstances that led to Robert Mueller’s Russia investigation, including this week, when he fan-danced around the still-unnamed allegation against his predecessor Barack Obama.</p>
-<p>On Friday evening, his newly installed director of national intelligence appeared to further the cause by releasing the transcripts of phone calls between Trump’s onetime national security adviser and the then-Russian ambassador to the United States.</p>
-<p>The darkest of Trump’s fixations remains the unfounded insinuation that a morning cable news host played a role in killing a young aide almost two decades ago, a blatant falsehood that led this week to pleas from the young woman’s widower for Twitter to disallow the messages.</p>
-<p>The social media giant did not block those messages but did attempt to fact-check his claims about vote-by-mail, a move that set Trump off and led to a hurried effort inside the White House to finalize an executive order few believe will withstand legal scrutiny and that could, potentially, cause even more regulation of the President’s tweets. Hours after he signed it, Twitter slapped a warning on his Minnesota tweet, saying it glorified violence.</p>
-<p>At one time, Trump used his once-a-week campaign rallies to unleash the vitriol and paranoia that his supporters love and that he believes are the very characteristics that led to his unlikely victory in 2016.</p>
-<p>Rallies are out of the question for now — though aides say they’re looking to revive them sooner rather than later.</p>
-<p>This story has been updated with additional developments.</p>
-<p><img src="https://ae01.alicdn.com/kf/Haf7cd3754a7a4a1390938116e7db9917N.jpg" alt=""></p>
-]]></content>
-      <categories>
-        <category>TRANSLATE</category>
-      </categories>
-      <tags>
-        <tag>TRANSLATE</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>计算机网络基础总结(2)</title>
-    <url>/2020/06/03/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80%E6%80%BB%E7%BB%93-2/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="计算机网络基础总结-2"><a href="#计算机网络基础总结-2" class="headerlink" title="计算机网络基础总结(2)"></a>计算机网络基础总结(2)</h1><p>1. </p>
-]]></content>
-  </entry>
-  <entry>
     <title>计算机网络基础总结(1)</title>
     <url>/2020/06/02/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80%E6%80%BB%E7%BB%93-1/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="计算机网络基础总结-1"><a href="#计算机网络基础总结-1" class="headerlink" title="计算机网络基础总结(1)"></a>计算机网络基础总结(1)</h1><ol>
@@ -837,6 +923,71 @@
       </categories>
       <tags>
         <tag>计算机网络基础——韩立刚视频总结</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>PYTHON中反转字符串的三种方法</title>
+    <url>/2020/06/04/PYTHON%E4%B8%AD%E5%8F%8D%E8%BD%AC%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9A%84%E4%B8%89%E7%A7%8D%E6%96%B9%E6%B3%95/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="PYTHON中反转字符串的三种方法"><a href="#PYTHON中反转字符串的三种方法" class="headerlink" title="PYTHON中反转字符串的三种方法"></a>PYTHON中反转字符串的三种方法</h1><h2 id="1-切片法（最简洁的一种）"><a href="#1-切片法（最简洁的一种）" class="headerlink" title="1.切片法（最简洁的一种）"></a>1.切片法（最简洁的一种）</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">def reverse1():</span><br><span class="line">    s &#x3D; input(&quot;请输入需要反转的内容：&quot;)</span><br><span class="line">    return s[::-1]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">print(reverse1())</span><br><span class="line"></span><br><span class="line">#运行结果</span><br><span class="line"></span><br><span class="line">请输入需要反转的内容：莺啼岸柳弄春晴 柳弄春晴夜月明</span><br><span class="line">明月夜晴春弄柳 晴春弄柳岸啼莺</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>This is extended slice syntax. It works by doing [begin:end:step] - by leaving begin and end off and specifying a step of -1, it reverses a string.<br>这是扩展片语法。它的工作方式是[begin:end:step]-离开begin和end并指定步骤-1，它反转字符串。</p>
+</blockquote>
+<h2 id="2-递归"><a href="#2-递归" class="headerlink" title="2.递归"></a>2.递归</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">def reverse2(s):</span><br><span class="line">    if s&#x3D;&#x3D;&quot;&quot;:</span><br><span class="line">        return s</span><br><span class="line">    else:</span><br><span class="line">        return reverse2(s[1:])+s[0]</span><br><span class="line">print(reverse2(&quot;莺啼岸柳弄春晴 柳弄春晴夜月明&quot;))</span><br><span class="line"></span><br><span class="line">#运行结果</span><br><span class="line"></span><br><span class="line">明月夜晴春弄柳 晴春弄柳岸啼莺</span><br></pre></td></tr></table></figure>
+<h2 id="3-借用列表的reverse-方法"><a href="#3-借用列表的reverse-方法" class="headerlink" title="3.借用列表的reverse()方法"></a>3.借用列表的reverse()方法</h2><blockquote>
+<p>reverse()函数将列表的内容进行了反转，借助这个特性，可以先将字符串转换成列表，利用reverse()函数进行反转后，再处理成字符串。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">def reverse3(s):</span><br><span class="line">    l&#x3D;list(s)</span><br><span class="line">    l.reverse()</span><br><span class="line">    return (&quot;&quot;.join(l))</span><br><span class="line">print(reverse3(&quot;莺啼岸柳弄春晴 柳弄春晴夜月明&quot;))</span><br><span class="line"></span><br><span class="line">#运行结果</span><br><span class="line"></span><br><span class="line">明月夜晴春弄柳 晴春弄柳岸啼莺</span><br></pre></td></tr></table></figure>
+<p><img src="https://ae01.alicdn.com/kf/Hfcd7e2903a7c4c7fa83684713e6c0b37b.jpg" alt=""></p>
+]]></content>
+      <categories>
+        <category>PYTHON</category>
+      </categories>
+      <tags>
+        <tag>PYTHON</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>translate first day</title>
+    <url>/2020/05/31/translate-first-day/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="A-week-of-distractions-from-Trump-shows-a-leader-in-crisis"><a href="#A-week-of-distractions-from-Trump-shows-a-leader-in-crisis" class="headerlink" title="A week of distractions from Trump shows a leader in crisis"></a>A week of distractions from Trump shows a leader in crisis</h1><p>(CNN)On Monday, as the nation marked Memorial Day, President Donald Trump mocked his campaign rival for wearing a face mask. On Wednesday, as the national death toll from coronavirus reached a wretched milestone, Trump and his family flew to Florida in an attempted focus on space travel.</p>
+<p>By Friday, as smoke was lifting in Minneapolis after a night of racial unrest, he announced the United States would withdraw from the World Health Organization. A day later, after another night of protests, he declared himself safe inside his heavily fortified mansion and insinuated his own supporters would rally outside that evening.</p>
+<p>In between, there was a dark suggestion of murder, false conspiracies about voting through the mail, a fight over where to hold his nominating convention and a dramatic escalation of ill will with the very social media platform that facilitated almost all the other diversions in the first place.</p>
+<p>Trump’s efforts to change the subject at moments of peril have been a hallmark of his entire career in politics and, when successful, a constant source of frustration for his rivals. But rarely have they appeared more blatant or off-key than now, as a battered nation emerges from a pandemic that has left more than 100,000 dead and as racial unrest brews again.<br>That it is all happening five months before Trump faces an election in which polls show him trailing only heightens the sense of a leader in crisis, even as he insists he has a handle on both matters and attempts to proceed as planned with his presidency. Trump, cognizant of his precarious political position, has retrenched.</p>
+<p>Unwilling or unable to strike a unifying tone, Trump lashed out Saturday morning when he criticized the Democratic mayors of Washington and Minneapolis while appearing to summon his own supporters to rally outside the White House.</p>
+<p>After announcing his was safe, warning he was protected by “vicious dogs” and “ominous weapons,” Trump provided a play-by-play of Friday evening’s protests, of which he said he’d “watched every move.” Trump wrote: “Tonight, I understand, is MAGA NIGHT AT THE WHITE HOUSE???”</p>
+<p>Advisers insist Trump is focused on reviving the country after three months of pandemic that have led, along with the six-figure death toll, to record levels of unemployment and entire industries shuttered. Trump has aggressively pushed for states to reopen even when they don’t necessarily meet the parameters set out by his task force, which has seen its meetings sharply curtailed and its health experts’ public roles reduced.</p>
+<p>At the same time, Trump has sought over the past week to shine the presidential spotlight into dustier corners filled with festering racial grievances and antique conspiracies, all of which have been debunked. He has waged feuds old and new and unveiled strategically timed policy announcements at a moment when his leadership is being questioned.</p>
+<p>The events that unfolded after the President issued a tweet early Friday laden with racist overtones underscored the degree to which he has used inflammatory statements to ignite controversy and enthuse his supporters, even as he denied later that those were his intentions.</p>
+<p>Aides spent Friday debating whether Trump should address the situation in Minnesota during a planned appearance in the Rose Garden, which had been called to announce new actions against China and the US withdrawal from the World Health Organization.</p>
+<p>Some of his advisers encouraged him to speak about Minnesota because his election-year rival had already delivered an address on the topic. Others were more skeptical, convinced Trump would only face more questions about his tweet that used a phrase first uttered by a Miami police chief in 1967 to describe a crackdown in black neighborhoods.</p>
+<p>More than 12 hours after tweeting “when the looting starts, the shooting starts” as images of Minneapolis fire and riots played on cable news, Trump insisted on Twitter that his message was not, in fact, a reference to brutal civil rights-era police tactics. But he ignored the topic in the Rose Garden, choosing instead to focus on China and retreating to the Oval Office as reporters shouted questions.</p>
+<p>It was only around 5 p.m. ET — after a full day of public silence — that Trump announced he’d spoken with the family of George Floyd, the black man who had died after being pinned to the ground by his neck by a white police officer.</p>
+<p>“It certainly looked like there was no excuse for it,” he said of the violent arrest during a roundtable event meant to focus on coronavirus.</p>
+<p>The episode followed Trump’s longtime model of igniting controversy before retreating hours later. If anything, leaving his message lingering without explanation was a diversion in itself and another example of Trump’s inability — or unwillingness — to put aside the divisive itch he’s long cultivated.</p>
+<p>The role of national consoler has never come easily to Trump, nor have attempts at unifying a country riven by politics and ideology. In many instances he’s simply shown no interest in assuming the tone or accepting the responsibilities that US presidents have shouldered throughout history.</p>
+<p>He doesn’t believe it’s up to him to demonstrate responsible mask-wearing, and he retweeted a message earlier this week that appeared to mock former Vice President Joe Biden’s mask-and-aviators ensemble.</p>
+<p>Most of the country may say Trump should wear a mask in public — a Quinnipiac University poll this week put the figure at 67% — but among white men the number stands only at 49%, enough for his stance to pass political muster with his most reliable bloc of supporters.</p>
+<p>As coronavirus began ravaging parts of the country, he did declare himself a wartime President waging battle against the “invisible enemy.” But with war comes death — in this case, more US deaths than the Vietnam and Korean wars combined — and Trump was slow to acknowledge the 100,000 milestone reached midweek.</p>
+<p>He was aboard Air Force One when the death toll officially ticked into six digits, returning to Washington after his plans to witness the first manned US space launch in nearly a decade had been thwarted by the weather.</p>
+<p>He had hoped that the trip, with his entire family in tow, would help shift a national storyline from the miserable pandemic toward a more optimistic one of scientific potential. But the launch was scrubbed when thunderstorms rolled in and Trump was forced to return to Washington.</p>
+<p>The President didn’t address the grim figure as he returned to the White House with the first lady on Wednesday.</p>
+<p>He finally tweeted about it on Thursday morning, deeming it “a very sad milestone.” But he did not make time to address it in person.</p>
+<p>Instead, he has wielded sinister conspiracies and false allegations.</p>
+<p>He’s railed against vote-by-mail, which many governors are seeking to expand amid a highly contagious viral pandemic and which has not proved to be rife with fraud. Despite his issues with the practice, Trump himself voted by mail in February, even though he was in Florida — the state where he votes — on the day that early voting locations opened and drove past one that’s across from his golf course at least six times.</p>
+<p>He has actively worked to relitigate the circumstances that led to Robert Mueller’s Russia investigation, including this week, when he fan-danced around the still-unnamed allegation against his predecessor Barack Obama.</p>
+<p>On Friday evening, his newly installed director of national intelligence appeared to further the cause by releasing the transcripts of phone calls between Trump’s onetime national security adviser and the then-Russian ambassador to the United States.</p>
+<p>The darkest of Trump’s fixations remains the unfounded insinuation that a morning cable news host played a role in killing a young aide almost two decades ago, a blatant falsehood that led this week to pleas from the young woman’s widower for Twitter to disallow the messages.</p>
+<p>The social media giant did not block those messages but did attempt to fact-check his claims about vote-by-mail, a move that set Trump off and led to a hurried effort inside the White House to finalize an executive order few believe will withstand legal scrutiny and that could, potentially, cause even more regulation of the President’s tweets. Hours after he signed it, Twitter slapped a warning on his Minnesota tweet, saying it glorified violence.</p>
+<p>At one time, Trump used his once-a-week campaign rallies to unleash the vitriol and paranoia that his supporters love and that he believes are the very characteristics that led to his unlikely victory in 2016.</p>
+<p>Rallies are out of the question for now — though aides say they’re looking to revive them sooner rather than later.</p>
+<p>This story has been updated with additional developments.</p>
+<p><img src="https://ae01.alicdn.com/kf/Haf7cd3754a7a4a1390938116e7db9917N.jpg" alt=""></p>
+]]></content>
+      <categories>
+        <category>TRANSLATE</category>
+      </categories>
+      <tags>
+        <tag>TRANSLATE</tag>
       </tags>
   </entry>
 </search>

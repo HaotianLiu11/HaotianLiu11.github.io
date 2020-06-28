@@ -150,6 +150,75 @@
       </tags>
   </entry>
   <entry>
+    <title>0x07贪心</title>
+    <url>/2020/06/02/0x07%E8%B4%AA%E5%BF%83/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="0x07贪心"><a href="#0x07贪心" class="headerlink" title="0x07贪心"></a>0x07贪心</h1><h2 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h2><p>贪心是一种在每次决策时采取当前意义下最优策略的算法，因此，使用贪心法要求问题的整体最优性可以由局部最优性导出。贪心算法的正确性需要证明，常见的证明手段有：  </p>
+<ol>
+<li>微扰（邻项交换）<br>证明在任意局面下，任何对局部最优策略的微小改变都会造成整体结果的变差，经常用于以“排序”为贪心策略的证明</li>
+<li>范围缩放<br>证明任何对局部最优策略作用范围的扩展都不会造成整体结果的变差  </li>
+<li>决策包容性<br>证明在任意局面下，做出局部最优策略以后，在问题状态空间中的可达集合包含了作出其他任何决策后的可达集合。换言之，这个局部最优策略的可能性包含其他所有策略提供的可能性  </li>
+<li>反证法</li>
+<li>数学归纳法</li>
+</ol>
+<blockquote>
+<p>我们通过几道例题来介绍贪心算法的应用</p>
+</blockquote>
+<h2 id="ACWING110-防晒"><a href="#ACWING110-防晒" class="headerlink" title="ACWING110.防晒"></a><a href="https://www.acwing.com/problem/content/112/" target="_blank" rel="noopener">ACWING110.防晒</a></h2><p>按照<code>minSPF</code>递减的顺序把奶牛排序，依次考虑每头奶牛  </p>
+<p>对于每头奶牛，扫描一遍所有的防晒霜，在这头奶牛能用（能用指的是该防晒霜的强度符合这头奶牛的范围，并且瓶数还有剩余）的防晒霜里找<code>SPF</code>值最大的使用  </p>
+<p>以上算法的贪心策略是在满足条件的前提下每次选择<code>SPF</code>最大的防晒霜，这个策略正确的原因是：我们考虑这一步策略的作用范围扩展到后续其他奶牛之后产生的影响。每瓶防晒霜是否可用，会被<code>minSPF</code>和<code>maxSPF</code>两个条件限制，因为奶牛已经按照<code>minSPF</code>递减排序，所以每一个不低于当前奶牛<code>minSPF</code>值的防晒霜，都不会低于后面其他奶牛的<code>minSPF</code>。也就是说，对于当前奶牛可用的任意两瓶防晒霜<code>x</code>和<code>y</code>，如果<code>SFP[X]&lt;SFP[y]</code>，那么后面的奶牛只可能出现三种情况之一  </p>
+<ol>
+<li><p><code>x</code>和<code>y</code>都能用<br><img src="https://ae01.alicdn.com/kf/H2cc96d8dff754e51a734da64de4234dd0.jpg" alt=""></p>
+</li>
+<li><p><code>x</code>和<code>y</code>都不能用<br><img src="https://ae01.alicdn.com/kf/H9ee214eba1ab4d3db7de671fcec790cfN.jpg" alt=""></p>
+</li>
+<li><p><code>x</code>能用，<code>y</code>不能用<br><img src="https://ae01.alicdn.com/kf/H956b6a5e4b7743629416b5c1c262da0bn.jpg" alt=""></p>
+</li>
+</ol>
+<p>因此当前奶牛选择较大的<code>y</code>去用，对于整体的影响肯定比选择较小的<code>x</code>去用要好，另外，每头奶牛对答案的贡献至多是<code>1</code>，即使让当前奶牛放弃日光浴，留下防晒霜给后面的某一头奶牛去用，对答案的贡献也不会更大，综上所述，尽量满足当前的奶牛，并选择<code>SPF</code>值尽量大的防晒霜是一个正确的贪心策略</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">2510</span>;</span><br><span class="line"><span class="keyword">typedef</span> pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt; PII;</span><br><span class="line"><span class="keyword">int</span> n, m;</span><br><span class="line">PII cows[N];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="built_in">cin</span> &gt;&gt; n &gt;&gt; m;</span><br><span class="line">    <span class="built_in">map</span>&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt; spfs;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++) <span class="built_in">cin</span> &gt;&gt; cows[i].first &gt;&gt; cows[i].second;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; m; i++) &#123;</span><br><span class="line">        <span class="keyword">int</span> spf, cover;</span><br><span class="line">        <span class="built_in">cin</span> &gt;&gt; spf &gt;&gt; cover;</span><br><span class="line">        spfs[spf] += cover;</span><br><span class="line">    &#125;</span><br><span class="line">    sort(cows, cows + n);</span><br><span class="line">    <span class="keyword">int</span> res = <span class="number">0</span>;</span><br><span class="line">    spfs[<span class="number">0</span>] = spfs[<span class="number">1001</span>] = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = n - <span class="number">1</span>; i &gt;= <span class="number">0</span>; i--) &#123;</span><br><span class="line">        <span class="keyword">auto</span> spf = spfs.upper_bound(cows[i].second);</span><br><span class="line">        spf--;</span><br><span class="line">        <span class="keyword">if</span> (spf-&gt;first &gt;= cows[i].first) &#123;</span><br><span class="line">            res++;</span><br><span class="line">            <span class="keyword">if</span> (--spf-&gt;second == <span class="number">0</span>)</span><br><span class="line">                spfs.erase(spf);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; res &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="ACWING111-畜栏预定"><a href="#ACWING111-畜栏预定" class="headerlink" title="ACWING111.畜栏预定"></a><a href="https://www.acwing.com/problem/content/113/" target="_blank" rel="noopener">ACWING111.畜栏预定</a></h2><p>按照开始吃草的时间把牛排序，用小根堆维护所有畜栏中最后一头牛结束吃草的时间的最小值，每循环到一头牛，如果这头牛的吃草开始时间比这个小根堆的堆顶大，则把这个牛插入到这个小根堆堆顶对应的畜栏中，再重新维护小根堆；如果小根堆的堆顶比这头牛的开始吃草时间大，则新建一个畜栏，插入到小根堆中</p>
+<p>这种策略成功的原因在于：把每个畜栏的时间都充分利用，如果存在多个畜栏可以存放此牛，则选择最后一头牛结束吃草时间最小的畜栏，这样可以充分利用每个畜栏的时间；把每个牛的开始吃草时间从小到大排序的原因是，这样就可以让后面的牛插入在畜栏的后面，如果不排序，则每个畜栏前面可能有时间空隙放牛，这是不符合要求的，很难做出来</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt; PII;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">50010</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> n;</span><br><span class="line"><span class="keyword">int</span> id[N];</span><br><span class="line">pair&lt;PII, <span class="keyword">int</span>&gt; cows[N];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="built_in">cin</span> &gt;&gt; n;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++) &#123;</span><br><span class="line">        <span class="built_in">cin</span> &gt;&gt; cows[i].first.first &gt;&gt; cows[i].first.second;</span><br><span class="line">        cows[i].second = i;</span><br><span class="line">    &#125;</span><br><span class="line">    sort(cows, cows + n);</span><br><span class="line"></span><br><span class="line">    priority_queue&lt;PII, <span class="built_in">vector</span>&lt;PII&gt;, greater&lt;PII&gt; &gt; heap;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (heap.empty() || heap.top().first &gt;= cows[i].first.first) &#123;</span><br><span class="line">            id[cows[i].second] = heap.<span class="built_in">size</span>() + <span class="number">1</span>;</span><br><span class="line">            heap.push(&#123;cows[i].first.second, heap.<span class="built_in">size</span>() + <span class="number">1</span>&#125;);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">auto</span> stall = heap.top();</span><br><span class="line">            heap.pop();</span><br><span class="line">            stall.first = cows[i].first.second;</span><br><span class="line">            id[cows[i].second] = stall.second;</span><br><span class="line">            heap.push(stall);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; heap.<span class="built_in">size</span>() &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++) <span class="built_in">cout</span> &lt;&lt; id[i] &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>未完待续</p>
+</blockquote>
+<p><img src="https://ae01.alicdn.com/kf/Hef70c4f4a75e40738e47ea16124d9091W.jpg" alt=""></p>
+]]></content>
+      <categories>
+        <category>ACM</category>
+      </categories>
+      <tags>
+        <tag>算法竞赛进阶指南</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>0x04二分</title>
+    <url>/2020/05/31/0x04%E4%BA%8C%E5%88%86/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="0x04二分"><a href="#0x04二分" class="headerlink" title="0x04二分"></a>0x04二分</h1><h2 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h2><p>二分的基础的用法是在单调序列或单调函数中进行查找，因此当问题的答案具有单调性时，就可以通过二分把求解问题转换为判定（根据复杂度理论，判定的难度小于求解），进一步地，我们还可以扩展到通过三分法去解决单峰函数的极值以及相关问题</p>
+<p>对于整数域上的二分，需要注意中止边界、左右区间取舍时的开闭情况，避免漏掉答案或者造成死循环；对于实数域上的二分，需要注意精度问题</p>
+<h2 id="整数集合上的二分"><a href="#整数集合上的二分" class="headerlink" title="整数集合上的二分"></a>整数集合上的二分</h2><p>本文章的写法保证最终答案处于闭区间<code>[l,r]</code>以内，循环以<code>l=r</code>结束，每次二分的中间值<code>mid</code>会归属于左半段与右半段二者之一</p>
+<p><strong>模板如下</strong>：</p>
+<p>在单调递增序列<code>a</code>中查找<code>&gt;=x</code>的数中最小的一个（<code>x</code>或<code>x</code>的后继）<br><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">while</span> (l &lt; r) &#123;</span><br><span class="line">    <span class="keyword">int</span> mid = (l + r) &gt;&gt; <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">if</span> (a[mid] &gt;= x) r = mid; <span class="keyword">else</span> l = mid + <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">return</span> a[l];</span><br></pre></td></tr></table></figure><br>在单调递增序列<code>a</code>中查找<code>&lt;=x</code>的数中最大的一个（<code>x</code>或<code>x</code>的前驱）<br><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">while</span> (l &lt; r) &#123;</span><br><span class="line">    <span class="keyword">int</span> mid = (l + r + <span class="number">1</span>) &gt;&gt; <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">if</span> (a[mid] &lt;= x) l = mid; <span class="keyword">else</span> r = mid - <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">return</span> a[l];</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>如上面两段代码所示，这种二分写法可能会有两种形式：<br>1.缩小范围时，<code>r=mid</code>， <code>l=mid+1</code>，取中间值时，<code>mid=(l+r)&gt;&gt;1</code><br>2.缩小范围时，<code>l=mid</code>， <code>r=mid-1</code>，取中间值时，<code>mid=(l+r+1)&gt;&gt;1</code><br>如果不对<code>mid</code>的取法加以区分，假如第二段代码也采用<code>mid=(l+r)&gt;&gt;1</code>，那么当<code>r-l</code>等于<code>1</code>时，就有<code>mid=(l+r)&gt;&gt;1=l</code>，接下来若进入<code>l=mid</code>分支，可行区间未缩小，造成死循环；若进入<code>r=mid-1</code>分支，造成<code>l&gt;r</code>，循环不能以<code>l=r</code>结束；相反若<code>mid=(l+r+1)&gt;&gt;1</code> ，则第二段代码则正确得到结果。因此对两个形式采用配套的<code>mid</code>取法是必要的。此外还要注意：我们在二分实现中采用了右移运算符<code>&gt;&gt;1</code>，而不是整数除法<code>/2</code>。这是因为右移运算是向下取整，而整数除法是向<code>0</code>取整，在二分值域包含负数时后者不能正常工作。</p>
+</blockquote>
+<p><strong>我用一个例题来体现这两个模板的差别</strong>：<br><a href="https://www.acwing.com/problem/content/791/" target="_blank" rel="noopener">ACWING789.数的范围</a><br><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> MAXN = <span class="number">1e5</span> + <span class="number">10</span>;</span><br><span class="line"><span class="keyword">int</span> nums[MAXN];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> n, q;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">"%d%d"</span>, &amp;n, &amp;q);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++) &#123;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">"%d"</span>, &amp;nums[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span> (q--) &#123;</span><br><span class="line">        <span class="keyword">int</span> l = <span class="number">0</span>, r = n - <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">int</span> x;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">"%d"</span>, &amp;x);</span><br><span class="line">        <span class="keyword">while</span> (l &lt; r) &#123;</span><br><span class="line">            <span class="keyword">int</span> mid = (l + r) &gt;&gt; <span class="number">1</span>;</span><br><span class="line">            <span class="keyword">if</span> (nums[mid] &gt;= x) r = mid; <span class="keyword">else</span> l = mid + <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (nums[l] != x) <span class="built_in">printf</span>(<span class="string">"-1 -1\n"</span>);</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="built_in">cout</span> &lt;&lt; l &lt;&lt; <span class="string">" "</span>;</span><br><span class="line">            <span class="keyword">int</span> l = <span class="number">0</span>, r = n - <span class="number">1</span>;</span><br><span class="line">            <span class="keyword">while</span> (l &lt; r) &#123;</span><br><span class="line">                <span class="keyword">int</span> mid = (l + r + <span class="number">1</span>) &gt;&gt; <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">if</span> (nums[mid] &lt;= x) l = mid; <span class="keyword">else</span> r = mid - <span class="number">1</span>;</span><br><span class="line">            &#125;  </span><br><span class="line">            <span class="built_in">cout</span> &lt;&lt; l &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>可以看出这两个模板的另一个区别：当目标值不止一个时，第一个模板是取到左边，也就是在单调递增序列<code>a</code>中查找<code>&gt;=x</code>的数中最小的一个；第二个模板是取到右边，也就是在单调递增序列<code>a</code>中查找<code>&lt;=x</code>的数中最大的一个；当目标值只有只有一个时，两个模板的结果没有差别  </p>
+<p>仔细分析这两种<code>mid</code>的取法，我们还发现：<code>mid=(l+r)&gt;&gt;1</code>不会取到<code>r</code>这个值，<code>mid=(l+r+1)&gt;&gt;1</code>不会取到<code>l</code>这个值，我们可以利用这一性质来处理无解的情况，把最初的二分区间分别扩大为<code>[1,n+1]</code>和<code>[0,n]</code>，把<code>a</code>数组的一个越界下标包含进来。如果最后二分终止于扩大后的这个越界下标上，则说明目标值不在<code>a</code>中；当然我们也可以直接看最终求得的<code>l</code>下标在<code>a</code>数组中对应的值是否为目标值  </p>
+<p>二分的终止条件就是<code>l==r</code>，该值就是答案所在位置</p>
+<p><code>C++STL</code>的<code>lower_bound</code>和<code>upper_bound</code>函数实现了在一个序列中二分查找某个整数<code>x</code>的后继</p>
+<blockquote>
+<p>未完待续</p>
+</blockquote>
+<p><img src="https://s1.ax1x.com/2020/05/31/t1moIH.jpg" alt=""></p>
+]]></content>
+      <categories>
+        <category>ACM</category>
+      </categories>
+      <tags>
+        <tag>算法竞赛进阶指南</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>0x06倍增</title>
     <url>/2020/06/03/0x06%E5%80%8D%E5%A2%9E/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="0x06倍增"><a href="#0x06倍增" class="headerlink" title="0x06倍增"></a>0x06倍增</h1><h2 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h2><p>倍增，字面意思就是“成倍的增长”。这是指我们在进行递推时，如果状态空间很大，通常的线性递推无法满足时间与空间复杂度的要求，那么我们可以通过成倍增长的方式，只递推状态空间中在<code>2</code>的整数次幂位置上的值作为代表。当需要其他位置上的值时，我们通过“任意整数可以表示成若干个<code>2</code>的次幂项的和”这一性质 ，使用之前求出的代表值拼成所需的值。所以使用倍增算法也要求我们递推的问题的状态空间关于<code>2</code>的次幂具有可划分性  </p>
@@ -187,56 +256,6 @@
       </tags>
   </entry>
   <entry>
-    <title>0x04二分</title>
-    <url>/2020/05/31/0x04%E4%BA%8C%E5%88%86/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="0x04二分"><a href="#0x04二分" class="headerlink" title="0x04二分"></a>0x04二分</h1><h2 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h2><p>二分的基础的用法是在单调序列或单调函数中进行查找，因此当问题的答案具有单调性时，就可以通过二分把求解问题转换为判定（根据复杂度理论，判定的难度小于求解），进一步地，我们还可以扩展到通过三分法去解决单峰函数的极值以及相关问题</p>
-<p>对于整数域上的二分，需要注意中止边界、左右区间取舍时的开闭情况，避免漏掉答案或者造成死循环；对于实数域上的二分，需要注意精度问题</p>
-<h2 id="整数集合上的二分"><a href="#整数集合上的二分" class="headerlink" title="整数集合上的二分"></a>整数集合上的二分</h2><p>本文章的写法保证最终答案处于闭区间<code>[l,r]</code>以内，循环以<code>l=r</code>结束，每次二分的中间值<code>mid</code>会归属于左半段与右半段二者之一</p>
-<p><strong>模板如下</strong>：</p>
-<p>在单调递增序列<code>a</code>中查找<code>&gt;=x</code>的数中最小的一个（<code>x</code>或<code>x</code>的后继）<br><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">while</span> (l &lt; r) &#123;</span><br><span class="line">    <span class="keyword">int</span> mid = (l + r) &gt;&gt; <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">if</span> (a[mid] &gt;= x) r = mid; <span class="keyword">else</span> l = mid + <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">return</span> a[l];</span><br></pre></td></tr></table></figure><br>在单调递增序列<code>a</code>中查找<code>&lt;=x</code>的数中最大的一个（<code>x</code>或<code>x</code>的前驱）<br><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">while</span> (l &lt; r) &#123;</span><br><span class="line">    <span class="keyword">int</span> mid = (l + r + <span class="number">1</span>) &gt;&gt; <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">if</span> (a[mid] &lt;= x) l = mid; <span class="keyword">else</span> r = mid - <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">return</span> a[l];</span><br></pre></td></tr></table></figure></p>
-<blockquote>
-<p>如上面两段代码所示，这种二分写法可能会有两种形式：<br>1.缩小范围时，<code>r=mid</code>， <code>l=mid+1</code>，取中间值时，<code>mid=(l+r)&gt;&gt;1</code><br>2.缩小范围时，<code>l=mid</code>， <code>r=mid-1</code>，取中间值时，<code>mid=(l+r+1)&gt;&gt;1</code><br>如果不对<code>mid</code>的取法加以区分，假如第二段代码也采用<code>mid=(l+r)&gt;&gt;1</code>，那么当<code>r-l</code>等于<code>1</code>时，就有<code>mid=(l+r)&gt;&gt;1=l</code>，接下来若进入<code>l=mid</code>分支，可行区间未缩小，造成死循环；若进入<code>r=mid-1</code>分支，造成<code>l&gt;r</code>，循环不能以<code>l=r</code>结束；相反若<code>mid=(l+r+1)&gt;&gt;1</code> ，则第二段代码则正确得到结果。因此对两个形式采用配套的<code>mid</code>取法是必要的。此外还要注意：我们在二分实现中采用了右移运算符<code>&gt;&gt;1</code>，而不是整数除法<code>/2</code>。这是因为右移运算是向下取整，而整数除法是向<code>0</code>取整，在二分值域包含负数时后者不能正常工作。</p>
-</blockquote>
-<p><strong>我用一个例题来体现这两个模板的差别</strong>：<br><a href="https://www.acwing.com/problem/content/791/" target="_blank" rel="noopener">ACWING789.数的范围</a><br><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> MAXN = <span class="number">1e5</span> + <span class="number">10</span>;</span><br><span class="line"><span class="keyword">int</span> nums[MAXN];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> n, q;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">"%d%d"</span>, &amp;n, &amp;q);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++) &#123;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">"%d"</span>, &amp;nums[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span> (q--) &#123;</span><br><span class="line">        <span class="keyword">int</span> l = <span class="number">0</span>, r = n - <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">int</span> x;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">"%d"</span>, &amp;x);</span><br><span class="line">        <span class="keyword">while</span> (l &lt; r) &#123;</span><br><span class="line">            <span class="keyword">int</span> mid = (l + r) &gt;&gt; <span class="number">1</span>;</span><br><span class="line">            <span class="keyword">if</span> (nums[mid] &gt;= x) r = mid; <span class="keyword">else</span> l = mid + <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (nums[l] != x) <span class="built_in">printf</span>(<span class="string">"-1 -1\n"</span>);</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="built_in">cout</span> &lt;&lt; l &lt;&lt; <span class="string">" "</span>;</span><br><span class="line">            <span class="keyword">int</span> l = <span class="number">0</span>, r = n - <span class="number">1</span>;</span><br><span class="line">            <span class="keyword">while</span> (l &lt; r) &#123;</span><br><span class="line">                <span class="keyword">int</span> mid = (l + r + <span class="number">1</span>) &gt;&gt; <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">if</span> (nums[mid] &lt;= x) l = mid; <span class="keyword">else</span> r = mid - <span class="number">1</span>;</span><br><span class="line">            &#125;  </span><br><span class="line">            <span class="built_in">cout</span> &lt;&lt; l &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>可以看出这两个模板的另一个区别：当目标值不止一个时，第一个模板是取到左边，也就是在单调递增序列<code>a</code>中查找<code>&gt;=x</code>的数中最小的一个；第二个模板是取到右边，也就是在单调递增序列<code>a</code>中查找<code>&lt;=x</code>的数中最大的一个；当目标值只有只有一个时，两个模板的结果没有差别  </p>
-<p>仔细分析这两种<code>mid</code>的取法，我们还发现：<code>mid=(l+r)&gt;&gt;1</code>不会取到<code>r</code>这个值，<code>mid=(l+r+1)&gt;&gt;1</code>不会取到<code>l</code>这个值，我们可以利用这一性质来处理无解的情况，把最初的二分区间分别扩大为<code>[1,n+1]</code>和<code>[0,n]</code>，把<code>a</code>数组的一个越界下标包含进来。如果最后二分终止于扩大后的这个越界下标上，则说明目标值不在<code>a</code>中；当然我们也可以直接看最终求得的<code>l</code>下标在<code>a</code>数组中对应的值是否为目标值  </p>
-<p>二分的终止条件就是<code>l==r</code>，该值就是答案所在位置</p>
-<p><code>C++STL</code>的<code>lower_bound</code>和<code>upper_bound</code>函数实现了在一个序列中二分查找某个整数<code>x</code>的后继</p>
-<blockquote>
-<p>未完待续</p>
-</blockquote>
-<p><img src="https://s1.ax1x.com/2020/05/31/t1moIH.jpg" alt=""></p>
-]]></content>
-      <categories>
-        <category>ACM</category>
-      </categories>
-      <tags>
-        <tag>算法竞赛进阶指南</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>0x13链表与邻接表</title>
-    <url>/2020/06/11/0x13%E9%93%BE%E8%A1%A8%E4%B8%8E%E9%82%BB%E6%8E%A5%E8%A1%A8/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="0x13链表与邻接表"><a href="#0x13链表与邻接表" class="headerlink" title="0x13链表与邻接表"></a>0x13链表与邻接表</h1><h2 id="链表"><a href="#链表" class="headerlink" title="链表"></a>链表</h2><p>为了避免双向链表在左右两端或者空链表中访问越界，我们通常建立额外的两个节点<code>head</code>与<code>tail</code>代表链表头尾，把实际数据节点存储在<code>head</code>与<code>tail</code>之间，来减少链表边界处的判断，降低编程复杂度</p>
-<h3 id="ACWING136-邻值查找"><a href="#ACWING136-邻值查找" class="headerlink" title="ACWING136.邻值查找"></a><a href="https://www.acwing.com/problem/content/138/" target="_blank" rel="noopener">ACWING136.邻值查找</a></h3><p>解法一：链表</p>
-<p>读入数据后串成链表，再对数组排序，此时找第<code>N</code>个数的前驱和后继，比较<code>N</code>与前驱、后继的差的绝对值，得到目标值后，再删除<code>N</code>，继续找<code>N-1</code>的前驱、后继，时间复杂度为<code>O(NlogN)</code></p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> int long long</span></span><br><span class="line"><span class="keyword">typedef</span> pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt; PII;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">1e5</span> + <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> n;</span><br><span class="line"><span class="keyword">int</span> l[N], r[N];</span><br><span class="line"><span class="keyword">int</span> p[N];</span><br><span class="line">PII a[N], ans[N];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int32_t</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="built_in">cin</span> &gt;&gt; n;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n; i++) &#123;</span><br><span class="line">        <span class="built_in">cin</span> &gt;&gt; a[i].first;</span><br><span class="line">        a[i].second = i;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    sort(a + <span class="number">1</span>, a + <span class="number">1</span> + n);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n; i++) &#123;</span><br><span class="line">        l[i] = i - <span class="number">1</span>, r[i] = i + <span class="number">1</span>;</span><br><span class="line">        p[a[i].second] = i;</span><br><span class="line">    &#125;</span><br><span class="line">    a[<span class="number">0</span>].first = <span class="number">0xffffffff</span>;</span><br><span class="line">    a[n + <span class="number">1</span>].first = <span class="number">0xffffffff</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = n; i &gt; <span class="number">1</span>; i--) &#123;</span><br><span class="line">        <span class="keyword">int</span> j = p[i], left = l[j], right = r[j];</span><br><span class="line">        <span class="keyword">int</span> lv = <span class="built_in">abs</span>(a[left].first - a[j].first);</span><br><span class="line">        <span class="keyword">int</span> rv = <span class="built_in">abs</span>(a[right].first - a[j].first);</span><br><span class="line">        <span class="keyword">if</span> (lv &lt;= rv) ans[i] = &#123;lv, a[left].second&#125;;</span><br><span class="line">        <span class="keyword">else</span> ans[i] = &#123;rv, a[right].second&#125;;</span><br><span class="line">        l[right] = left, r[left] = right;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i &lt;= n; i++) <span class="built_in">cout</span> &lt;&lt; ans[i].first &lt;&lt; <span class="string">" "</span> &lt;&lt; ans[i].second &lt;&lt; <span class="built_in">endl</span>;   </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>解法二：平衡树</p>
-<p>把<code>A1 A2 A3 ... An</code>依次插入一个集合，则在插入<code>Ai</code>之前，集合中保存的就是满足<code>1&lt;=J&lt;i</code>的所有<code>Aj</code>。根据题意，我们只需在集合中查找与<code>Ai</code>最接近的值</p>
-<p>若能维护一个有序集合，则集合中与<code>Ai</code>最接近的值一定在<code>Ai</code>的前驱与后继当中，比较前驱与后继与<code>Ai</code>的差即可   </p>
-<p>而平衡二叉树就是一个支持动态插入、查询前驱以及查询后继的数据结构。在<code>C++</code>中，<code>STLset</code>也为我们提供了这些功能</p>
-<h2 id="邻接表"><a href="#邻接表" class="headerlink" title="邻接表"></a>邻接表</h2><p>邻接表是树与图的一般化存储方式，还能用于实现开散列<code>Hash</code>表。实际上，邻接表可以看成“带有索引数组的多个数据链表”构成的结构集合。在这样的结构中存储的数据会被分成若干类，每一类的数据构成一个链表，每一类还有一个代表元素，称为该类对应链表的表头。所有表头构成一个表头数组，作为一个可以随机访问的索引，从而可以通过表头数组定位到每一类数据对应的链表</p>
-<p>在一个具有<code>N</code>个点<code>M</code>条边的有向图结构中，我们可以把每条边所属的“类别”定义为该边的起点标号。这样所有边被分为<code>N</code>类，其中第<code>X</code>类就由“从<code>X</code>出发的所有边”组成。通过表头<code>head[X]</code>，我们很容易定位到第<code>X</code>类对应的链表，从而访问从点<code>X</code>出发的所有边</p>
-<p>对于无向图，我们把每条无向边看作两条有向边插入即可。有一个小技巧是，结合成对变换的位运算性质，我们可以在程序最开始时，把第一条边存储在<code>2 3</code>位置上，这样每条边都会存储在<code>2 3 4 5</code>这样的位置上。通过对下标进行<code>XOR 1</code>的运算，就可以直接定位到与当前边反向的边。换句话说，如果<code>ver[i]</code>时第<code>i</code>条边的终点，那么<code>ver[i xor 1]</code>时第<code>i</code>条边的起点</p>
-<p><img src="https://ae01.alicdn.com/kf/H0ad54ff7541c4354884259942c0c3c0f1.jpg" alt=""></p>
-]]></content>
-      <categories>
-        <category>ACM</category>
-      </categories>
-      <tags>
-        <tag>算法竞赛进阶指南</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>0x11栈</title>
     <url>/2020/06/06/0x11%E6%A0%88/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="0x11栈"><a href="#0x11栈" class="headerlink" title="0x11栈"></a>0x11栈</h1><h2 id="ACWING41-包含min函数的栈"><a href="#ACWING41-包含min函数的栈" class="headerlink" title="ACWING41.包含min函数的栈"></a><a href="https://www.acwing.com/problem/content/90/" target="_blank" rel="noopener">ACWING41.包含min函数的栈</a></h2><p>栈结构原本就支持<code>O(1)</code>的入栈、出栈操作，但不支持查询最小值的操作。一个比较直接的思路是，我们知道二叉堆是一种支持插入、取出堆顶、查询最小值的数据结构，如果在维护一个栈的同时再维护一个存储同样元素的二叉堆，就可以支持题目中要求的操作，然而，它的时间复杂度是<code>O(logN)</code>，如果我们只用一个变量记录最小值，当发生出栈操作时，如果最小值恰好被出栈，就无法得知新的最小值是什么。这启发我们使用一个线性结构来保存历史上每个时刻的最小值，这样我们就可以在出栈后进行还原   </p>
@@ -252,6 +271,17 @@
 </blockquote>
 <p><img src="https://ae01.alicdn.com/kf/Hd768bd7dd9b74f66abfafe1c877ce715C.jpg" alt=""></p>
 ]]></content>
+      <categories>
+        <category>ACM</category>
+      </categories>
+      <tags>
+        <tag>算法竞赛进阶指南</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>0x21树与图的遍历</title>
+    <url>/2020/06/11/0x21%E6%A0%91%E4%B8%8E%E5%9B%BE%E7%9A%84%E9%81%8D%E5%8E%86/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script>]]></content>
       <categories>
         <category>ACM</category>
       </categories>
@@ -302,45 +332,52 @@
       </tags>
   </entry>
   <entry>
-    <title>0x07贪心</title>
-    <url>/2020/06/02/0x07%E8%B4%AA%E5%BF%83/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="0x07贪心"><a href="#0x07贪心" class="headerlink" title="0x07贪心"></a>0x07贪心</h1><h2 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h2><p>贪心是一种在每次决策时采取当前意义下最优策略的算法，因此，使用贪心法要求问题的整体最优性可以由局部最优性导出。贪心算法的正确性需要证明，常见的证明手段有：  </p>
-<ol>
-<li>微扰（邻项交换）<br>证明在任意局面下，任何对局部最优策略的微小改变都会造成整体结果的变差，经常用于以“排序”为贪心策略的证明</li>
-<li>范围缩放<br>证明任何对局部最优策略作用范围的扩展都不会造成整体结果的变差  </li>
-<li>决策包容性<br>证明在任意局面下，做出局部最优策略以后，在问题状态空间中的可达集合包含了作出其他任何决策后的可达集合。换言之，这个局部最优策略的可能性包含其他所有策略提供的可能性  </li>
-<li>反证法</li>
-<li>数学归纳法</li>
-</ol>
-<blockquote>
-<p>我们通过几道例题来介绍贪心算法的应用</p>
-</blockquote>
-<h2 id="ACWING110-防晒"><a href="#ACWING110-防晒" class="headerlink" title="ACWING110.防晒"></a><a href="https://www.acwing.com/problem/content/112/" target="_blank" rel="noopener">ACWING110.防晒</a></h2><p>按照<code>minSPF</code>递减的顺序把奶牛排序，依次考虑每头奶牛  </p>
-<p>对于每头奶牛，扫描一遍所有的防晒霜，在这头奶牛能用（能用指的是该防晒霜的强度符合这头奶牛的范围，并且瓶数还有剩余）的防晒霜里找<code>SPF</code>值最大的使用  </p>
-<p>以上算法的贪心策略是在满足条件的前提下每次选择<code>SPF</code>最大的防晒霜，这个策略正确的原因是：我们考虑这一步策略的作用范围扩展到后续其他奶牛之后产生的影响。每瓶防晒霜是否可用，会被<code>minSPF</code>和<code>maxSPF</code>两个条件限制，因为奶牛已经按照<code>minSPF</code>递减排序，所以每一个不低于当前奶牛<code>minSPF</code>值的防晒霜，都不会低于后面其他奶牛的<code>minSPF</code>。也就是说，对于当前奶牛可用的任意两瓶防晒霜<code>x</code>和<code>y</code>，如果<code>SFP[X]&lt;SFP[y]</code>，那么后面的奶牛只可能出现三种情况之一  </p>
-<ol>
-<li><p><code>x</code>和<code>y</code>都能用<br><img src="https://ae01.alicdn.com/kf/H2cc96d8dff754e51a734da64de4234dd0.jpg" alt=""></p>
-</li>
-<li><p><code>x</code>和<code>y</code>都不能用<br><img src="https://ae01.alicdn.com/kf/H9ee214eba1ab4d3db7de671fcec790cfN.jpg" alt=""></p>
-</li>
-<li><p><code>x</code>能用，<code>y</code>不能用<br><img src="https://ae01.alicdn.com/kf/H956b6a5e4b7743629416b5c1c262da0bn.jpg" alt=""></p>
-</li>
-</ol>
-<p>因此当前奶牛选择较大的<code>y</code>去用，对于整体的影响肯定比选择较小的<code>x</code>去用要好，另外，每头奶牛对答案的贡献至多是<code>1</code>，即使让当前奶牛放弃日光浴，留下防晒霜给后面的某一头奶牛去用，对答案的贡献也不会更大，综上所述，尽量满足当前的奶牛，并选择<code>SPF</code>值尽量大的防晒霜是一个正确的贪心策略</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">2510</span>;</span><br><span class="line"><span class="keyword">typedef</span> pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt; PII;</span><br><span class="line"><span class="keyword">int</span> n, m;</span><br><span class="line">PII cows[N];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="built_in">cin</span> &gt;&gt; n &gt;&gt; m;</span><br><span class="line">    <span class="built_in">map</span>&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt; spfs;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++) <span class="built_in">cin</span> &gt;&gt; cows[i].first &gt;&gt; cows[i].second;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; m; i++) &#123;</span><br><span class="line">        <span class="keyword">int</span> spf, cover;</span><br><span class="line">        <span class="built_in">cin</span> &gt;&gt; spf &gt;&gt; cover;</span><br><span class="line">        spfs[spf] += cover;</span><br><span class="line">    &#125;</span><br><span class="line">    sort(cows, cows + n);</span><br><span class="line">    <span class="keyword">int</span> res = <span class="number">0</span>;</span><br><span class="line">    spfs[<span class="number">0</span>] = spfs[<span class="number">1001</span>] = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = n - <span class="number">1</span>; i &gt;= <span class="number">0</span>; i--) &#123;</span><br><span class="line">        <span class="keyword">auto</span> spf = spfs.upper_bound(cows[i].second);</span><br><span class="line">        spf--;</span><br><span class="line">        <span class="keyword">if</span> (spf-&gt;first &gt;= cows[i].first) &#123;</span><br><span class="line">            res++;</span><br><span class="line">            <span class="keyword">if</span> (--spf-&gt;second == <span class="number">0</span>)</span><br><span class="line">                spfs.erase(spf);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; res &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="ACWING111-畜栏预定"><a href="#ACWING111-畜栏预定" class="headerlink" title="ACWING111.畜栏预定"></a><a href="https://www.acwing.com/problem/content/113/" target="_blank" rel="noopener">ACWING111.畜栏预定</a></h2><p>按照开始吃草的时间把牛排序，用小根堆维护所有畜栏中最后一头牛结束吃草的时间的最小值，每循环到一头牛，如果这头牛的吃草开始时间比这个小根堆的堆顶大，则把这个牛插入到这个小根堆堆顶对应的畜栏中，再重新维护小根堆；如果小根堆的堆顶比这头牛的开始吃草时间大，则新建一个畜栏，插入到小根堆中</p>
-<p>这种策略成功的原因在于：把每个畜栏的时间都充分利用，如果存在多个畜栏可以存放此牛，则选择最后一头牛结束吃草时间最小的畜栏，这样可以充分利用每个畜栏的时间；把每个牛的开始吃草时间从小到大排序的原因是，这样就可以让后面的牛插入在畜栏的后面，如果不排序，则每个畜栏前面可能有时间空隙放牛，这是不符合要求的，很难做出来</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt; PII;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">50010</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> n;</span><br><span class="line"><span class="keyword">int</span> id[N];</span><br><span class="line">pair&lt;PII, <span class="keyword">int</span>&gt; cows[N];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="built_in">cin</span> &gt;&gt; n;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++) &#123;</span><br><span class="line">        <span class="built_in">cin</span> &gt;&gt; cows[i].first.first &gt;&gt; cows[i].first.second;</span><br><span class="line">        cows[i].second = i;</span><br><span class="line">    &#125;</span><br><span class="line">    sort(cows, cows + n);</span><br><span class="line"></span><br><span class="line">    priority_queue&lt;PII, <span class="built_in">vector</span>&lt;PII&gt;, greater&lt;PII&gt; &gt; heap;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (heap.empty() || heap.top().first &gt;= cows[i].first.first) &#123;</span><br><span class="line">            id[cows[i].second] = heap.<span class="built_in">size</span>() + <span class="number">1</span>;</span><br><span class="line">            heap.push(&#123;cows[i].first.second, heap.<span class="built_in">size</span>() + <span class="number">1</span>&#125;);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">auto</span> stall = heap.top();</span><br><span class="line">            heap.pop();</span><br><span class="line">            stall.first = cows[i].first.second;</span><br><span class="line">            id[cows[i].second] = stall.second;</span><br><span class="line">            heap.push(stall);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; heap.<span class="built_in">size</span>() &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++) <span class="built_in">cout</span> &lt;&lt; id[i] &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>未完待续</p>
-</blockquote>
-<p><img src="https://ae01.alicdn.com/kf/Hef70c4f4a75e40738e47ea16124d9091W.jpg" alt=""></p>
+    <title>0x13链表与邻接表</title>
+    <url>/2020/06/11/0x13%E9%93%BE%E8%A1%A8%E4%B8%8E%E9%82%BB%E6%8E%A5%E8%A1%A8/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="0x13链表与邻接表"><a href="#0x13链表与邻接表" class="headerlink" title="0x13链表与邻接表"></a>0x13链表与邻接表</h1><h2 id="链表"><a href="#链表" class="headerlink" title="链表"></a>链表</h2><p>为了避免双向链表在左右两端或者空链表中访问越界，我们通常建立额外的两个节点<code>head</code>与<code>tail</code>代表链表头尾，把实际数据节点存储在<code>head</code>与<code>tail</code>之间，来减少链表边界处的判断，降低编程复杂度</p>
+<h3 id="ACWING136-邻值查找"><a href="#ACWING136-邻值查找" class="headerlink" title="ACWING136.邻值查找"></a><a href="https://www.acwing.com/problem/content/138/" target="_blank" rel="noopener">ACWING136.邻值查找</a></h3><p>解法一：链表</p>
+<p>读入数据后串成链表，再对数组排序，此时找第<code>N</code>个数的前驱和后继，比较<code>N</code>与前驱、后继的差的绝对值，得到目标值后，再删除<code>N</code>，继续找<code>N-1</code>的前驱、后继，时间复杂度为<code>O(NlogN)</code></p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> int long long</span></span><br><span class="line"><span class="keyword">typedef</span> pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt; PII;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">1e5</span> + <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> n;</span><br><span class="line"><span class="keyword">int</span> l[N], r[N];</span><br><span class="line"><span class="keyword">int</span> p[N];</span><br><span class="line">PII a[N], ans[N];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int32_t</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="built_in">cin</span> &gt;&gt; n;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n; i++) &#123;</span><br><span class="line">        <span class="built_in">cin</span> &gt;&gt; a[i].first;</span><br><span class="line">        a[i].second = i;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    sort(a + <span class="number">1</span>, a + <span class="number">1</span> + n);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n; i++) &#123;</span><br><span class="line">        l[i] = i - <span class="number">1</span>, r[i] = i + <span class="number">1</span>;</span><br><span class="line">        p[a[i].second] = i;</span><br><span class="line">    &#125;</span><br><span class="line">    a[<span class="number">0</span>].first = <span class="number">0xffffffff</span>;</span><br><span class="line">    a[n + <span class="number">1</span>].first = <span class="number">0xffffffff</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = n; i &gt; <span class="number">1</span>; i--) &#123;</span><br><span class="line">        <span class="keyword">int</span> j = p[i], left = l[j], right = r[j];</span><br><span class="line">        <span class="keyword">int</span> lv = <span class="built_in">abs</span>(a[left].first - a[j].first);</span><br><span class="line">        <span class="keyword">int</span> rv = <span class="built_in">abs</span>(a[right].first - a[j].first);</span><br><span class="line">        <span class="keyword">if</span> (lv &lt;= rv) ans[i] = &#123;lv, a[left].second&#125;;</span><br><span class="line">        <span class="keyword">else</span> ans[i] = &#123;rv, a[right].second&#125;;</span><br><span class="line">        l[right] = left, r[left] = right;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i &lt;= n; i++) <span class="built_in">cout</span> &lt;&lt; ans[i].first &lt;&lt; <span class="string">" "</span> &lt;&lt; ans[i].second &lt;&lt; <span class="built_in">endl</span>;   </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>解法二：平衡树</p>
+<p>把<code>A1 A2 A3 ... An</code>依次插入一个集合，则在插入<code>Ai</code>之前，集合中保存的就是满足<code>1&lt;=J&lt;i</code>的所有<code>Aj</code>。根据题意，我们只需在集合中查找与<code>Ai</code>最接近的值</p>
+<p>若能维护一个有序集合，则集合中与<code>Ai</code>最接近的值一定在<code>Ai</code>的前驱与后继当中，比较前驱与后继与<code>Ai</code>的差即可   </p>
+<p>而平衡二叉树就是一个支持动态插入、查询前驱以及查询后继的数据结构。在<code>C++</code>中，<code>STLset</code>也为我们提供了这些功能</p>
+<h2 id="邻接表"><a href="#邻接表" class="headerlink" title="邻接表"></a>邻接表</h2><p>邻接表是树与图的一般化存储方式，还能用于实现开散列<code>Hash</code>表。实际上，邻接表可以看成“带有索引数组的多个数据链表”构成的结构集合。在这样的结构中存储的数据会被分成若干类，每一类的数据构成一个链表，每一类还有一个代表元素，称为该类对应链表的表头。所有表头构成一个表头数组，作为一个可以随机访问的索引，从而可以通过表头数组定位到每一类数据对应的链表</p>
+<p>在一个具有<code>N</code>个点<code>M</code>条边的有向图结构中，我们可以把每条边所属的“类别”定义为该边的起点标号。这样所有边被分为<code>N</code>类，其中第<code>X</code>类就由“从<code>X</code>出发的所有边”组成。通过表头<code>head[X]</code>，我们很容易定位到第<code>X</code>类对应的链表，从而访问从点<code>X</code>出发的所有边</p>
+<p>对于无向图，我们把每条无向边看作两条有向边插入即可。有一个小技巧是，结合成对变换的位运算性质，我们可以在程序最开始时，把第一条边存储在<code>2 3</code>位置上，这样每条边都会存储在<code>2 3 4 5</code>这样的位置上。通过对下标进行<code>XOR 1</code>的运算，就可以直接定位到与当前边反向的边。换句话说，如果<code>ver[i]</code>时第<code>i</code>条边的终点，那么<code>ver[i xor 1]</code>时第<code>i</code>条边的起点</p>
+<p><img src="https://ae01.alicdn.com/kf/H0ad54ff7541c4354884259942c0c3c0f1.jpg" alt=""></p>
 ]]></content>
       <categories>
         <category>ACM</category>
       </categories>
       <tags>
         <tag>算法竞赛进阶指南</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>2020/6/12未来规划粗略总结</title>
+    <url>/2020/06/12/2020-6-12%E6%9C%AA%E6%9D%A5%E8%A7%84%E5%88%92%E7%B2%97%E7%95%A5%E6%80%BB%E7%BB%93/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>YOU CAN DRINK ALL YOU LIKE, BUT IN THE MORNING YOU GET HEADACHE WITH THE SAME PROBLEMS.</p>
+</blockquote>
+<hr>
+<h1 id="个人未来规划以及此公众号发展方向的一些调整"><a href="#个人未来规划以及此公众号发展方向的一些调整" class="headerlink" title="个人未来规划以及此公众号发展方向的一些调整"></a>个人未来规划以及此公众号发展方向的一些调整</h1><p>因为我正在学习数据结构与算法，所以目前会把这方面做好，所以陆续会出文章讲解这方面的知识，由于我是搞ACM的，所以所有文章都是以竞赛的标准去总结的，所以无论各位读者的目的是为了工作还是为了学校学习的绩点，甚至是某些照顾我的前辈读者，我相信且有信心大家能从中收获许多</p>
+<p>转眼间我已经快大二了，ACM是个无底洞，不能一直搞，得留一条后路</p>
+<p>ACM能拿到成绩保研最好，准备的后路就是毕业工作，争取进大厂，银牌可能保研去不上好学校，但银牌起码是大厂一块基本的敲门砖，所以我的成绩起码为银牌</p>
+<p>这都是后话，既然我热爱ACM，热爱算法，能投身于此，已经足够快乐了，不是吗</p>
+<p>虽然说是留一条后路，但是计算机网络、数据库、操作系统那些东西对我而言并不是枯燥无味的，我和爱ACM一样热爱他们，因为它们都属于编程这一类，所以学起来应该没问题</p>
+<p>我计划利用大一这即将到来的最后一个长假，来把ACM基础算法啃完，至少啃完一本基础的竞赛书，并做足够的题</p>
+<p>至于编程之路，算法只是其中的一小部分，我目前还掌握一些SQL语句、计算机网络基础、python基本语法、C/C++基本语法、java基本语法，其中语言只有C++由系统学习过，读完一本大砖头《C++PrimerPlus》，别的语言没有看过经典书、只是看了入门书或者视频</p>
+<p>目前阶段是搞算法竞赛，等到大二开始就每天抽出五小时准备后路（深入编程之路），个人方向还没有选好，先挑基础的开始学习，如linux操作系统，虽然已经明确python不是自己未来主流语言，但是还是决定从大二开始也要逐渐深入python（花闲余时间）</p>
+<p>至于大三，就开始去找实习了，这就是目前的规划了，希望有建议的前辈指教</p>
+<p>今天早睡，哈哈，明天开始我的复国大计</p>
+<p><img src="https://imgkr.cn-bj.ufileos.com/148c824d-4eb8-48d3-9825-51625347b0f0.png" alt=""></p>
+]]></content>
+      <categories>
+        <category>随笔</category>
+      </categories>
+      <tags>
+        <tag>随笔</tag>
       </tags>
   </entry>
   <entry>
@@ -382,43 +419,6 @@
       </categories>
       <tags>
         <tag>博客搭建</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>0x21树与图的遍历</title>
-    <url>/2020/06/11/0x21%E6%A0%91%E4%B8%8E%E5%9B%BE%E7%9A%84%E9%81%8D%E5%8E%86/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script>]]></content>
-      <categories>
-        <category>ACM</category>
-      </categories>
-      <tags>
-        <tag>算法竞赛进阶指南</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>2020/6/12未来规划粗略总结</title>
-    <url>/2020/06/12/2020-6-12%E6%9C%AA%E6%9D%A5%E8%A7%84%E5%88%92%E7%B2%97%E7%95%A5%E6%80%BB%E7%BB%93/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>YOU CAN DRINK ALL YOU LIKE, BUT IN THE MORNING YOU GET HEADACHE WITH THE SAME PROBLEMS.</p>
-</blockquote>
-<hr>
-<h1 id="个人未来规划以及此公众号发展方向的一些调整"><a href="#个人未来规划以及此公众号发展方向的一些调整" class="headerlink" title="个人未来规划以及此公众号发展方向的一些调整"></a>个人未来规划以及此公众号发展方向的一些调整</h1><p>因为我正在学习数据结构与算法，所以目前会把这方面做好，所以陆续会出文章讲解这方面的知识，由于我是搞ACM的，所以所有文章都是以竞赛的标准去总结的，所以无论各位读者的目的是为了工作还是为了学校学习的绩点，甚至是某些照顾我的前辈读者，我相信且有信心大家能从中收获许多</p>
-<p>转眼间我已经快大二了，ACM是个无底洞，不能一直搞，得留一条后路</p>
-<p>ACM能拿到成绩保研最好，准备的后路就是毕业工作，争取进大厂，银牌可能保研去不上好学校，但银牌起码是大厂一块基本的敲门砖，所以我的成绩起码为银牌</p>
-<p>这都是后话，既然我热爱ACM，热爱算法，能投身于此，已经足够快乐了，不是吗</p>
-<p>虽然说是留一条后路，但是计算机网络、数据库、操作系统那些东西对我而言并不是枯燥无味的，我和爱ACM一样热爱他们，因为它们都属于编程这一类，所以学起来应该没问题</p>
-<p>我计划利用大一这即将到来的最后一个长假，来把ACM基础算法啃完，至少啃完一本基础的竞赛书，并做足够的题</p>
-<p>至于编程之路，算法只是其中的一小部分，我目前还掌握一些SQL语句、计算机网络基础、python基本语法、C/C++基本语法、java基本语法，其中语言只有C++由系统学习过，读完一本大砖头《C++PrimerPlus》，别的语言没有看过经典书、只是看了入门书或者视频</p>
-<p>目前阶段是搞算法竞赛，等到大二开始就每天抽出五小时准备后路（深入编程之路），个人方向还没有选好，先挑基础的开始学习，如linux操作系统，虽然已经明确python不是自己未来主流语言，但是还是决定从大二开始也要逐渐深入python（花闲余时间）</p>
-<p>至于大三，就开始去找实习了，这就是目前的规划了，希望有建议的前辈指教</p>
-<p>今天早睡，哈哈，明天开始我的复国大计</p>
-<p><img src="https://imgkr.cn-bj.ufileos.com/148c824d-4eb8-48d3-9825-51625347b0f0.png" alt=""></p>
-]]></content>
-      <categories>
-        <category>随笔</category>
-      </categories>
-      <tags>
-        <tag>随笔</tag>
       </tags>
   </entry>
   <entry>
@@ -487,15 +487,15 @@
 <ul>
 <li>约数个数：<code>N=P1^A1+P2^A2+P3^A3+...+PK^AK</code>，约数个数为<code>(A1+1)(A2+1)(A3+1)...(AK+1)</code>，每一个P都有对应的A+1种选法，每个不同的选法，都能凑成一个不同的约数</li>
 </ul>
-<h2 id="870-约数个数"><a href="#870-约数个数" class="headerlink" title="870.约数个数"></a><a href="https://www.acwing.com/problem/content/872/" target="_blank" rel="noopener">870.约数个数</a></h2><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">110</span>, mod = <span class="number">1e9</span> + <span class="number">7</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> n;</span><br><span class="line">    <span class="built_in">cin</span> &gt;&gt; n;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">unordered_map</span>&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt; primes;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (n--) &#123;</span><br><span class="line">        <span class="keyword">int</span> x;</span><br><span class="line">        <span class="built_in">cin</span> &gt;&gt; x;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i &lt;= x / i; i++)</span><br><span class="line">            <span class="keyword">while</span> (x % i == <span class="number">0</span>) &#123;</span><br><span class="line">                x /= i;</span><br><span class="line">                primes[i]++;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (x &gt; <span class="number">1</span>) primes[x]++;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">long</span> <span class="keyword">long</span> res = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> p : primes) res = res * (p.second + <span class="number">1</span>) % mod;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; res &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="870-约数个数"><a href="#870-约数个数" class="headerlink" title="870.约数个数"></a><a href="https://www.acwing.com/problem/content/872/" target="_blank" rel="noopener">870.约数个数</a></h3><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">110</span>, mod = <span class="number">1e9</span> + <span class="number">7</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> n;</span><br><span class="line">    <span class="built_in">cin</span> &gt;&gt; n;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">unordered_map</span>&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt; primes;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (n--) &#123;</span><br><span class="line">        <span class="keyword">int</span> x;</span><br><span class="line">        <span class="built_in">cin</span> &gt;&gt; x;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i &lt;= x / i; i++)</span><br><span class="line">            <span class="keyword">while</span> (x % i == <span class="number">0</span>) &#123;</span><br><span class="line">                x /= i;</span><br><span class="line">                primes[i]++;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (x &gt; <span class="number">1</span>) primes[x]++;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">long</span> <span class="keyword">long</span> res = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> p : primes) res = res * (p.second + <span class="number">1</span>) % mod;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; res &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <ul>
 <li>约数之和：<code>N=P1^A1+P2^A2+P3^A3+...+PK^AK</code>，约数之和为<code>(P1^0+P1^1+...+P1^A1)(P2^0+P2^1+...+P2^A1)(P3^0+P3^1+...+P3^A1)...(PK^0+PK^1+...+PK^A1)</code>，每个项选一个，凑成一个约数，累加</li>
 </ul>
-<h2 id="871-约数之和"><a href="#871-约数之和" class="headerlink" title="871. 约数之和"></a><a href="https://www.acwing.com/problem/content/873/" target="_blank" rel="noopener">871. 约数之和</a></h2><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">110</span>, mod = <span class="number">1e9</span> + <span class="number">7</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> n;</span><br><span class="line">    <span class="built_in">cin</span> &gt;&gt; n;</span><br><span class="line">    <span class="built_in">unordered_map</span>&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt; primes;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (n--) &#123;</span><br><span class="line">        <span class="keyword">int</span> x;</span><br><span class="line">        <span class="built_in">cin</span> &gt;&gt; x;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i &lt;= x / i; i++) </span><br><span class="line">        <span class="keyword">while</span> (x % i == <span class="number">0</span>) &#123;</span><br><span class="line">            x /= i;</span><br><span class="line">            primes[i]++;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (x &gt; <span class="number">1</span>) primes[x]++;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">long</span> <span class="keyword">long</span> res = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> p : primes) &#123;</span><br><span class="line">        <span class="keyword">long</span> <span class="keyword">long</span> a = p.first, b = p.second;</span><br><span class="line">        <span class="keyword">long</span> <span class="keyword">long</span> t = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">while</span> (b--) t = (t * a + <span class="number">1</span>) % mod;</span><br><span class="line">        res = res * t % mod;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; res &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="871-约数之和"><a href="#871-约数之和" class="headerlink" title="871. 约数之和"></a><a href="https://www.acwing.com/problem/content/873/" target="_blank" rel="noopener">871. 约数之和</a></h3><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">110</span>, mod = <span class="number">1e9</span> + <span class="number">7</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> n;</span><br><span class="line">    <span class="built_in">cin</span> &gt;&gt; n;</span><br><span class="line">    <span class="built_in">unordered_map</span>&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt; primes;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (n--) &#123;</span><br><span class="line">        <span class="keyword">int</span> x;</span><br><span class="line">        <span class="built_in">cin</span> &gt;&gt; x;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i &lt;= x / i; i++) </span><br><span class="line">        <span class="keyword">while</span> (x % i == <span class="number">0</span>) &#123;</span><br><span class="line">            x /= i;</span><br><span class="line">            primes[i]++;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (x &gt; <span class="number">1</span>) primes[x]++;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">long</span> <span class="keyword">long</span> res = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> p : primes) &#123;</span><br><span class="line">        <span class="keyword">long</span> <span class="keyword">long</span> a = p.first, b = p.second;</span><br><span class="line">        <span class="keyword">long</span> <span class="keyword">long</span> t = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">while</span> (b--) t = (t * a + <span class="number">1</span>) % mod;</span><br><span class="line">        res = res * t % mod;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; res &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <ul>
 <li>欧几里得算法（辗转相除法）</li>
 </ul>
-<h2 id="872-最大公约数"><a href="#872-最大公约数" class="headerlink" title="872.最大公约数"></a><a href="https://www.acwing.com/problem/content/874/" target="_blank" rel="noopener">872.最大公约数</a></h2><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">gcd</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> b ? gcd(b, a % b) : a;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> n;</span><br><span class="line">    <span class="built_in">cin</span> &gt;&gt; n;</span><br><span class="line">    <span class="keyword">while</span> (n--) &#123;</span><br><span class="line">        <span class="keyword">int</span> a, b;</span><br><span class="line">        <span class="built_in">cin</span> &gt;&gt; a &gt;&gt; b;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; gcd(a, b) &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="872-最大公约数"><a href="#872-最大公约数" class="headerlink" title="872.最大公约数"></a><a href="https://www.acwing.com/problem/content/874/" target="_blank" rel="noopener">872.最大公约数</a></h3><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">gcd</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> b ? gcd(b, a % b) : a;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> n;</span><br><span class="line">    <span class="built_in">cin</span> &gt;&gt; n;</span><br><span class="line">    <span class="keyword">while</span> (n--) &#123;</span><br><span class="line">        <span class="keyword">int</span> a, b;</span><br><span class="line">        <span class="built_in">cin</span> &gt;&gt; a &gt;&gt; b;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; gcd(a, b) &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 ]]></content>
       <categories>
         <category>ACM</category>
@@ -600,46 +600,6 @@
       </tags>
   </entry>
   <entry>
-    <title>HEXO+BUTTERFLY搭建骚气且实用的个人网站</title>
-    <url>/2020/05/27/HEXO-BUTTERFLY%E6%90%AD%E5%BB%BA%E9%AA%9A%E6%B0%94%E4%B8%94%E5%AE%9E%E7%94%A8%E7%9A%84%E4%B8%AA%E4%BA%BA%E7%BD%91%E7%AB%99/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>YOU CAN DRINK ALL YOU LIKE, BUT IN THE MORNING YOU GET HEADACHE WITH THE SAME PROBLEMS.</p>
-</blockquote>
-<hr>
-<h2 id="引子"><a href="#引子" class="headerlink" title="引子"></a>引子</h2><p>最近狂刷<code>codeforces</code>，但是逐渐发现自身一个问题，那就是刷过的题虽然在当天感觉很明白，但是隔一天，隔两天，就发现自己再遇到此题时又是一翻鏖战，这就是说明自己做过的题吸收的效率不够高，于是我就打算做一道题总结一道题。那么问题来了，在哪里总结呢？</p>
-<p>首先排除的是微信公众号，众所周知，微信公众号只能是自己分享东西的平台，而在这上面总结知识点就会引出很多问题，其一，每篇文章都要排版，其二，我的粉丝未必合此文章的胃口，其三，每天只能发布一篇文章，大大限制了自己的总结内容与时间分配。</p>
-<p>那么诸如<code>csdn</code>、博客园、掘金、知乎这种东西呢？也有很多不方便的地方，比如文章左右侧的广告，实在影响人的心情，此外还有审核等等的制约，思前想后，我决定自己开辟一个个人网站。</p>
-<p>当然不能从无到有手动开辟，自己能力有限，而且我的目的也是总结，总不能让自己以后把大把的时间浪费到维护网站上面去。于是我听从了大佬的建议，采用<code>hexo+github</code>的方式，<code>hexo</code>开辟网站，托管到<code>github</code>上面去。</p>
-<p>花里胡哨的页面也是最吸引我的原因之一，我采用了<code>butterfly</code>的主题，绝对美炸天！</p>
-<h2 id="过程"><a href="#过程" class="headerlink" title="过程"></a>过程</h2><p>过程当然是心酸+心酸+心酸，心态险些被搞没。至于搭建网站的教程，实话实说，看了n多篇技术总结，都号称史上最全，到最后还是觉得看官方文档最省事。</p>
-<p>当然自己也找到了一些好的文章，在此列出来希望对大家有帮助：</p>
-<p><code>hexo</code>安装文章：</p>
-<ul>
-<li><a href="https://www.jianshu.com/p/a1a4ebf0e5fc" target="_blank" rel="noopener">Hexo+Butterfly+Github+Coding搭建个人博客</a></li>
-<li><a href="https://hexo.io/" target="_blank" rel="noopener">hexo官方文档</a></li>
-</ul>
-<p><code>butterfly</code>主题系列文章：</p>
-<ol>
-<li><a href="https://jerryc.me/posts/21cfbf15/" target="_blank" rel="noopener">hexo-theme-butterfly 安装文档(一)快速开始</a></li>
-<li><a href="https://jerryc.me/posts/dc584b87/" target="_blank" rel="noopener">hexo-theme-butterfly 安装文档(二)主题页面</a></li>
-<li><a href="https://jerryc.me/posts/4aa8abbe/" target="_blank" rel="noopener">hexo-theme-butterfly 安装文档(三)主题配置</a></li>
-<li><a href="https://jerryc.me/posts/98d20436/" target="_blank" rel="noopener">hexo-theme-butterfly 安装文档(四)主题问答、打赏名单</a></li>
-<li><a href="https://jerryc.me/posts/198a4240/" target="_blank" rel="noopener">hexo-theme-butterfly 安装文档(五)更新日誌</a></li>
-</ol>
-<h2 id="收益"><a href="#收益" class="headerlink" title="收益"></a>收益</h2><p>没日没夜的折腾了两天，总能从其中学到什么：其一，当然是收获了又骚又实用的好网站；其二，学会了<code>git</code>+<code>github</code>的基本使用，常见的<code>git</code>命令也记得很熟；其三，收获了一种精神——永不放弃，哪有什么一帆风顺，加油，骚年！</p>
-<h2 id="不足"><a href="#不足" class="headerlink" title="不足"></a>不足</h2><p>自己的网站弄的也不是很成熟，还有很多功能没有上线，比如日历、赞赏等，自己没有买域名，只是托管到<code>github</code>上。</p>
-<h2 id="欢迎"><a href="#欢迎" class="headerlink" title="欢迎"></a>欢迎</h2><p><a href="https://haotianliu11.github.io/" target="_blank" rel="noopener">我的个人网站</a></p>
-<hr>
-<p><img src="https://imgkr.cn-bj.ufileos.com/148c824d-4eb8-48d3-9825-51625347b0f0.png" alt=""></p>
-]]></content>
-      <categories>
-        <category>博客搭建</category>
-      </categories>
-      <tags>
-        <tag>博客搭建</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>CODEFORCES/ROUND/648/DIV2</title>
     <url>/2020/06/10/CODEFORCES-ROUND-648-DIV2/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="CODEFORCES-ROUND-648-DIV2"><a href="#CODEFORCES-ROUND-648-DIV2" class="headerlink" title="CODEFORCES/ROUND/648/DIV2"></a>CODEFORCES/ROUND/648/DIV2</h1><h2 id="A-Matrix-Game"><a href="#A-Matrix-Game" class="headerlink" title="A.Matrix Game"></a><a href="https://codeforces.com/contest/1365/problem/A" target="_blank" rel="noopener">A.Matrix Game</a></h2><h3 id="难度"><a href="#难度" class="headerlink" title="难度"></a>难度</h3><p><code>1100</code>，标签：<code>implementation</code>   </p>
@@ -684,6 +644,46 @@
       </tags>
   </entry>
   <entry>
+    <title>HEXO+BUTTERFLY搭建骚气且实用的个人网站</title>
+    <url>/2020/05/27/HEXO-BUTTERFLY%E6%90%AD%E5%BB%BA%E9%AA%9A%E6%B0%94%E4%B8%94%E5%AE%9E%E7%94%A8%E7%9A%84%E4%B8%AA%E4%BA%BA%E7%BD%91%E7%AB%99/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>YOU CAN DRINK ALL YOU LIKE, BUT IN THE MORNING YOU GET HEADACHE WITH THE SAME PROBLEMS.</p>
+</blockquote>
+<hr>
+<h2 id="引子"><a href="#引子" class="headerlink" title="引子"></a>引子</h2><p>最近狂刷<code>codeforces</code>，但是逐渐发现自身一个问题，那就是刷过的题虽然在当天感觉很明白，但是隔一天，隔两天，就发现自己再遇到此题时又是一翻鏖战，这就是说明自己做过的题吸收的效率不够高，于是我就打算做一道题总结一道题。那么问题来了，在哪里总结呢？</p>
+<p>首先排除的是微信公众号，众所周知，微信公众号只能是自己分享东西的平台，而在这上面总结知识点就会引出很多问题，其一，每篇文章都要排版，其二，我的粉丝未必合此文章的胃口，其三，每天只能发布一篇文章，大大限制了自己的总结内容与时间分配。</p>
+<p>那么诸如<code>csdn</code>、博客园、掘金、知乎这种东西呢？也有很多不方便的地方，比如文章左右侧的广告，实在影响人的心情，此外还有审核等等的制约，思前想后，我决定自己开辟一个个人网站。</p>
+<p>当然不能从无到有手动开辟，自己能力有限，而且我的目的也是总结，总不能让自己以后把大把的时间浪费到维护网站上面去。于是我听从了大佬的建议，采用<code>hexo+github</code>的方式，<code>hexo</code>开辟网站，托管到<code>github</code>上面去。</p>
+<p>花里胡哨的页面也是最吸引我的原因之一，我采用了<code>butterfly</code>的主题，绝对美炸天！</p>
+<h2 id="过程"><a href="#过程" class="headerlink" title="过程"></a>过程</h2><p>过程当然是心酸+心酸+心酸，心态险些被搞没。至于搭建网站的教程，实话实说，看了n多篇技术总结，都号称史上最全，到最后还是觉得看官方文档最省事。</p>
+<p>当然自己也找到了一些好的文章，在此列出来希望对大家有帮助：</p>
+<p><code>hexo</code>安装文章：</p>
+<ul>
+<li><a href="https://www.jianshu.com/p/a1a4ebf0e5fc" target="_blank" rel="noopener">Hexo+Butterfly+Github+Coding搭建个人博客</a></li>
+<li><a href="https://hexo.io/" target="_blank" rel="noopener">hexo官方文档</a></li>
+</ul>
+<p><code>butterfly</code>主题系列文章：</p>
+<ol>
+<li><a href="https://jerryc.me/posts/21cfbf15/" target="_blank" rel="noopener">hexo-theme-butterfly 安装文档(一)快速开始</a></li>
+<li><a href="https://jerryc.me/posts/dc584b87/" target="_blank" rel="noopener">hexo-theme-butterfly 安装文档(二)主题页面</a></li>
+<li><a href="https://jerryc.me/posts/4aa8abbe/" target="_blank" rel="noopener">hexo-theme-butterfly 安装文档(三)主题配置</a></li>
+<li><a href="https://jerryc.me/posts/98d20436/" target="_blank" rel="noopener">hexo-theme-butterfly 安装文档(四)主题问答、打赏名单</a></li>
+<li><a href="https://jerryc.me/posts/198a4240/" target="_blank" rel="noopener">hexo-theme-butterfly 安装文档(五)更新日誌</a></li>
+</ol>
+<h2 id="收益"><a href="#收益" class="headerlink" title="收益"></a>收益</h2><p>没日没夜的折腾了两天，总能从其中学到什么：其一，当然是收获了又骚又实用的好网站；其二，学会了<code>git</code>+<code>github</code>的基本使用，常见的<code>git</code>命令也记得很熟；其三，收获了一种精神——永不放弃，哪有什么一帆风顺，加油，骚年！</p>
+<h2 id="不足"><a href="#不足" class="headerlink" title="不足"></a>不足</h2><p>自己的网站弄的也不是很成熟，还有很多功能没有上线，比如日历、赞赏等，自己没有买域名，只是托管到<code>github</code>上。</p>
+<h2 id="欢迎"><a href="#欢迎" class="headerlink" title="欢迎"></a>欢迎</h2><p><a href="https://haotianliu11.github.io/" target="_blank" rel="noopener">我的个人网站</a></p>
+<hr>
+<p><img src="https://imgkr.cn-bj.ufileos.com/148c824d-4eb8-48d3-9825-51625347b0f0.png" alt=""></p>
+]]></content>
+      <categories>
+        <category>博客搭建</category>
+      </categories>
+      <tags>
+        <tag>博客搭建</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>LEETCODE双周赛26</title>
     <url>/2020/06/04/LEETCODE%E5%8F%8C%E5%91%A8%E8%B5%9B26/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="LEETCODE双周赛26"><a href="#LEETCODE双周赛26" class="headerlink" title="LEETCODE双周赛26"></a>LEETCODE双周赛26</h1><h2 id="1446-连续字符"><a href="#1446-连续字符" class="headerlink" title="1446.连续字符"></a><a href="https://leetcode-cn.com/problems/consecutive-characters/submissions/" target="_blank" rel="noopener">1446.连续字符</a></h2><h3 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h3><blockquote>
@@ -709,44 +709,6 @@
       </categories>
       <tags>
         <tag>LEETCODE/比赛</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>PYTHON中isdigit()、isalpha()、isalnum()三个函数的区别和注意点</title>
-    <url>/2020/05/04/PYTHON%E4%B8%ADisdigit-%E3%80%81isalpha-%E3%80%81isalnum-%E4%B8%89%E4%B8%AA%E5%87%BD%E6%95%B0%E7%9A%84%E5%8C%BA%E5%88%AB%E5%92%8C%E6%B3%A8%E6%84%8F%E7%82%B9/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="PYTHON中isdigit-、isalpha-、isalnum-三个函数的区别和注意点"><a href="#PYTHON中isdigit-、isalpha-、isalnum-三个函数的区别和注意点" class="headerlink" title="PYTHON中isdigit()、isalpha()、isalnum()三个函数的区别和注意点"></a>PYTHON中isdigit()、isalpha()、isalnum()三个函数的区别和注意点</h1><h2 id="isdigit"><a href="#isdigit" class="headerlink" title="isdigit()"></a>isdigit()</h2><p><code>python</code>关于<code>isdigit()</code>内置函数的官方定义：  </p>
-<blockquote>
-<p>S.isdigit() -&gt; bool<br>        Return True if all characters in S are digits<br>        and there is at least one character in S, False otherwise.    </p>
-</blockquote>
-<p>翻译：</p>
-<p><code>S.isdigit()</code>返回的是布尔值：<code>True</code>、<code>False</code><br><code>S</code>字符串中至少有一个字符且如果<code>S</code>中的所有字符都是数字，那么返回结果就是<code>True</code>；否则，就返回<code>False</code>   </p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">S1 = <span class="string">'12345'</span>       <span class="comment">#纯数字</span></span><br><span class="line">S2 = <span class="string">'①②'</span>          <span class="comment">#带圈的数字</span></span><br><span class="line">S3 = <span class="string">'汉字'</span>        <span class="comment">#汉字</span></span><br><span class="line">S4 = <span class="string">'%#￥'</span>        <span class="comment">#特殊符号</span></span><br><span class="line">S5 = <span class="string">'12345a'</span>      <span class="comment">#数字和字母</span></span><br><span class="line"></span><br><span class="line">print(S1.isdigit())</span><br><span class="line">print(S2.isdigit())</span><br><span class="line">print(S3.isdigit())</span><br><span class="line">print(S4.isdigit())</span><br><span class="line">print(S5.isdigit())</span><br><span class="line"></span><br><span class="line"><span class="comment"># 执行结果：</span></span><br><span class="line"><span class="literal">True</span>     </span><br><span class="line"><span class="literal">True</span></span><br><span class="line"><span class="literal">False</span></span><br><span class="line"><span class="literal">False</span></span><br><span class="line"><span class="literal">False</span></span><br></pre></td></tr></table></figure>
-<h2 id="isalpha"><a href="#isalpha" class="headerlink" title="isalpha()"></a>isalpha()</h2><p><code>python</code>关于<code>isalpha()</code>内置函数的官方定义：</p>
-<blockquote>
-<p>S.isalpha() -&gt; bool<br>        Return True if all characters in S are alphabetic<br>        and there is at least one character in S, False otherwise.</p>
-</blockquote>
-<p>翻译：<br><code>S.isalpha()</code>返回的是布尔值：<code>True</code>、<code>False</code><br><code>S</code>字符串中至少有一个字符且如果S中的所有字符都是字母，那么返回结果就是<code>True</code>；否则，就返回<code>False</code>   </p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">S1 = <span class="string">'abc汉字'</span>     <span class="comment">#汉字+字母</span></span><br><span class="line">S2 = <span class="string">'ab字134'</span>     <span class="comment">#包含数字</span></span><br><span class="line">S3 = <span class="string">'*&amp;&amp;'</span>         <span class="comment">#特殊符号</span></span><br><span class="line"></span><br><span class="line">print(S1.isalpha())</span><br><span class="line">print(S2.isalpha())</span><br><span class="line">print(S3.isalpha())</span><br><span class="line"></span><br><span class="line"><span class="comment">#执行结果</span></span><br><span class="line"><span class="literal">True</span></span><br><span class="line"><span class="literal">False</span></span><br><span class="line"><span class="literal">False</span></span><br></pre></td></tr></table></figure>
-<h2 id="isalnum"><a href="#isalnum" class="headerlink" title="isalnum()"></a>isalnum()</h2><p><code>python</code>关于<code>isalnum()</code>内置函数的官方定义：  </p>
-<blockquote>
-<p>S.isalnum() -&gt; bool<br>        Return True if all characters in S are alphanumeric<br>        and there is at least one character in S, False otherwise.</p>
-</blockquote>
-<p>翻译：  </p>
-<p><code>S.isalnum()</code>返回的是布尔值：<code>True</code>、<code>False</code><br><code>S</code>中至少有一个字符且如果<code>S</code>中的所有字符都是字母数字，那么返回结果就是<code>True</code>；否则，就返回<code>False</code></p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">S1 = <span class="string">'abc汉字1'</span>    <span class="comment">#字母+汉字+数字</span></span><br><span class="line">S2 = <span class="string">'①②③'</span>      <span class="comment">#带圈的数字</span></span><br><span class="line">S3 = <span class="string">'%……&amp;'</span>       <span class="comment">#特殊符号</span></span><br><span class="line"></span><br><span class="line">print(S1.isalnum())</span><br><span class="line">print(S2.isalnum())</span><br><span class="line">print(S3.isalnum())</span><br><span class="line"></span><br><span class="line"><span class="comment">#执行结果</span></span><br><span class="line"><span class="literal">True</span></span><br><span class="line"><span class="literal">True</span></span><br><span class="line"><span class="literal">False</span></span><br></pre></td></tr></table></figure>
-<h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><ol>
-<li><p><code>python</code>官方定义中的字母：大家默认为英文字母+汉字即可</p>
-</li>
-<li><p><code>python</code>官方定义中的数字：大家默认为<code>Unicode</code>数字、<code>byte</code>数字（单字节）、全角数字（双字节）、罗马数字、带圈的数字即可</p>
-</li>
-</ol>
-<p><img src="https://ae01.alicdn.com/kf/H270ec52cb1794e5cb700f741bdd71aafA.jpg" alt=""></p>
-]]></content>
-      <categories>
-        <category>PYTHON</category>
-      </categories>
-      <tags>
-        <tag>PYTHON语法</tag>
       </tags>
   </entry>
   <entry>
@@ -807,16 +769,32 @@
       </tags>
   </entry>
   <entry>
-    <title>PYTHON中print格式化输出用法</title>
-    <url>/2020/05/06/PYTHON%E4%B8%ADprint%E6%A0%BC%E5%BC%8F%E5%8C%96%E8%BE%93%E5%87%BA%E7%94%A8%E6%B3%95/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="Python中print用法里面-、-s-、-d-代表的意思"><a href="#Python中print用法里面-、-s-、-d-代表的意思" class="headerlink" title="Python中print用法里面% 、%s 、 % d 代表的意思"></a>Python中print用法里面% 、%s 、 % d 代表的意思</h1><h2 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h2><p><code>%s</code>表示格化式一个对象为字符<br><code>%d</code>表示格化式一个对象为整数<br><code>%</code>字符：标记转换说明符的开始<br>在<code>%</code>的左侧放置一个字符串（格式化字符串），右侧放置希望格式化的值    </p>
-<figure class="highlight"><table><tr><td class="code"><pre><span class="line">"Hello, %s"%"zhang3" =&gt; "Hello, zhang3"</span><br><span class="line">"%d"%33 =&gt; "33"</span><br><span class="line">"%s:%d"%("ab",3) =&gt; "ab:3"</span><br></pre></td></tr></table></figure>
-<h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><ol>
-<li><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="string">'%s plus %s equals %s'</span> % (<span class="number">1</span>,<span class="number">2</span>,<span class="number">2</span>)</span><br><span class="line">Out[<span class="number">29</span>]: <span class="string">'1 plus 2 equals 2'</span></span><br></pre></td></tr></table></figure></li>
-<li><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">LOTTERY_PRE = <span class="string">"LXG_LOT_"</span></span><br><span class="line">LOTTERY_ITEM = LOTTERY_PRE + <span class="string">'%s_ITEM'</span></span><br><span class="line">new_version = <span class="string">"20181007220245756"</span></span><br><span class="line">new_lobbery_item = LOTTERY_ITEM % new_version</span><br><span class="line">print(new_lobbery_item)</span><br><span class="line"></span><br><span class="line">输出 LXG_LOT_20181007220245756_ITEM</span><br></pre></td></tr></table></figure></li>
-<li>%s 字符串<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">string=<span class="string">"hello"</span></span><br><span class="line"></span><br><span class="line">print(<span class="string">"string=%s"</span> % string) <span class="comment"># output: string=hello</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># %2s意思是字符串长度为2，当原字符串的长度超过2时，按原长度打印，所以%2s的打印结果还是hello</span></span><br><span class="line">print(<span class="string">"string=%2s"</span> % string) <span class="comment"># output: string=hello</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># %7s意思是字符串长度为7，当原字符串的长度小于7时，在原字符串左侧补空格</span></span><br><span class="line"><span class="comment"># 所以%7s的打印结果是  hello</span></span><br><span class="line">print(<span class="string">"string=%7s"</span> % string)<span class="comment"># output: string=  hello</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># %-7s意思是字符串长度为7，当原字符串的长度小于7时，在原字符串右侧补空格</span></span><br><span class="line"><span class="comment"># 所以%-7s的打印结果是hello  !</span></span><br><span class="line">print(<span class="string">"string=%-7s!"</span> % string)<span class="comment"># output: string=hello  !</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># %.2s意思是截取字符串的前2个字符，所以%.2s的打印结果是he</span></span><br><span class="line">print(<span class="string">"string=%.2s"</span> % string) <span class="comment"># output: string=he</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># %.7s意思是截取字符串的前7个字符，当原字符串长度小于7时，即是字符串本身</span></span><br><span class="line"><span class="comment"># 所以%.7s的打印结果是hello</span></span><br><span class="line">print(<span class="string">"string=%.7s"</span> % string)<span class="comment"># output: string=hello</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># %a.bs这种格式是上面两种格式的综合，首先根据小数点后面的数b截取字符串</span></span><br><span class="line"><span class="comment"># 当截取的字符串长度小于a时，还需要在其左侧补空格</span></span><br><span class="line">print(<span class="string">"string=%7.2s"</span> % string )<span class="comment"># output: string=     he</span></span><br><span class="line"></span><br><span class="line">print(<span class="string">"string=%2.7s"</span> % string )<span class="comment"># output: string=hello</span></span><br><span class="line"></span><br><span class="line">print(<span class="string">"string=%10.7s"</span> % string) <span class="comment"># output: string=    hello</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 还可以用%.s来表示精度，两个*的值分别在后面小括号的前两位数值指定</span></span><br><span class="line">print(<span class="string">"string=%*.*s"</span> % (<span class="number">7</span>,<span class="number">2</span>,string)) <span class="comment"># output: string=     he</span></span><br></pre></td></tr></table></figure></li>
-<li>%d 整型<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">num=<span class="number">14</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># %d打印时结果是14</span></span><br><span class="line">print(<span class="string">"num=%d"</span> % num) <span class="comment"># output: num=14</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># %1d意思是打印结果为1位整数，当整数的位数超过1位时，按整数原值打印，所以%1d的打印结果还是14</span></span><br><span class="line">print(<span class="string">"num=%1d"</span> % num) <span class="comment"># output: num=14</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># %3d意思是打印结果为3位整数，当整数的位数不够3位时，在整数左侧补空格，所以%3d的打印结果是 14</span></span><br><span class="line">print(<span class="string">"num=%3d"</span> % num) <span class="comment"># output: num= 14</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># %-3d意思是打印结果为3位整数，当整数的位数不够3位时，在整数右侧补空格，所以%3d的打印结果是14_</span></span><br><span class="line">print(<span class="string">"num=%-3d!"</span> % num) <span class="comment"># output: num=14 !</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># %05d意思是打印结果为5位整数，当整数的位数不够5位时，在整数左侧补0，所以%05d的打印结果是00014</span></span><br><span class="line">print(<span class="string">"num=%05d"</span> % num) <span class="comment"># output: num=00014</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># %.3d小数点后面的3意思是打印结果为3位整数，</span></span><br><span class="line"><span class="comment"># 当整数的位数不够3位时，在整数左侧补0，所以%.3d的打印结果是014</span></span><br><span class="line">print(<span class="string">"num=%.3d"</span> % num) <span class="comment"># output: num=014</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># %.0003d小数点后面的0003和3一样，都表示3，意思是打印结果为3位整数，</span></span><br><span class="line"><span class="comment"># 当整数的位数不够3位时，在整数左侧补0，所以%.3d的打印结果还是014</span></span><br><span class="line">print(<span class="string">"num=%.0003d"</span> % num) <span class="comment"># output: num=014</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># %5.3d是两种补齐方式的综合，当整数的位数不够3时，先在左侧补0，还是不够5位时，再在左侧补空格，</span></span><br><span class="line"><span class="comment"># 规则就是补0优先，最终的长度选数值较大的那个，所以%5.3d的打印结果还是  014</span></span><br><span class="line">print(<span class="string">"num=%5.3d"</span> % num)<span class="comment"># output: num=  014</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># %05.3d是两种补齐方式的综合，当整数的位数不够3时，先在左侧补0，还是不够5位时，</span></span><br><span class="line"><span class="comment"># 由于是05，再在左侧补0，最终的长度选数值较大的那个，所以%05.3d的打印结果还是00014</span></span><br><span class="line">print(<span class="string">"num=%05.3d"</span> % num) <span class="comment"># output: num=00014</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 还可以用%.d来表示精度，两个*的值分别在后面小括号的前两位数值指定</span></span><br><span class="line">print(<span class="string">"num=%*.*d"</span> % (<span class="number">4</span>,<span class="number">3</span>,num)) <span class="comment"># output: num= 014</span></span><br></pre></td></tr></table></figure></li>
-<li>%f 浮点型<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> math</span><br><span class="line"></span><br><span class="line"><span class="comment"># %a.bf，a表示浮点数的打印长度，b表示浮点数小数点后面的精度</span></span><br><span class="line"><span class="comment"># 只是%f时表示原值，默认是小数点后5位数</span></span><br><span class="line">print(<span class="string">"PI=%f"</span> % math.pi) <span class="comment"># output: PI=3.141593</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 只是%9f时，表示打印长度9位数，小数点也占一位，不够左侧补空格</span></span><br><span class="line">print(<span class="string">"PI=%9f"</span> % math.pi) <span class="comment"># output: PI= 3.141593</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 只有.而没有后面的数字时，表示去掉小数输出整数，03表示不够3位数左侧补0</span></span><br><span class="line">print(<span class="string">"PI=%03.f"</span> % math.pi) <span class="comment"># output: PI=003</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># %6.3f表示小数点后面精确到3位，总长度6位数，包括小数点，不够左侧补空格</span></span><br><span class="line">print(<span class="string">"PI=%6.3f"</span> % math.pi) <span class="comment"># output: PI= 3.142</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># %-6.3f表示小数点后面精确到3位，总长度6位数，包括小数点，不够右侧补空格</span></span><br><span class="line">print(<span class="string">"PI=%-6.3f!"</span> % math.pi) <span class="comment"># output: PI=3.142 !</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 还可以用%.f来表示精度，两个*的值分别在后面小括号的前两位数值指定</span></span><br><span class="line">print(<span class="string">"PI=%*.*f"</span> % (<span class="number">6</span>,<span class="number">3</span>,math.pi)) <span class="comment"># output: PI= 3.142</span></span><br></pre></td></tr></table></figure>
+    <title>PYTHON中isdigit()、isalpha()、isalnum()三个函数的区别和注意点</title>
+    <url>/2020/05/04/PYTHON%E4%B8%ADisdigit-%E3%80%81isalpha-%E3%80%81isalnum-%E4%B8%89%E4%B8%AA%E5%87%BD%E6%95%B0%E7%9A%84%E5%8C%BA%E5%88%AB%E5%92%8C%E6%B3%A8%E6%84%8F%E7%82%B9/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="PYTHON中isdigit-、isalpha-、isalnum-三个函数的区别和注意点"><a href="#PYTHON中isdigit-、isalpha-、isalnum-三个函数的区别和注意点" class="headerlink" title="PYTHON中isdigit()、isalpha()、isalnum()三个函数的区别和注意点"></a>PYTHON中isdigit()、isalpha()、isalnum()三个函数的区别和注意点</h1><h2 id="isdigit"><a href="#isdigit" class="headerlink" title="isdigit()"></a>isdigit()</h2><p><code>python</code>关于<code>isdigit()</code>内置函数的官方定义：  </p>
+<blockquote>
+<p>S.isdigit() -&gt; bool<br>        Return True if all characters in S are digits<br>        and there is at least one character in S, False otherwise.    </p>
+</blockquote>
+<p>翻译：</p>
+<p><code>S.isdigit()</code>返回的是布尔值：<code>True</code>、<code>False</code><br><code>S</code>字符串中至少有一个字符且如果<code>S</code>中的所有字符都是数字，那么返回结果就是<code>True</code>；否则，就返回<code>False</code>   </p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">S1 = <span class="string">'12345'</span>       <span class="comment">#纯数字</span></span><br><span class="line">S2 = <span class="string">'①②'</span>          <span class="comment">#带圈的数字</span></span><br><span class="line">S3 = <span class="string">'汉字'</span>        <span class="comment">#汉字</span></span><br><span class="line">S4 = <span class="string">'%#￥'</span>        <span class="comment">#特殊符号</span></span><br><span class="line">S5 = <span class="string">'12345a'</span>      <span class="comment">#数字和字母</span></span><br><span class="line"></span><br><span class="line">print(S1.isdigit())</span><br><span class="line">print(S2.isdigit())</span><br><span class="line">print(S3.isdigit())</span><br><span class="line">print(S4.isdigit())</span><br><span class="line">print(S5.isdigit())</span><br><span class="line"></span><br><span class="line"><span class="comment"># 执行结果：</span></span><br><span class="line"><span class="literal">True</span>     </span><br><span class="line"><span class="literal">True</span></span><br><span class="line"><span class="literal">False</span></span><br><span class="line"><span class="literal">False</span></span><br><span class="line"><span class="literal">False</span></span><br></pre></td></tr></table></figure>
+<h2 id="isalpha"><a href="#isalpha" class="headerlink" title="isalpha()"></a>isalpha()</h2><p><code>python</code>关于<code>isalpha()</code>内置函数的官方定义：</p>
+<blockquote>
+<p>S.isalpha() -&gt; bool<br>        Return True if all characters in S are alphabetic<br>        and there is at least one character in S, False otherwise.</p>
+</blockquote>
+<p>翻译：<br><code>S.isalpha()</code>返回的是布尔值：<code>True</code>、<code>False</code><br><code>S</code>字符串中至少有一个字符且如果S中的所有字符都是字母，那么返回结果就是<code>True</code>；否则，就返回<code>False</code>   </p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">S1 = <span class="string">'abc汉字'</span>     <span class="comment">#汉字+字母</span></span><br><span class="line">S2 = <span class="string">'ab字134'</span>     <span class="comment">#包含数字</span></span><br><span class="line">S3 = <span class="string">'*&amp;&amp;'</span>         <span class="comment">#特殊符号</span></span><br><span class="line"></span><br><span class="line">print(S1.isalpha())</span><br><span class="line">print(S2.isalpha())</span><br><span class="line">print(S3.isalpha())</span><br><span class="line"></span><br><span class="line"><span class="comment">#执行结果</span></span><br><span class="line"><span class="literal">True</span></span><br><span class="line"><span class="literal">False</span></span><br><span class="line"><span class="literal">False</span></span><br></pre></td></tr></table></figure>
+<h2 id="isalnum"><a href="#isalnum" class="headerlink" title="isalnum()"></a>isalnum()</h2><p><code>python</code>关于<code>isalnum()</code>内置函数的官方定义：  </p>
+<blockquote>
+<p>S.isalnum() -&gt; bool<br>        Return True if all characters in S are alphanumeric<br>        and there is at least one character in S, False otherwise.</p>
+</blockquote>
+<p>翻译：  </p>
+<p><code>S.isalnum()</code>返回的是布尔值：<code>True</code>、<code>False</code><br><code>S</code>中至少有一个字符且如果<code>S</code>中的所有字符都是字母数字，那么返回结果就是<code>True</code>；否则，就返回<code>False</code></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">S1 = <span class="string">'abc汉字1'</span>    <span class="comment">#字母+汉字+数字</span></span><br><span class="line">S2 = <span class="string">'①②③'</span>      <span class="comment">#带圈的数字</span></span><br><span class="line">S3 = <span class="string">'%……&amp;'</span>       <span class="comment">#特殊符号</span></span><br><span class="line"></span><br><span class="line">print(S1.isalnum())</span><br><span class="line">print(S2.isalnum())</span><br><span class="line">print(S3.isalnum())</span><br><span class="line"></span><br><span class="line"><span class="comment">#执行结果</span></span><br><span class="line"><span class="literal">True</span></span><br><span class="line"><span class="literal">True</span></span><br><span class="line"><span class="literal">False</span></span><br></pre></td></tr></table></figure>
+<h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><ol>
+<li><p><code>python</code>官方定义中的字母：大家默认为英文字母+汉字即可</p>
+</li>
+<li><p><code>python</code>官方定义中的数字：大家默认为<code>Unicode</code>数字、<code>byte</code>数字（单字节）、全角数字（双字节）、罗马数字、带圈的数字即可</p>
 </li>
 </ol>
 <p><img src="https://ae01.alicdn.com/kf/H270ec52cb1794e5cb700f741bdd71aafA.jpg" alt=""></p>
@@ -856,13 +834,18 @@
       </tags>
   </entry>
   <entry>
-    <title>PYTHON中zip()与zip(*)的用法</title>
-    <url>/2020/05/06/PYTHON%E4%B8%ADzip-%E4%B8%8Ezip-%E7%9A%84%E7%94%A8%E6%B3%95/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="PYTHON中zip-与zip-的用法"><a href="#PYTHON中zip-与zip-的用法" class="headerlink" title="PYTHON中zip()与zip(*)的用法"></a>PYTHON中zip()与zip(*)的用法</h1><p>可以看成是<code>zip()</code>为压缩，<code>zip(*)</code>是解压</p>
-<h2 id="zip-与zip"><a href="#zip-与zip" class="headerlink" title="zip()与zip(*)"></a>zip()与zip(*)</h2><p>举一个示例代码来说明</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">a = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]</span><br><span class="line">b = [<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>]</span><br><span class="line">c = [<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>]</span><br><span class="line"></span><br><span class="line">a_b_zip = zip(a, b)  <span class="comment"># 打包为元组的列表,而且元素个数与最短的列表一致</span></span><br><span class="line">print(<span class="string">"type of a_b_zip is %s"</span> % type(a_b_zip))  <span class="comment"># 输出zip函数的返回对象类型</span></span><br><span class="line">a_b_zip = list(a_b_zip)  <span class="comment"># 因为zip函数返回一个zip类型对象，所以需要转换为list类型</span></span><br><span class="line">print(a_b_zip)</span><br><span class="line">print(<span class="string">"------------------------------------------"</span>)</span><br><span class="line">a_c_zip = zip(a, c)</span><br><span class="line">a_c_zip = list(a_c_zip)</span><br><span class="line">print(a_c_zip)</span><br><span class="line"></span><br><span class="line">nums = [[<span class="string">'a1'</span>, <span class="string">'a2'</span>, <span class="string">'a3'</span>], [<span class="string">'b1'</span>, <span class="string">'b2'</span>, <span class="string">'b3'</span>], [<span class="string">'c1'</span>, <span class="string">'c2'</span>, <span class="string">'c3'</span>]]</span><br><span class="line">iterator = zip(*nums)  <span class="comment"># 参数为list数组时，是压缩数据，相当于zip()函数</span></span><br><span class="line">print(<span class="string">"type of iterator is %s"</span> % type(iterator))  <span class="comment"># 输出zip(*zipped)函数返回对象的类型</span></span><br><span class="line">iterator = list(iterator)  <span class="comment"># 因为zip(*zipped)函数返回一个zip类型对象，所以需要转换为list类型</span></span><br><span class="line">print(iterator)</span><br><span class="line">print(<span class="string">"------------------------------------------"</span>)</span><br><span class="line">print(<span class="string">"a_b_zip ："</span>, a_b_zip)</span><br><span class="line">print(<span class="string">"zip(*a_b_zip) ："</span>, list(zip(*a_b_zip)))</span><br><span class="line"></span><br><span class="line">结果：</span><br><span class="line"></span><br><span class="line">type of a_b_zip <span class="keyword">is</span> &lt;<span class="class"><span class="keyword">class</span> '<span class="title">zip</span>'&gt;</span></span><br><span class="line">[(1, 4), (2, 5), (3, 6)]</span><br><span class="line">------------------------------------------</span><br><span class="line">[(<span class="number">1</span>, <span class="number">4</span>), (<span class="number">2</span>, <span class="number">5</span>), (<span class="number">3</span>, <span class="number">6</span>)]</span><br><span class="line">type of iterator <span class="keyword">is</span> &lt;<span class="class"><span class="keyword">class</span> '<span class="title">zip</span>'&gt;</span></span><br><span class="line">[('a1', 'b1', 'c1'), ('a2', 'b2', 'c2'), ('a3', 'b3', 'c3')]</span><br><span class="line">------------------------------------------</span><br><span class="line">a_b_zip ： [(<span class="number">1</span>, <span class="number">4</span>), (<span class="number">2</span>, <span class="number">5</span>), (<span class="number">3</span>, <span class="number">6</span>)]</span><br><span class="line">zip(*a_b_zip) ： [(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>), (<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>)]</span><br></pre></td></tr></table></figure>
-<p>ps：<code>zip()</code>函数的返回对象转换成<code>list</code>不是必须的，只是为了方便输出，<code>list</code>输出很直观</p>
-<h2 id="用zip-反转字典"><a href="#用zip-反转字典" class="headerlink" title="用zip()反转字典"></a>用zip()反转字典</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">m &#x3D; &#123;&#39;a&#39;: 1, &#39;b&#39;: 2, &#39;c&#39;: 3, &#39;d&#39;: 4&#125;</span><br><span class="line">m.items()</span><br><span class="line">print(list(zip(m.values(), m.keys())))</span><br><span class="line">mi &#x3D; dict(zip(m.values(), m.keys()))</span><br><span class="line">print(mi)</span><br><span class="line"></span><br><span class="line">结果：</span><br><span class="line"></span><br><span class="line">[(1, &#39;a&#39;), (2, &#39;b&#39;), (3, &#39;c&#39;), (4, &#39;d&#39;)]</span><br><span class="line">&#123;1: &#39;a&#39;, 2: &#39;b&#39;, 3: &#39;c&#39;, 4: &#39;d&#39;&#125;</span><br></pre></td></tr></table></figure>
+    <title>PYTHON中print格式化输出用法</title>
+    <url>/2020/05/06/PYTHON%E4%B8%ADprint%E6%A0%BC%E5%BC%8F%E5%8C%96%E8%BE%93%E5%87%BA%E7%94%A8%E6%B3%95/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="Python中print用法里面-、-s-、-d-代表的意思"><a href="#Python中print用法里面-、-s-、-d-代表的意思" class="headerlink" title="Python中print用法里面% 、%s 、 % d 代表的意思"></a>Python中print用法里面% 、%s 、 % d 代表的意思</h1><h2 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h2><p><code>%s</code>表示格化式一个对象为字符<br><code>%d</code>表示格化式一个对象为整数<br><code>%</code>字符：标记转换说明符的开始<br>在<code>%</code>的左侧放置一个字符串（格式化字符串），右侧放置希望格式化的值    </p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">"Hello, %s"%"zhang3" =&gt; "Hello, zhang3"</span><br><span class="line">"%d"%33 =&gt; "33"</span><br><span class="line">"%s:%d"%("ab",3) =&gt; "ab:3"</span><br></pre></td></tr></table></figure>
+<h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><ol>
+<li><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="string">'%s plus %s equals %s'</span> % (<span class="number">1</span>,<span class="number">2</span>,<span class="number">2</span>)</span><br><span class="line">Out[<span class="number">29</span>]: <span class="string">'1 plus 2 equals 2'</span></span><br></pre></td></tr></table></figure></li>
+<li><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">LOTTERY_PRE = <span class="string">"LXG_LOT_"</span></span><br><span class="line">LOTTERY_ITEM = LOTTERY_PRE + <span class="string">'%s_ITEM'</span></span><br><span class="line">new_version = <span class="string">"20181007220245756"</span></span><br><span class="line">new_lobbery_item = LOTTERY_ITEM % new_version</span><br><span class="line">print(new_lobbery_item)</span><br><span class="line"></span><br><span class="line">输出 LXG_LOT_20181007220245756_ITEM</span><br></pre></td></tr></table></figure></li>
+<li>%s 字符串<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">string=<span class="string">"hello"</span></span><br><span class="line"></span><br><span class="line">print(<span class="string">"string=%s"</span> % string) <span class="comment"># output: string=hello</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># %2s意思是字符串长度为2，当原字符串的长度超过2时，按原长度打印，所以%2s的打印结果还是hello</span></span><br><span class="line">print(<span class="string">"string=%2s"</span> % string) <span class="comment"># output: string=hello</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># %7s意思是字符串长度为7，当原字符串的长度小于7时，在原字符串左侧补空格</span></span><br><span class="line"><span class="comment"># 所以%7s的打印结果是  hello</span></span><br><span class="line">print(<span class="string">"string=%7s"</span> % string)<span class="comment"># output: string=  hello</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># %-7s意思是字符串长度为7，当原字符串的长度小于7时，在原字符串右侧补空格</span></span><br><span class="line"><span class="comment"># 所以%-7s的打印结果是hello  !</span></span><br><span class="line">print(<span class="string">"string=%-7s!"</span> % string)<span class="comment"># output: string=hello  !</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># %.2s意思是截取字符串的前2个字符，所以%.2s的打印结果是he</span></span><br><span class="line">print(<span class="string">"string=%.2s"</span> % string) <span class="comment"># output: string=he</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># %.7s意思是截取字符串的前7个字符，当原字符串长度小于7时，即是字符串本身</span></span><br><span class="line"><span class="comment"># 所以%.7s的打印结果是hello</span></span><br><span class="line">print(<span class="string">"string=%.7s"</span> % string)<span class="comment"># output: string=hello</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># %a.bs这种格式是上面两种格式的综合，首先根据小数点后面的数b截取字符串</span></span><br><span class="line"><span class="comment"># 当截取的字符串长度小于a时，还需要在其左侧补空格</span></span><br><span class="line">print(<span class="string">"string=%7.2s"</span> % string )<span class="comment"># output: string=     he</span></span><br><span class="line"></span><br><span class="line">print(<span class="string">"string=%2.7s"</span> % string )<span class="comment"># output: string=hello</span></span><br><span class="line"></span><br><span class="line">print(<span class="string">"string=%10.7s"</span> % string) <span class="comment"># output: string=    hello</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 还可以用%.s来表示精度，两个*的值分别在后面小括号的前两位数值指定</span></span><br><span class="line">print(<span class="string">"string=%*.*s"</span> % (<span class="number">7</span>,<span class="number">2</span>,string)) <span class="comment"># output: string=     he</span></span><br></pre></td></tr></table></figure></li>
+<li>%d 整型<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">num=<span class="number">14</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># %d打印时结果是14</span></span><br><span class="line">print(<span class="string">"num=%d"</span> % num) <span class="comment"># output: num=14</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># %1d意思是打印结果为1位整数，当整数的位数超过1位时，按整数原值打印，所以%1d的打印结果还是14</span></span><br><span class="line">print(<span class="string">"num=%1d"</span> % num) <span class="comment"># output: num=14</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># %3d意思是打印结果为3位整数，当整数的位数不够3位时，在整数左侧补空格，所以%3d的打印结果是 14</span></span><br><span class="line">print(<span class="string">"num=%3d"</span> % num) <span class="comment"># output: num= 14</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># %-3d意思是打印结果为3位整数，当整数的位数不够3位时，在整数右侧补空格，所以%3d的打印结果是14_</span></span><br><span class="line">print(<span class="string">"num=%-3d!"</span> % num) <span class="comment"># output: num=14 !</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># %05d意思是打印结果为5位整数，当整数的位数不够5位时，在整数左侧补0，所以%05d的打印结果是00014</span></span><br><span class="line">print(<span class="string">"num=%05d"</span> % num) <span class="comment"># output: num=00014</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># %.3d小数点后面的3意思是打印结果为3位整数，</span></span><br><span class="line"><span class="comment"># 当整数的位数不够3位时，在整数左侧补0，所以%.3d的打印结果是014</span></span><br><span class="line">print(<span class="string">"num=%.3d"</span> % num) <span class="comment"># output: num=014</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># %.0003d小数点后面的0003和3一样，都表示3，意思是打印结果为3位整数，</span></span><br><span class="line"><span class="comment"># 当整数的位数不够3位时，在整数左侧补0，所以%.3d的打印结果还是014</span></span><br><span class="line">print(<span class="string">"num=%.0003d"</span> % num) <span class="comment"># output: num=014</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># %5.3d是两种补齐方式的综合，当整数的位数不够3时，先在左侧补0，还是不够5位时，再在左侧补空格，</span></span><br><span class="line"><span class="comment"># 规则就是补0优先，最终的长度选数值较大的那个，所以%5.3d的打印结果还是  014</span></span><br><span class="line">print(<span class="string">"num=%5.3d"</span> % num)<span class="comment"># output: num=  014</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># %05.3d是两种补齐方式的综合，当整数的位数不够3时，先在左侧补0，还是不够5位时，</span></span><br><span class="line"><span class="comment"># 由于是05，再在左侧补0，最终的长度选数值较大的那个，所以%05.3d的打印结果还是00014</span></span><br><span class="line">print(<span class="string">"num=%05.3d"</span> % num) <span class="comment"># output: num=00014</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 还可以用%.d来表示精度，两个*的值分别在后面小括号的前两位数值指定</span></span><br><span class="line">print(<span class="string">"num=%*.*d"</span> % (<span class="number">4</span>,<span class="number">3</span>,num)) <span class="comment"># output: num= 014</span></span><br></pre></td></tr></table></figure></li>
+<li>%f 浮点型<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> math</span><br><span class="line"></span><br><span class="line"><span class="comment"># %a.bf，a表示浮点数的打印长度，b表示浮点数小数点后面的精度</span></span><br><span class="line"><span class="comment"># 只是%f时表示原值，默认是小数点后5位数</span></span><br><span class="line">print(<span class="string">"PI=%f"</span> % math.pi) <span class="comment"># output: PI=3.141593</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 只是%9f时，表示打印长度9位数，小数点也占一位，不够左侧补空格</span></span><br><span class="line">print(<span class="string">"PI=%9f"</span> % math.pi) <span class="comment"># output: PI= 3.141593</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 只有.而没有后面的数字时，表示去掉小数输出整数，03表示不够3位数左侧补0</span></span><br><span class="line">print(<span class="string">"PI=%03.f"</span> % math.pi) <span class="comment"># output: PI=003</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># %6.3f表示小数点后面精确到3位，总长度6位数，包括小数点，不够左侧补空格</span></span><br><span class="line">print(<span class="string">"PI=%6.3f"</span> % math.pi) <span class="comment"># output: PI= 3.142</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># %-6.3f表示小数点后面精确到3位，总长度6位数，包括小数点，不够右侧补空格</span></span><br><span class="line">print(<span class="string">"PI=%-6.3f!"</span> % math.pi) <span class="comment"># output: PI=3.142 !</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 还可以用%.f来表示精度，两个*的值分别在后面小括号的前两位数值指定</span></span><br><span class="line">print(<span class="string">"PI=%*.*f"</span> % (<span class="number">6</span>,<span class="number">3</span>,math.pi)) <span class="comment"># output: PI= 3.142</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
 <p><img src="https://ae01.alicdn.com/kf/H270ec52cb1794e5cb700f741bdd71aafA.jpg" alt=""></p>
 ]]></content>
       <categories>
@@ -901,6 +884,23 @@
       </tags>
   </entry>
   <entry>
+    <title>PYTHON中zip()与zip(*)的用法</title>
+    <url>/2020/05/06/PYTHON%E4%B8%ADzip-%E4%B8%8Ezip-%E7%9A%84%E7%94%A8%E6%B3%95/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="PYTHON中zip-与zip-的用法"><a href="#PYTHON中zip-与zip-的用法" class="headerlink" title="PYTHON中zip()与zip(*)的用法"></a>PYTHON中zip()与zip(*)的用法</h1><p>可以看成是<code>zip()</code>为压缩，<code>zip(*)</code>是解压</p>
+<h2 id="zip-与zip"><a href="#zip-与zip" class="headerlink" title="zip()与zip(*)"></a>zip()与zip(*)</h2><p>举一个示例代码来说明</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">a = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]</span><br><span class="line">b = [<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>]</span><br><span class="line">c = [<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>]</span><br><span class="line"></span><br><span class="line">a_b_zip = zip(a, b)  <span class="comment"># 打包为元组的列表,而且元素个数与最短的列表一致</span></span><br><span class="line">print(<span class="string">"type of a_b_zip is %s"</span> % type(a_b_zip))  <span class="comment"># 输出zip函数的返回对象类型</span></span><br><span class="line">a_b_zip = list(a_b_zip)  <span class="comment"># 因为zip函数返回一个zip类型对象，所以需要转换为list类型</span></span><br><span class="line">print(a_b_zip)</span><br><span class="line">print(<span class="string">"------------------------------------------"</span>)</span><br><span class="line">a_c_zip = zip(a, c)</span><br><span class="line">a_c_zip = list(a_c_zip)</span><br><span class="line">print(a_c_zip)</span><br><span class="line"></span><br><span class="line">nums = [[<span class="string">'a1'</span>, <span class="string">'a2'</span>, <span class="string">'a3'</span>], [<span class="string">'b1'</span>, <span class="string">'b2'</span>, <span class="string">'b3'</span>], [<span class="string">'c1'</span>, <span class="string">'c2'</span>, <span class="string">'c3'</span>]]</span><br><span class="line">iterator = zip(*nums)  <span class="comment"># 参数为list数组时，是压缩数据，相当于zip()函数</span></span><br><span class="line">print(<span class="string">"type of iterator is %s"</span> % type(iterator))  <span class="comment"># 输出zip(*zipped)函数返回对象的类型</span></span><br><span class="line">iterator = list(iterator)  <span class="comment"># 因为zip(*zipped)函数返回一个zip类型对象，所以需要转换为list类型</span></span><br><span class="line">print(iterator)</span><br><span class="line">print(<span class="string">"------------------------------------------"</span>)</span><br><span class="line">print(<span class="string">"a_b_zip ："</span>, a_b_zip)</span><br><span class="line">print(<span class="string">"zip(*a_b_zip) ："</span>, list(zip(*a_b_zip)))</span><br><span class="line"></span><br><span class="line">结果：</span><br><span class="line"></span><br><span class="line">type of a_b_zip <span class="keyword">is</span> &lt;<span class="class"><span class="keyword">class</span> '<span class="title">zip</span>'&gt;</span></span><br><span class="line">[(1, 4), (2, 5), (3, 6)]</span><br><span class="line">------------------------------------------</span><br><span class="line">[(<span class="number">1</span>, <span class="number">4</span>), (<span class="number">2</span>, <span class="number">5</span>), (<span class="number">3</span>, <span class="number">6</span>)]</span><br><span class="line">type of iterator <span class="keyword">is</span> &lt;<span class="class"><span class="keyword">class</span> '<span class="title">zip</span>'&gt;</span></span><br><span class="line">[('a1', 'b1', 'c1'), ('a2', 'b2', 'c2'), ('a3', 'b3', 'c3')]</span><br><span class="line">------------------------------------------</span><br><span class="line">a_b_zip ： [(<span class="number">1</span>, <span class="number">4</span>), (<span class="number">2</span>, <span class="number">5</span>), (<span class="number">3</span>, <span class="number">6</span>)]</span><br><span class="line">zip(*a_b_zip) ： [(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>), (<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>)]</span><br></pre></td></tr></table></figure>
+<p>ps：<code>zip()</code>函数的返回对象转换成<code>list</code>不是必须的，只是为了方便输出，<code>list</code>输出很直观</p>
+<h2 id="用zip-反转字典"><a href="#用zip-反转字典" class="headerlink" title="用zip()反转字典"></a>用zip()反转字典</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">m &#x3D; &#123;&#39;a&#39;: 1, &#39;b&#39;: 2, &#39;c&#39;: 3, &#39;d&#39;: 4&#125;</span><br><span class="line">m.items()</span><br><span class="line">print(list(zip(m.values(), m.keys())))</span><br><span class="line">mi &#x3D; dict(zip(m.values(), m.keys()))</span><br><span class="line">print(mi)</span><br><span class="line"></span><br><span class="line">结果：</span><br><span class="line"></span><br><span class="line">[(1, &#39;a&#39;), (2, &#39;b&#39;), (3, &#39;c&#39;), (4, &#39;d&#39;)]</span><br><span class="line">&#123;1: &#39;a&#39;, 2: &#39;b&#39;, 3: &#39;c&#39;, 4: &#39;d&#39;&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://ae01.alicdn.com/kf/H270ec52cb1794e5cb700f741bdd71aafA.jpg" alt=""></p>
+]]></content>
+      <categories>
+        <category>PYTHON</category>
+      </categories>
+      <tags>
+        <tag>PYTHON语法</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>PYTHON中反转字符串的三种方法</title>
     <url>/2020/05/04/PYTHON%E4%B8%AD%E5%8F%8D%E8%BD%AC%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9A%84%E4%B8%89%E7%A7%8D%E6%96%B9%E6%B3%95/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="PYTHON中反转字符串的三种方法"><a href="#PYTHON中反转字符串的三种方法" class="headerlink" title="PYTHON中反转字符串的三种方法"></a>PYTHON中反转字符串的三种方法</h1><h2 id="1-切片法（最简洁的一种）"><a href="#1-切片法（最简洁的一种）" class="headerlink" title="1.切片法（最简洁的一种）"></a>1.切片法（最简洁的一种）</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">reverse1</span><span class="params">()</span>:</span></span><br><span class="line">    s = input(<span class="string">"请输入需要反转的内容："</span>)</span><br><span class="line">    <span class="keyword">return</span> s[::<span class="number">-1</span>]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">print(reverse1())</span><br><span class="line"></span><br><span class="line"><span class="comment">#运行结果</span></span><br><span class="line"></span><br><span class="line">请输入需要反转的内容：莺啼岸柳弄春晴 柳弄春晴夜月明</span><br><span class="line">明月夜晴春弄柳 晴春弄柳岸啼莺</span><br></pre></td></tr></table></figure>
@@ -913,118 +913,6 @@
 </blockquote>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">reverse3</span><span class="params">(s)</span>:</span></span><br><span class="line">    l=list(s)</span><br><span class="line">    l.reverse()</span><br><span class="line">    <span class="keyword">return</span> (<span class="string">""</span>.join(l))</span><br><span class="line">print(reverse3(<span class="string">"莺啼岸柳弄春晴 柳弄春晴夜月明"</span>))</span><br><span class="line"></span><br><span class="line"><span class="comment">#运行结果</span></span><br><span class="line"></span><br><span class="line">明月夜晴春弄柳 晴春弄柳岸啼莺</span><br></pre></td></tr></table></figure>
 <p><img src="https://ae01.alicdn.com/kf/Hfcd7e2903a7c4c7fa83684713e6c0b37b.jpg" alt=""></p>
-]]></content>
-      <categories>
-        <category>PYTHON</category>
-      </categories>
-      <tags>
-        <tag>PYTHON语法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>PYTHON基础语法总结</title>
-    <url>/2020/06/01/PYTHON%E5%9F%BA%E7%A1%80%E8%AF%AD%E6%B3%95%E6%80%BB%E7%BB%93/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="PYTHON视频讲解-MOSH-总结"><a href="#PYTHON视频讲解-MOSH-总结" class="headerlink" title="PYTHON视频讲解(MOSH)总结"></a>PYTHON视频讲解(MOSH)总结</h1><h2 id="和C-C-的区别"><a href="#和C-C-的区别" class="headerlink" title="和C/C++的区别"></a>和C/C++的区别</h2><ol>
-<li><p><code>python</code>的<code>print</code>是一个函数，其中代表换行的参数默认换行，所以每次执行一次<code>print</code>都会自动换行</p>
-</li>
-<li><p><code>python</code>的<code>bool</code>值是<code>False</code>和<code>True</code>，首字母大写，而<code>C/C++</code>的<code>bool</code>类型值是<code>false</code>和<code>true</code>，首字母小写  </p>
-</li>
-<li><p><code>python</code>的输出函数是<code>print</code>，而<code>C</code>的输出语句是<code>printf</code></p>
-</li>
-<li><p><code>python</code>的输入语句是<code>input()</code>，这个函数把括号内的东西输出，并接受输入的值，所以可以有如下写法<code>name = input(&quot;what&#39;s your name&quot;)</code></p>
-</li>
-<li><p><code>input</code>把接收的值转化为字符串</p>
-</li>
-<li><p><code>10/3 = 3.333</code>，这与<code>C/C++</code>不同<br><code>10//3 = 3</code>，这与<code>C/C++</code>相同<br><code>3**2 = 9</code>，<code>C/C++</code>中没有此用法</p>
-</li>
-<li><p><code>C++</code>中的类与<code>python</code>中的类有一点区别<br>假设都定义了<code>School</code>这个类  </p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">C++:</span><br><span class="line">School one;</span><br><span class="line"></span><br><span class="line">python:</span><br><span class="line">one &#x3D; School()</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<h2 id="基础语法"><a href="#基础语法" class="headerlink" title="基础语法"></a>基础语法</h2><ol>
-<li><p><code>type</code>(变量) 打印变量的类型  </p>
-</li>
-<li><p>三个引号<code>&#39;&#39;&#39; &#39;&#39;&#39;</code>，三引号中间的变量可以换行，此外还有双引号和单引号</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">程序：</span><br><span class="line">email = <span class="string">'''</span></span><br><span class="line"><span class="string">Hello!</span></span><br><span class="line"><span class="string">This is Fu JANG 's blog.</span></span><br><span class="line"><span class="string">Welcome to u.</span></span><br><span class="line"><span class="string">'''</span></span><br><span class="line">print(email)</span><br><span class="line"></span><br><span class="line">结果：</span><br><span class="line">Hello!</span><br><span class="line">This <span class="keyword">is</span> Fu JANG <span class="string">'s blog.</span></span><br><span class="line"><span class="string">Welcome to u.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">进程已结束,退出代码0</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>对于第二点的代码（三引号）<code>email[0]</code>就是<code>H</code>，<code>email[-1]</code>就是<code>换行符</code>，<code>email[-2]</code>就是<code>.</code>，而对于以下的代码：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">程序：</span><br><span class="line">email = <span class="string">'Hello'</span></span><br><span class="line">print(email[<span class="number">-1</span>])</span><br><span class="line"></span><br><span class="line">结果：</span><br><span class="line">o</span><br></pre></td></tr></table></figure>
-</li>
-<li><p><code>[0:3]</code>左闭右开<br><code>[0:]</code> 0到末尾<br><code>[:3]</code>与第一个等效<br><code>[:]</code> 全部</p>
-</li>
-<li><p><code>f&#39;{变量名}’</code>  占位符，程序会用对应变量的值去填充大括号  </p>
-</li>
-<li><p><code>len()</code>  返回字符串的长度</p>
-</li>
-<li><p><code>.upper()</code>把字符串中字母全部转 为大写，但不改变原字符串<br><code>.lower()</code>把字符串中字母全部转为小写，但不改变原字符串<br><code>.title()</code>把字符串中单词首字母字母全部转为大写，但不改变原字符串<br> <code>.find(&#39;&#39;)</code>找到这个字符在字符串中的第一个索引<br> 若<code>&#39;&#39;</code>中为一串字符，则返回第一个字符的索引<br> 若<code>&#39;&#39;</code>中的字符在字符串中不存在，则返回<code>-1</code><br> <code>.replace(&#39;原&#39;, &#39;新&#39;)</code> 若字符串中没有原字符，则不替换</p>
-</li>
-<li><p><code>&#39; &#39; in 变量</code> 返回一个布尔值，代表该字符是否在此变量中  </p>
-</li>
-<li><p><code>round()</code>四舍五入<br><code>abs()</code>取绝对值</p>
-</li>
-<li><p>引用模块</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">程序：</span><br><span class="line"><span class="keyword">import</span> math</span><br><span class="line">print(math.ceil(<span class="number">2.9</span>)) 封</span><br><span class="line">print(math.floor(<span class="number">2.9</span>)) 底</span><br><span class="line"></span><br><span class="line">结果：</span><br><span class="line"><span class="number">3</span></span><br><span class="line"><span class="number">2</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p><code>if</code>语句：<br><code>if:</code><br><code>elif:</code><br><code>else:</code>  </p>
-</li>
-<li><p>逻辑运算符：<br><code>and or not</code>   </p>
-</li>
-<li><p><code>while</code>循环，当条件不符合时，执行<code>else</code>，<code>break</code>的程序不执行<code>else</code><br><code>while:</code><br><code>else:</code>  </p>
-</li>
-<li><p><code>range(10)</code> <code>0</code>到<code>9</code><br><code>range(5,10)</code> <code>5</code>到<code>9</code><br><code>range(5,10,2)</code> <code>5,7,9</code></p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">代码：</span><br><span class="line">for item in range(10):</span><br><span class="line">	print(item)</span><br><span class="line"></span><br><span class="line">结果：</span><br><span class="line">0</span><br><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>列表：方括号</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[1,2,3]</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>二维列表</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[</span><br><span class="line">	[1,2,3],</span><br><span class="line">	[4,5,6],</span><br><span class="line">	[7,8,9]</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>列表定义的方法<br><code>.append()</code> 在最后面插入<br> <code>.insert(0,10)</code> 在索引为0的位置加10<br> <code>.remove(5)</code> 删除第一个5<br> <code>.clear()</code> 清空列表<br> <code>.pop()</code> 删最后<br> <code>.index(5)</code> 传第一个5的索引<br> <code>.count(5)</code> 传5的个数<br> <code>.sort()</code> 不返回值，从小到大排序<br> <code>.reverse()</code> 从大到小排序<br> <code>.copy()</code> 复制</p>
-</li>
-<li><p><code>(,,)</code> 元组 不可变<br><code>.count()</code> 计数<br><code>.index()</code> 传索引  </p>
-</li>
-<li><p>压缩属性</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">m &#x3D; (1,2,3)</span><br><span class="line">x, y, z &#x3D; m</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>字典</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">程序：</span><br><span class="line">customer = &#123;</span><br><span class="line">    <span class="string">"name"</span> : <span class="string">"FuJANG"</span>,</span><br><span class="line">    <span class="string">"sex"</span> : <span class="string">"man"</span>,</span><br><span class="line">    <span class="string">"address"</span> : <span class="string">"China"</span>,</span><br><span class="line">    <span class="string">"age"</span> : <span class="number">6</span>,</span><br><span class="line">    <span class="string">"is_handsome"</span> : <span class="literal">True</span></span><br><span class="line">&#125;</span><br><span class="line">print(customer[<span class="string">"name"</span>])</span><br><span class="line"></span><br><span class="line">结果：</span><br><span class="line">FuJANG</span><br><span class="line"></span><br><span class="line">进程已结束,退出代码<span class="number">0</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>字典定义的方法<br><code>.get(&quot; &quot;)</code> 若键不存在则返回<code>None</code><br><code>.get(&quot;key&quot;, &quot;value&quot;)</code> 提供一个默认的值，并不修改字典，当在字典中对应的<code>key</code>存在时，默认值无效<br>可用此形式更改、添加字典<code>[&quot; &quot;] = &quot; &quot;</code></p>
-</li>
-<li><p>表示形式<br>列表<code>[ , , ]</code><br>元组<code>( , , )</code><br>字典<code>{  , , }</code>  </p>
-</li>
-<li><p><code>abc = &quot;字符串”</code><br><code>for ch in abc:</code>遍历字符串中的所有字符<br><code>abc.split(&quot;空格&quot;)</code> 根据空格分割字符串中的单词并储存在一个列表中</p>
-</li>
-</ol>
-<h2 id="函数与模块"><a href="#函数与模块" class="headerlink" title="函数与模块"></a>函数与模块</h2><ol>
-<li><p>定义一个函数<br> 每个函数后最好加上两个空行（标准格式），先定义函数后才可引用，<code>()</code>中可以加参数，如<code>(name)</code>,调用时需要传一个值如<code>(&quot;Mosh&quot;)</code>，关键字参数一般放在最后<br> 没有<code>return</code>的函数默认返回<code>None</code><br> 当<code>return x, y</code>时，<code>python</code>把<code>x, y</code>解释为一个元组<code>(x, y)</code></p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> 函数名<span class="params">()</span>:</span></span><br><span class="line">	内容</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>用<code>try...expect</code>来处理异常错误</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">try</span>：</span><br><span class="line">	×××</span><br><span class="line">expect 错误类型:</span><br><span class="line">	×××</span><br></pre></td></tr></table></figure>
-</li>
-<li><p><code>class</code>定义一个类，首字母大写，不用下划线<br>  <code>def</code>定义一个函数，首字母小写，用下划线链接</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Point</span>:</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> ×××<span class="params">(self, ×××)</span>:</span></span><br><span class="line">		×××</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">def</span> ×××</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">用类声明对象</span></span><br><span class="line">point1 = Point()</span><br><span class="line">调用定义的方法</span><br><span class="line">point1.×××()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">可以在程序的任何位置设置属性，属性没有必要一定在类里定义</span><br><span class="line">point1.属性名 = <span class="number">10</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p><code>python</code>中的构造函数</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Point</span>:</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, x, y)</span>:</span></span><br><span class="line">		self.x = x</span><br><span class="line">		self.y = y</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">point1 = Point(<span class="number">10</span>, <span class="number">20</span>)</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>继承：当一个类中没有任何东西时，为了规范格式，通常加一个<code>pass</code></p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Normal</span>:</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">walk</span><span class="params">(self)</span>:</span></span><br><span class="line">		×××</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Dog</span><span class="params">(Normal)</span>:</span></span><br><span class="line">	<span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Cat</span><span class="params">(Normal)</span>:</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">bark</span><span class="params">(self)</span>:</span></span><br><span class="line">		print(<span class="string">"×××"</span>)</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>调用模块</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> hello</span><br><span class="line">hello.×××()</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> hello <span class="keyword">import</span> ×××</span><br><span class="line">×××()</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> hello <span class="keyword">as</span> he</span><br><span class="line">he.×××()</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>建立一个包</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">① New → Directory → __init__.py</span><br><span class="line">② New → Python Package</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> 包.文件</span><br><span class="line">包.文件.函数()</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> 包.文件 <span class="keyword">import</span> 函数</span><br><span class="line">函数()</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> 包 <span class="keyword">import</span> 文件</span><br><span class="line">文件.函数()</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>内置模块的调用举例</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># randint 为闭区间</span></span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line">random.random() 随机跳出一个<span class="number">0</span>和<span class="number">1</span>间的数字</span><br><span class="line">random.randint(<span class="number">10</span>, <span class="number">20</span>) <span class="number">10</span>到<span class="number">20</span>间的一个整数值</span><br><span class="line">random.choice(numbers) 假如numbers是一个列表，则随机跳出列表中的一个元素</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>内置模块与下载模块<br><code>python</code>中有内置模块，当找不到想使用的模块时，可以去<code>pypi.org</code>寻找相应的模块下载命令，然后在终端上用命令下载相应的模块</p>
-</li>
-</ol>
 ]]></content>
       <categories>
         <category>PYTHON</category>
@@ -1058,64 +946,6 @@
       </categories>
       <tags>
         <tag>力扣/python</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>张一鸣：我的大学四年收获及工作感悟</title>
-    <url>/2020/06/21/%E5%BC%A0%E4%B8%80%E9%B8%A3%EF%BC%9A%E6%88%91%E7%9A%84%E5%A4%A7%E5%AD%A6%E5%9B%9B%E5%B9%B4%E6%94%B6%E8%8E%B7%E5%8F%8A%E5%B7%A5%E4%BD%9C%E6%84%9F%E6%82%9F/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
-<p>YOU CAN DRINK ALL YOU LIKE, BUT IN THE MORNING YOU GET HEADACHE WITH THE SAME PROBLEMS.</p>
-</blockquote>
-<hr>
-<h1 id="张一鸣：我的大学四年收获及工作感悟"><a href="#张一鸣：我的大学四年收获及工作感悟" class="headerlink" title="张一鸣：我的大学四年收获及工作感悟"></a>张一鸣：我的大学四年收获及工作感悟</h1><blockquote>
-<p>张一鸣，男，1983年出生，福建永定人，北京字节跳动科技有限公司创始人、CEO，今日头条创始人、原CEO。<br>张一鸣2005年毕业于南开大学软件工程专业，曾参与创建酷讯、九九房等多家互联网公司，历任酷讯技术委员会主席、九九房创始人兼CEO。2012年，张一鸣创办字节跳动。<br>2013年，他先后入选《福布斯》“中国30位30岁以下的创业者”和《财富》“中国40位40岁以下的商业精英”，是中国国内互联网行业最受关注的青年领袖之一。<br>2020年4月6日，张一鸣以950亿元人民币财富名列《胡润全球百强企业家》第89位。2020年5月12日，张一鸣以785.3亿元人民币财富名列《2020新财富500富人榜》第19位。       </p>
-</blockquote>
-<h2 id="大学里的三点收获"><a href="#大学里的三点收获" class="headerlink" title="大学里的三点收获"></a>大学里的三点收获</h2><p>2001年我考入了南开大学，起初大学的生活是让人有点失落的，但慢慢地从安静朴素的校园和踏实努力的氛围中，我还是找到了自己的节奏。大学期间我主要在做三件事情 ，一是写代码，因为我是搞技术的；二是看书，看了很多很多书；三是修电脑。基于此自己也有三点收获：耐心，知识，伙伴。</p>
-<p>第一点收获：耐心。有耐心，能独处，并基于长期思考做判断，而不为短期因素所干扰，耐心地等待你设想和努力的事情逐步发生，这对创业来说是非常重要的事情。事实上，你经常想象的很美好，设计的也很完整，你也很努力，但你所期待的事情，经常需要很长时间才能发生。这种耐心，绝对是在南开磨练出来的。</p>
-<p>大学的时候我是怎么面对枯燥的生活？人物传记是非常好的心灵鸡汤。我读了很多人物传记，如果说有收获，就是发现那些伟大的人，在没有成为伟大的人之前，也是过着看起来枯燥的生活，每天都在做一些微不足道的事情，但这些事情最后从点连成线，成就了他们。</p>
-<p>我毕业后参与创立了酷讯、饭否、99房、到现在的今日头条，每一段创业经历，都挺寂寞的。现在回想，耐心非常重要，不仅是等待的耐心，还要有耐心做深入思考，还要有耐心地找到更多更好的合作伙伴。</p>
-<p>第二点收获：看书。寂寞的大学生活，给了我人生最安静的阅读时光。我用别人打游戏、打牌的时间，阅读了各种各样的书，或者说乱七八糟的书，包括各个专业的书，包括人物传记，也有各种境内外的报刊杂志。</p>
-<p>当然，那时候，我也有困惑，觉得看的这些东西和思考的问题都很有意思，但在生活中没什么用。直到后来我进入互联网行业并开始创业，各种各样的知识才连成线，帮我理解行业、理解管理，更快地掌握不熟悉的领域，包括如何让信息得到更有效率的组织和分发，从而改变各行各业的效率。</p>
-<p>2011年，我观察到一个现象，地铁上读报的人、卖报的人越来越少，年初还有，年底几乎没有了， 同时，2011年是智能手机出货量的高峰，是2008年、2009年、2010年三年智能手机出货量的总和。我想，这是信息传播介质的变革，手机很可能会取代纸媒成为信息传播的最主要载体，又因为人和手机的对应关系，手机随身携带，个性化推荐的需求一定会增加，于是我创办了今日头条。</p>
-<p>第三点收获：结交了很多的伙伴。我在读大学的时候结识了很多优秀的同伴。作为一个不怎么参与集体活动的理工男，怎么保持社交呢？主要靠修电脑和编程建网站……后来，同学聚会，打招呼的方式基本是：hi，你的电脑还是我装的。我装过的电脑有几十台，当然大部分是女同学……不但要帮忙装电脑还要经常保修。没错，就像你们想象的那样，修电脑为我带来了人生重大的收获——当时的女朋友，现在的太太。</p>
-<p>在校园里，我接了不少外包的项目。包括我太太她们系的网站(当然是免费的)。因为这门手艺加上兼职，大四的时候，我每月能有超过两三千的收入，在当时，绝对是土豪。那时候，和同学一起泡实验室，熬到半夜一两点，会请大家集体去烤串。一周能吃2-3次。</p>
-<p>当时和我吃烧烤的人很多是对编程感兴趣，而且志趣相投的同学朋友，有我同一级的，微电子专业的，软件工程专业的，还有师兄师弟，后来也相继加入我创办的公司，成为了我们公司的技术骨干，也是创业伙伴。</p>
-<h2 id="我的工作感悟"><a href="#我的工作感悟" class="headerlink" title="我的工作感悟"></a>我的工作感悟</h2><p>2005 年，我从南开大学毕业，加入一家叫酷讯的公司。我是最早期加入的员工之一，一开始只是一个普通工程师，但在工作第二年，我在公司管了四五十个人的团队，负责所有后端技术，同时也负责很多产品相关的工作。</p>
-<p>有人问我：为什么你在第一份工作中就成长很快？是不是你在那个公司表现特别突出？其实不是。当时公司招聘标准很高，跟我同期入职的就有两个清华计算机系的博士。那我是不是技术最好？是不是最有经验？都不是。后来我想了想，当时自己有哪些特质。</p>
-<p>首先，我工作时，从不分哪些工作是我该做的，哪些不是我该做的。我做完自己的工作后，对于大部分同事的问题，只要我能帮助解决，我都去做。当时，Code Base中大部分代码我都看过。新人入职时，只要我有时间，我都给他讲解一遍。通过讲解，我自己也能得到成长。</p>
-<p>工作的前两年，我基本上每天都是十二点、一点回家，回家后也编程到挺晚。确实是因为有兴趣，而不是公司有要求。所以我很快从负责一个抽取爬虫的模块，到负责整个后端系统，开始带一个小组，后来带一个小部门，再后来带一个大部门。</p>
-<p>当时我负责技术，但遇到产品上有问题，也会积极地参与讨论，想产品的方案。很多人说这个不是我该做的事情。但我想说：你的责任心，希望把事情做好的动力，会驱动你做更多事情，让你得到很大的锻炼。</p>
-<p>我当时是工程师，但参与产品的经历，对我后来转型做产品有很大帮助。我参与商业的部分，对我现在的工作也有很大帮助。记得在2007年底，我跟公司的销售总监一起去见客户。这段经历让我知道，怎样的销售才是好的销售。当我组建今日头条招人时，这些可供参考的案例，让我在这个领域不会一无所知。</p>
-<h2 id="我的创业初心"><a href="#我的创业初心" class="headerlink" title="我的创业初心"></a>我的创业初心</h2><p>我很尊敬Elon Mask ，他不仅创办了TESLA ，而且还创办了一家叫Space X的公司，目标是革新太空科技，终极目标是人类能够在其他星球生活。</p>
-<p>Space X现在是全世界第一家私人向太空发射火箭并实现回收的公司，尽管在前沿领域里不断探索的过程非常艰难，身后甚至连跟随者都没有，但Elon Mask一直相信：只要理论上能够成立，理论上可以做到最好，那就应该去努力实现它。</p>
-<p>我特别欣赏这种追求卓越和领先的勇气。年轻人创业，就是要去创造新的技术，做那些理论上存在但还没有实现的东西，给世界带来根本性的进步。创业，有人想的是要赚笔钱，有人想的则是要做件事，我觉得自己是后者。</p>
-<p>如果你偶然发现青霉素能消炎，你是先考虑用它去救人还是赚钱呢？应该都是先想到救人。我也是一样。到了这个时代，有个性化的方式来推荐信息，我就想把它做出来。</p>
-<p>如果我想卖掉这家公司，现在就可以拿到一大笔钱。但我奋斗的目标不是赚钱和享乐，支撑我的是自我实现，希望有更多的创造体验，更丰富的人生经历，希望遇到更多优秀的人。</p>
-<p>现在的创业环境和以前相比已经非常好了，创业能取得多大的成果，最重要的是，你到底愿意做多大的事情。年轻人关键是立志高远，享受拼的过程，不自满，不懈怠。要把成功的目标，设定的尽可能远。</p>
-<h2 id="优秀年轻人的五个特点"><a href="#优秀年轻人的五个特点" class="headerlink" title="优秀年轻人的五个特点"></a>优秀年轻人的五个特点</h2><p>后来，我陆续加入到各种创业团队。在这个过程中，我跟很多毕业生共处过，现在还和他们很多人保持联系。跟你分享一下，我看到的一些好和不好的情况。总结一下，这些优秀年轻人有哪些特点呢？</p>
-<p>第一个特点：有好奇心，能够主动学习新事物、新知识和新技能。我有个前同事，理论基础挺好，但每次都是把自己的工作做完就下班了。</p>
-<p>他在这家公司呆了一年多，但对网上的新技术、新工具都不去了解，非常依赖别人，当他想要实现一个功能，就需要有人帮他做后半部分，因为他自己只能做前半部分。如果是有好奇心的人，前端、后端、算法都去掌握，至少有所了解的话，那么很多调试分析，自己一个人就可以做。</p>
-<p>第二个特点：对不确定性保持乐观。比方说，今日头条刚开始时，我跟大家讲：我们要做1亿的日启动次数，很多人觉得，你这家小公司怎么可能做得到呢？如果对此持怀疑态度，就不敢努力去尝试。只有乐观的人会相信，会愿意去尝试。</p>
-<p>其实我加入酷讯时也是这样，那家公司当时想做下一代搜索引擎（最后也没有做成，只做了旅游的垂直搜索）。我不知道其他人怎么想的，我自己觉得很兴奋。我确实没有把握，也不知道怎么做，但当时就去学，就去看所有相关的东西。我觉得最后也许不一定做成，或者没有完全做到，但这个过程也会很有帮助——只要对事情的不确定性保持乐观，你会更愿意去尝试。</p>
-<p>第三个特点：不甘于平庸。走入社会后的年轻人，应该设定更高的标准。大学期间的同学、一起共事的同事中，有很多非常不错的人才，技术、成绩都比我好，但10年过去了，很多人没有达到我当初的预期。</p>
-<p>很多人毕业后，目标设定就不高。我回顾了一下，发现有同事加入银行IT部门：有的是毕业后就加入，有的是工作一段时间后加入。为什么我把这个跟「不甘于平庸」挂在一起呢？因为他们很多人加入，是为了快点解决北京户口，或者得到买经济适用房的机会。</p>
-<p>如果一个人一毕业，就把目标定在这儿：在北京五环内买一个小两居、小三居，把精力都花在这上面，那么工作就会受到很大影响，他的行为会发生变化，不愿意冒风险。</p>
-<p>如果不甘于平庸，希望做得非常好的话，其实不会为这些东西担心，这很重要。我说不平庸，并不是专指薪酬要很高或者技术很好，而是你对自己的标准一定要高。也许你前两年变化得慢，但10年后再看，肯定会非常不一样。</p>
-<p>第四个特点：不傲娇，要能延迟满足感。在这里举个反例：两个我印象比较深刻的年轻人，素质、技术都蛮不错，也都挺有特点。我当时是他们的主管，发现他们在工作中deliver（传递）的感觉始终不好。</p>
-<p>他们觉得其他同事做得不如他们，其实不是：他们确实可以算作在当时招的同事里面 TOP20% ，但他们觉得自己是 TOP1% 。所以很多基础一点的工作，比如要做一个调试工具，他就不愿意做，或者需要跟同事配合的工作，他就配合得不好。</p>
-<p>本来都是资质非常好的人才，人非常聪明、动手能力也强，但没有控制好自己的傲娇情绪。我觉得这和「不甘于平庸」不矛盾。「不甘于平庸」是你目标要设得很高，「不傲娇」是你对现状要踏实。</p>
-<p>另一个例子是，当时我们有个做产品的同事，也是应届生招进来，当时大家都觉得他不算特别聪明，就让他做一些辅助性的工作，统计一下数据，做一下用户反弹之类，但现在他已经是一家十亿美金公司的副总裁。</p>
-<p>后来我想想，他的特点就是肯去做，负责任，从不推诿，只要有机会承担的事情，他总尽可能地做好。每次也不算做得特别好，但我们总是给他反馈。他去了那家公司后，把一个用户量不足 10 万的边缘频道负责起来，越做越好。由于是边缘频道，没有配备完整的团队，所以他一个人承担了很多职责，也得到了很多锻炼。</p>
-<p>第五个特点：对重要的选择要有判断力。选什么专业、选什么公司、选什么职业、选什么发展路径，自己要有判断力，不要被短期选择所左右。比如，原先有很多人愿意去外企，不愿意去新兴公司。</p>
-<p>2006 年、2007年的时候，很多师弟、师妹问我职业选择，我都建议他们去百度，不要去IBM、微软。但实际上，很多人都是出于短期考虑：外企可能名气大、薪酬高一点。</p>
-<p>虽然这个道理，大家都听过很多遍。刚毕业时薪酬差三五千块，真的可以忽略不计。短期薪酬差别并不重要。但实际上，能摆脱这个、能有判断力的人，也不是特别多。</p>
-<p><img src="https://imgkr.cn-bj.ufileos.com/148c824d-4eb8-48d3-9825-51625347b0f0.png" alt=""></p>
-]]></content>
-      <categories>
-        <category>大佬经历</category>
-      </categories>
-      <tags>
-        <tag>大佬经历</tag>
       </tags>
   </entry>
   <entry>
@@ -1265,6 +1095,176 @@
       </categories>
       <tags>
         <tag>大佬经历</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>张一鸣：我的大学四年收获及工作感悟</title>
+    <url>/2020/06/21/%E5%BC%A0%E4%B8%80%E9%B8%A3%EF%BC%9A%E6%88%91%E7%9A%84%E5%A4%A7%E5%AD%A6%E5%9B%9B%E5%B9%B4%E6%94%B6%E8%8E%B7%E5%8F%8A%E5%B7%A5%E4%BD%9C%E6%84%9F%E6%82%9F/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><blockquote>
+<p>YOU CAN DRINK ALL YOU LIKE, BUT IN THE MORNING YOU GET HEADACHE WITH THE SAME PROBLEMS.</p>
+</blockquote>
+<hr>
+<h1 id="张一鸣：我的大学四年收获及工作感悟"><a href="#张一鸣：我的大学四年收获及工作感悟" class="headerlink" title="张一鸣：我的大学四年收获及工作感悟"></a>张一鸣：我的大学四年收获及工作感悟</h1><blockquote>
+<p>张一鸣，男，1983年出生，福建永定人，北京字节跳动科技有限公司创始人、CEO，今日头条创始人、原CEO。<br>张一鸣2005年毕业于南开大学软件工程专业，曾参与创建酷讯、九九房等多家互联网公司，历任酷讯技术委员会主席、九九房创始人兼CEO。2012年，张一鸣创办字节跳动。<br>2013年，他先后入选《福布斯》“中国30位30岁以下的创业者”和《财富》“中国40位40岁以下的商业精英”，是中国国内互联网行业最受关注的青年领袖之一。<br>2020年4月6日，张一鸣以950亿元人民币财富名列《胡润全球百强企业家》第89位。2020年5月12日，张一鸣以785.3亿元人民币财富名列《2020新财富500富人榜》第19位。       </p>
+</blockquote>
+<h2 id="大学里的三点收获"><a href="#大学里的三点收获" class="headerlink" title="大学里的三点收获"></a>大学里的三点收获</h2><p>2001年我考入了南开大学，起初大学的生活是让人有点失落的，但慢慢地从安静朴素的校园和踏实努力的氛围中，我还是找到了自己的节奏。大学期间我主要在做三件事情 ，一是写代码，因为我是搞技术的；二是看书，看了很多很多书；三是修电脑。基于此自己也有三点收获：耐心，知识，伙伴。</p>
+<p>第一点收获：耐心。有耐心，能独处，并基于长期思考做判断，而不为短期因素所干扰，耐心地等待你设想和努力的事情逐步发生，这对创业来说是非常重要的事情。事实上，你经常想象的很美好，设计的也很完整，你也很努力，但你所期待的事情，经常需要很长时间才能发生。这种耐心，绝对是在南开磨练出来的。</p>
+<p>大学的时候我是怎么面对枯燥的生活？人物传记是非常好的心灵鸡汤。我读了很多人物传记，如果说有收获，就是发现那些伟大的人，在没有成为伟大的人之前，也是过着看起来枯燥的生活，每天都在做一些微不足道的事情，但这些事情最后从点连成线，成就了他们。</p>
+<p>我毕业后参与创立了酷讯、饭否、99房、到现在的今日头条，每一段创业经历，都挺寂寞的。现在回想，耐心非常重要，不仅是等待的耐心，还要有耐心做深入思考，还要有耐心地找到更多更好的合作伙伴。</p>
+<p>第二点收获：看书。寂寞的大学生活，给了我人生最安静的阅读时光。我用别人打游戏、打牌的时间，阅读了各种各样的书，或者说乱七八糟的书，包括各个专业的书，包括人物传记，也有各种境内外的报刊杂志。</p>
+<p>当然，那时候，我也有困惑，觉得看的这些东西和思考的问题都很有意思，但在生活中没什么用。直到后来我进入互联网行业并开始创业，各种各样的知识才连成线，帮我理解行业、理解管理，更快地掌握不熟悉的领域，包括如何让信息得到更有效率的组织和分发，从而改变各行各业的效率。</p>
+<p>2011年，我观察到一个现象，地铁上读报的人、卖报的人越来越少，年初还有，年底几乎没有了， 同时，2011年是智能手机出货量的高峰，是2008年、2009年、2010年三年智能手机出货量的总和。我想，这是信息传播介质的变革，手机很可能会取代纸媒成为信息传播的最主要载体，又因为人和手机的对应关系，手机随身携带，个性化推荐的需求一定会增加，于是我创办了今日头条。</p>
+<p>第三点收获：结交了很多的伙伴。我在读大学的时候结识了很多优秀的同伴。作为一个不怎么参与集体活动的理工男，怎么保持社交呢？主要靠修电脑和编程建网站……后来，同学聚会，打招呼的方式基本是：hi，你的电脑还是我装的。我装过的电脑有几十台，当然大部分是女同学……不但要帮忙装电脑还要经常保修。没错，就像你们想象的那样，修电脑为我带来了人生重大的收获——当时的女朋友，现在的太太。</p>
+<p>在校园里，我接了不少外包的项目。包括我太太她们系的网站(当然是免费的)。因为这门手艺加上兼职，大四的时候，我每月能有超过两三千的收入，在当时，绝对是土豪。那时候，和同学一起泡实验室，熬到半夜一两点，会请大家集体去烤串。一周能吃2-3次。</p>
+<p>当时和我吃烧烤的人很多是对编程感兴趣，而且志趣相投的同学朋友，有我同一级的，微电子专业的，软件工程专业的，还有师兄师弟，后来也相继加入我创办的公司，成为了我们公司的技术骨干，也是创业伙伴。</p>
+<h2 id="我的工作感悟"><a href="#我的工作感悟" class="headerlink" title="我的工作感悟"></a>我的工作感悟</h2><p>2005 年，我从南开大学毕业，加入一家叫酷讯的公司。我是最早期加入的员工之一，一开始只是一个普通工程师，但在工作第二年，我在公司管了四五十个人的团队，负责所有后端技术，同时也负责很多产品相关的工作。</p>
+<p>有人问我：为什么你在第一份工作中就成长很快？是不是你在那个公司表现特别突出？其实不是。当时公司招聘标准很高，跟我同期入职的就有两个清华计算机系的博士。那我是不是技术最好？是不是最有经验？都不是。后来我想了想，当时自己有哪些特质。</p>
+<p>首先，我工作时，从不分哪些工作是我该做的，哪些不是我该做的。我做完自己的工作后，对于大部分同事的问题，只要我能帮助解决，我都去做。当时，Code Base中大部分代码我都看过。新人入职时，只要我有时间，我都给他讲解一遍。通过讲解，我自己也能得到成长。</p>
+<p>工作的前两年，我基本上每天都是十二点、一点回家，回家后也编程到挺晚。确实是因为有兴趣，而不是公司有要求。所以我很快从负责一个抽取爬虫的模块，到负责整个后端系统，开始带一个小组，后来带一个小部门，再后来带一个大部门。</p>
+<p>当时我负责技术，但遇到产品上有问题，也会积极地参与讨论，想产品的方案。很多人说这个不是我该做的事情。但我想说：你的责任心，希望把事情做好的动力，会驱动你做更多事情，让你得到很大的锻炼。</p>
+<p>我当时是工程师，但参与产品的经历，对我后来转型做产品有很大帮助。我参与商业的部分，对我现在的工作也有很大帮助。记得在2007年底，我跟公司的销售总监一起去见客户。这段经历让我知道，怎样的销售才是好的销售。当我组建今日头条招人时，这些可供参考的案例，让我在这个领域不会一无所知。</p>
+<h2 id="我的创业初心"><a href="#我的创业初心" class="headerlink" title="我的创业初心"></a>我的创业初心</h2><p>我很尊敬Elon Mask ，他不仅创办了TESLA ，而且还创办了一家叫Space X的公司，目标是革新太空科技，终极目标是人类能够在其他星球生活。</p>
+<p>Space X现在是全世界第一家私人向太空发射火箭并实现回收的公司，尽管在前沿领域里不断探索的过程非常艰难，身后甚至连跟随者都没有，但Elon Mask一直相信：只要理论上能够成立，理论上可以做到最好，那就应该去努力实现它。</p>
+<p>我特别欣赏这种追求卓越和领先的勇气。年轻人创业，就是要去创造新的技术，做那些理论上存在但还没有实现的东西，给世界带来根本性的进步。创业，有人想的是要赚笔钱，有人想的则是要做件事，我觉得自己是后者。</p>
+<p>如果你偶然发现青霉素能消炎，你是先考虑用它去救人还是赚钱呢？应该都是先想到救人。我也是一样。到了这个时代，有个性化的方式来推荐信息，我就想把它做出来。</p>
+<p>如果我想卖掉这家公司，现在就可以拿到一大笔钱。但我奋斗的目标不是赚钱和享乐，支撑我的是自我实现，希望有更多的创造体验，更丰富的人生经历，希望遇到更多优秀的人。</p>
+<p>现在的创业环境和以前相比已经非常好了，创业能取得多大的成果，最重要的是，你到底愿意做多大的事情。年轻人关键是立志高远，享受拼的过程，不自满，不懈怠。要把成功的目标，设定的尽可能远。</p>
+<h2 id="优秀年轻人的五个特点"><a href="#优秀年轻人的五个特点" class="headerlink" title="优秀年轻人的五个特点"></a>优秀年轻人的五个特点</h2><p>后来，我陆续加入到各种创业团队。在这个过程中，我跟很多毕业生共处过，现在还和他们很多人保持联系。跟你分享一下，我看到的一些好和不好的情况。总结一下，这些优秀年轻人有哪些特点呢？</p>
+<p>第一个特点：有好奇心，能够主动学习新事物、新知识和新技能。我有个前同事，理论基础挺好，但每次都是把自己的工作做完就下班了。</p>
+<p>他在这家公司呆了一年多，但对网上的新技术、新工具都不去了解，非常依赖别人，当他想要实现一个功能，就需要有人帮他做后半部分，因为他自己只能做前半部分。如果是有好奇心的人，前端、后端、算法都去掌握，至少有所了解的话，那么很多调试分析，自己一个人就可以做。</p>
+<p>第二个特点：对不确定性保持乐观。比方说，今日头条刚开始时，我跟大家讲：我们要做1亿的日启动次数，很多人觉得，你这家小公司怎么可能做得到呢？如果对此持怀疑态度，就不敢努力去尝试。只有乐观的人会相信，会愿意去尝试。</p>
+<p>其实我加入酷讯时也是这样，那家公司当时想做下一代搜索引擎（最后也没有做成，只做了旅游的垂直搜索）。我不知道其他人怎么想的，我自己觉得很兴奋。我确实没有把握，也不知道怎么做，但当时就去学，就去看所有相关的东西。我觉得最后也许不一定做成，或者没有完全做到，但这个过程也会很有帮助——只要对事情的不确定性保持乐观，你会更愿意去尝试。</p>
+<p>第三个特点：不甘于平庸。走入社会后的年轻人，应该设定更高的标准。大学期间的同学、一起共事的同事中，有很多非常不错的人才，技术、成绩都比我好，但10年过去了，很多人没有达到我当初的预期。</p>
+<p>很多人毕业后，目标设定就不高。我回顾了一下，发现有同事加入银行IT部门：有的是毕业后就加入，有的是工作一段时间后加入。为什么我把这个跟「不甘于平庸」挂在一起呢？因为他们很多人加入，是为了快点解决北京户口，或者得到买经济适用房的机会。</p>
+<p>如果一个人一毕业，就把目标定在这儿：在北京五环内买一个小两居、小三居，把精力都花在这上面，那么工作就会受到很大影响，他的行为会发生变化，不愿意冒风险。</p>
+<p>如果不甘于平庸，希望做得非常好的话，其实不会为这些东西担心，这很重要。我说不平庸，并不是专指薪酬要很高或者技术很好，而是你对自己的标准一定要高。也许你前两年变化得慢，但10年后再看，肯定会非常不一样。</p>
+<p>第四个特点：不傲娇，要能延迟满足感。在这里举个反例：两个我印象比较深刻的年轻人，素质、技术都蛮不错，也都挺有特点。我当时是他们的主管，发现他们在工作中deliver（传递）的感觉始终不好。</p>
+<p>他们觉得其他同事做得不如他们，其实不是：他们确实可以算作在当时招的同事里面 TOP20% ，但他们觉得自己是 TOP1% 。所以很多基础一点的工作，比如要做一个调试工具，他就不愿意做，或者需要跟同事配合的工作，他就配合得不好。</p>
+<p>本来都是资质非常好的人才，人非常聪明、动手能力也强，但没有控制好自己的傲娇情绪。我觉得这和「不甘于平庸」不矛盾。「不甘于平庸」是你目标要设得很高，「不傲娇」是你对现状要踏实。</p>
+<p>另一个例子是，当时我们有个做产品的同事，也是应届生招进来，当时大家都觉得他不算特别聪明，就让他做一些辅助性的工作，统计一下数据，做一下用户反弹之类，但现在他已经是一家十亿美金公司的副总裁。</p>
+<p>后来我想想，他的特点就是肯去做，负责任，从不推诿，只要有机会承担的事情，他总尽可能地做好。每次也不算做得特别好，但我们总是给他反馈。他去了那家公司后，把一个用户量不足 10 万的边缘频道负责起来，越做越好。由于是边缘频道，没有配备完整的团队，所以他一个人承担了很多职责，也得到了很多锻炼。</p>
+<p>第五个特点：对重要的选择要有判断力。选什么专业、选什么公司、选什么职业、选什么发展路径，自己要有判断力，不要被短期选择所左右。比如，原先有很多人愿意去外企，不愿意去新兴公司。</p>
+<p>2006 年、2007年的时候，很多师弟、师妹问我职业选择，我都建议他们去百度，不要去IBM、微软。但实际上，很多人都是出于短期考虑：外企可能名气大、薪酬高一点。</p>
+<p>虽然这个道理，大家都听过很多遍。刚毕业时薪酬差三五千块，真的可以忽略不计。短期薪酬差别并不重要。但实际上，能摆脱这个、能有判断力的人，也不是特别多。</p>
+<p><img src="https://imgkr.cn-bj.ufileos.com/148c824d-4eb8-48d3-9825-51625347b0f0.png" alt=""></p>
+]]></content>
+      <categories>
+        <category>大佬经历</category>
+      </categories>
+      <tags>
+        <tag>大佬经历</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>PYTHON基础语法总结</title>
+    <url>/2020/06/01/PYTHON%E5%9F%BA%E7%A1%80%E8%AF%AD%E6%B3%95%E6%80%BB%E7%BB%93/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="PYTHON视频讲解-MOSH-总结"><a href="#PYTHON视频讲解-MOSH-总结" class="headerlink" title="PYTHON视频讲解(MOSH)总结"></a>PYTHON视频讲解(MOSH)总结</h1><h2 id="和C-C-的区别"><a href="#和C-C-的区别" class="headerlink" title="和C/C++的区别"></a>和C/C++的区别</h2><ol>
+<li><p><code>python</code>的<code>print</code>是一个函数，其中代表换行的参数默认换行，所以每次执行一次<code>print</code>都会自动换行</p>
+</li>
+<li><p><code>python</code>的<code>bool</code>值是<code>False</code>和<code>True</code>，首字母大写，而<code>C/C++</code>的<code>bool</code>类型值是<code>false</code>和<code>true</code>，首字母小写  </p>
+</li>
+<li><p><code>python</code>的输出函数是<code>print</code>，而<code>C</code>的输出语句是<code>printf</code></p>
+</li>
+<li><p><code>python</code>的输入语句是<code>input()</code>，这个函数把括号内的东西输出，并接受输入的值，所以可以有如下写法<code>name = input(&quot;what&#39;s your name&quot;)</code></p>
+</li>
+<li><p><code>input</code>把接收的值转化为字符串</p>
+</li>
+<li><p><code>10/3 = 3.333</code>，这与<code>C/C++</code>不同<br><code>10//3 = 3</code>，这与<code>C/C++</code>相同<br><code>3**2 = 9</code>，<code>C/C++</code>中没有此用法</p>
+</li>
+<li><p><code>C++</code>中的类与<code>python</code>中的类有一点区别<br>假设都定义了<code>School</code>这个类  </p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">C++:</span><br><span class="line">School one;</span><br><span class="line"></span><br><span class="line">python:</span><br><span class="line">one &#x3D; School()</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h2 id="基础语法"><a href="#基础语法" class="headerlink" title="基础语法"></a>基础语法</h2><ol>
+<li><p><code>type</code>(变量) 打印变量的类型  </p>
+</li>
+<li><p>三个引号<code>&#39;&#39;&#39; &#39;&#39;&#39;</code>，三引号中间的变量可以换行，此外还有双引号和单引号</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">程序：</span><br><span class="line">email = <span class="string">'''</span></span><br><span class="line"><span class="string">Hello!</span></span><br><span class="line"><span class="string">This is Fu JANG 's blog.</span></span><br><span class="line"><span class="string">Welcome to u.</span></span><br><span class="line"><span class="string">'''</span></span><br><span class="line">print(email)</span><br><span class="line"></span><br><span class="line">结果：</span><br><span class="line">Hello!</span><br><span class="line">This <span class="keyword">is</span> Fu JANG <span class="string">'s blog.</span></span><br><span class="line"><span class="string">Welcome to u.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">进程已结束,退出代码0</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>对于第二点的代码（三引号）<code>email[0]</code>就是<code>H</code>，<code>email[-1]</code>就是<code>换行符</code>，<code>email[-2]</code>就是<code>.</code>，而对于以下的代码：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">程序：</span><br><span class="line">email = <span class="string">'Hello'</span></span><br><span class="line">print(email[<span class="number">-1</span>])</span><br><span class="line"></span><br><span class="line">结果：</span><br><span class="line">o</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>[0:3]</code>左闭右开<br><code>[0:]</code> 0到末尾<br><code>[:3]</code>与第一个等效<br><code>[:]</code> 全部</p>
+</li>
+<li><p><code>f&#39;{变量名}’</code>  占位符，程序会用对应变量的值去填充大括号  </p>
+</li>
+<li><p><code>len()</code>  返回字符串的长度</p>
+</li>
+<li><p><code>.upper()</code>把字符串中字母全部转 为大写，但不改变原字符串<br><code>.lower()</code>把字符串中字母全部转为小写，但不改变原字符串<br><code>.title()</code>把字符串中单词首字母字母全部转为大写，但不改变原字符串<br> <code>.find(&#39;&#39;)</code>找到这个字符在字符串中的第一个索引<br> 若<code>&#39;&#39;</code>中为一串字符，则返回第一个字符的索引<br> 若<code>&#39;&#39;</code>中的字符在字符串中不存在，则返回<code>-1</code><br> <code>.replace(&#39;原&#39;, &#39;新&#39;)</code> 若字符串中没有原字符，则不替换</p>
+</li>
+<li><p><code>&#39; &#39; in 变量</code> 返回一个布尔值，代表该字符是否在此变量中  </p>
+</li>
+<li><p><code>round()</code>四舍五入<br><code>abs()</code>取绝对值</p>
+</li>
+<li><p>引用模块</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">程序：</span><br><span class="line"><span class="keyword">import</span> math</span><br><span class="line">print(math.ceil(<span class="number">2.9</span>)) 封</span><br><span class="line">print(math.floor(<span class="number">2.9</span>)) 底</span><br><span class="line"></span><br><span class="line">结果：</span><br><span class="line"><span class="number">3</span></span><br><span class="line"><span class="number">2</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>if</code>语句：<br><code>if:</code><br><code>elif:</code><br><code>else:</code>  </p>
+</li>
+<li><p>逻辑运算符：<br><code>and or not</code>   </p>
+</li>
+<li><p><code>while</code>循环，当条件不符合时，执行<code>else</code>，<code>break</code>的程序不执行<code>else</code><br><code>while:</code><br><code>else:</code>  </p>
+</li>
+<li><p><code>range(10)</code> <code>0</code>到<code>9</code><br><code>range(5,10)</code> <code>5</code>到<code>9</code><br><code>range(5,10,2)</code> <code>5,7,9</code></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">代码：</span><br><span class="line">for item in range(10):</span><br><span class="line">	print(item)</span><br><span class="line"></span><br><span class="line">结果：</span><br><span class="line">0</span><br><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>列表：方括号</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[1,2,3]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>二维列表</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[</span><br><span class="line">	[1,2,3],</span><br><span class="line">	[4,5,6],</span><br><span class="line">	[7,8,9]</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>列表定义的方法<br><code>.append()</code> 在最后面插入<br> <code>.insert(0,10)</code> 在索引为0的位置加10<br> <code>.remove(5)</code> 删除第一个5<br> <code>.clear()</code> 清空列表<br> <code>.pop()</code> 删最后<br> <code>.index(5)</code> 传第一个5的索引<br> <code>.count(5)</code> 传5的个数<br> <code>.sort()</code> 不返回值，从小到大排序<br> <code>.reverse()</code> 从大到小排序<br> <code>.copy()</code> 复制</p>
+</li>
+<li><p><code>(,,)</code> 元组 不可变<br><code>.count()</code> 计数<br><code>.index()</code> 传索引  </p>
+</li>
+<li><p>压缩属性</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">m &#x3D; (1,2,3)</span><br><span class="line">x, y, z &#x3D; m</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>字典</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">程序：</span><br><span class="line">customer = &#123;</span><br><span class="line">    <span class="string">"name"</span> : <span class="string">"FuJANG"</span>,</span><br><span class="line">    <span class="string">"sex"</span> : <span class="string">"man"</span>,</span><br><span class="line">    <span class="string">"address"</span> : <span class="string">"China"</span>,</span><br><span class="line">    <span class="string">"age"</span> : <span class="number">6</span>,</span><br><span class="line">    <span class="string">"is_handsome"</span> : <span class="literal">True</span></span><br><span class="line">&#125;</span><br><span class="line">print(customer[<span class="string">"name"</span>])</span><br><span class="line"></span><br><span class="line">结果：</span><br><span class="line">FuJANG</span><br><span class="line"></span><br><span class="line">进程已结束,退出代码<span class="number">0</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>字典定义的方法<br><code>.get(&quot; &quot;)</code> 若键不存在则返回<code>None</code><br><code>.get(&quot;key&quot;, &quot;value&quot;)</code> 提供一个默认的值，并不修改字典，当在字典中对应的<code>key</code>存在时，默认值无效<br>可用此形式更改、添加字典<code>[&quot; &quot;] = &quot; &quot;</code></p>
+</li>
+<li><p>表示形式<br>列表<code>[ , , ]</code><br>元组<code>( , , )</code><br>字典<code>{  , , }</code>  </p>
+</li>
+<li><p><code>abc = &quot;字符串”</code><br><code>for ch in abc:</code>遍历字符串中的所有字符<br><code>abc.split(&quot;空格&quot;)</code> 根据空格分割字符串中的单词并储存在一个列表中</p>
+</li>
+</ol>
+<h2 id="函数与模块"><a href="#函数与模块" class="headerlink" title="函数与模块"></a>函数与模块</h2><ol>
+<li><p>定义一个函数<br> 每个函数后最好加上两个空行（标准格式），先定义函数后才可引用，<code>()</code>中可以加参数，如<code>(name)</code>,调用时需要传一个值如<code>(&quot;Mosh&quot;)</code>，关键字参数一般放在最后<br> 没有<code>return</code>的函数默认返回<code>None</code><br> 当<code>return x, y</code>时，<code>python</code>把<code>x, y</code>解释为一个元组<code>(x, y)</code></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> 函数名<span class="params">()</span>:</span></span><br><span class="line">	内容</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>用<code>try...expect</code>来处理异常错误</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">try</span>：</span><br><span class="line">	×××</span><br><span class="line">expect 错误类型:</span><br><span class="line">	×××</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>class</code>定义一个类，首字母大写，不用下划线<br>  <code>def</code>定义一个函数，首字母小写，用下划线链接</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Point</span>:</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> ×××<span class="params">(self, ×××)</span>:</span></span><br><span class="line">		×××</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">def</span> ×××</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">用类声明对象</span></span><br><span class="line">point1 = Point()</span><br><span class="line">调用定义的方法</span><br><span class="line">point1.×××()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">可以在程序的任何位置设置属性，属性没有必要一定在类里定义</span><br><span class="line">point1.属性名 = <span class="number">10</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>python</code>中的构造函数</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Point</span>:</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, x, y)</span>:</span></span><br><span class="line">		self.x = x</span><br><span class="line">		self.y = y</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">point1 = Point(<span class="number">10</span>, <span class="number">20</span>)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>继承：当一个类中没有任何东西时，为了规范格式，通常加一个<code>pass</code></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Normal</span>:</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">walk</span><span class="params">(self)</span>:</span></span><br><span class="line">		×××</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Dog</span><span class="params">(Normal)</span>:</span></span><br><span class="line">	<span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Cat</span><span class="params">(Normal)</span>:</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">bark</span><span class="params">(self)</span>:</span></span><br><span class="line">		print(<span class="string">"×××"</span>)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>调用模块</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> hello</span><br><span class="line">hello.×××()</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> hello <span class="keyword">import</span> ×××</span><br><span class="line">×××()</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> hello <span class="keyword">as</span> he</span><br><span class="line">he.×××()</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>建立一个包</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">① New → Directory → __init__.py</span><br><span class="line">② New → Python Package</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> 包.文件</span><br><span class="line">包.文件.函数()</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> 包.文件 <span class="keyword">import</span> 函数</span><br><span class="line">函数()</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> 包 <span class="keyword">import</span> 文件</span><br><span class="line">文件.函数()</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>内置模块的调用举例</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># randint 为闭区间</span></span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line">random.random() 随机跳出一个<span class="number">0</span>和<span class="number">1</span>间的数字</span><br><span class="line">random.randint(<span class="number">10</span>, <span class="number">20</span>) <span class="number">10</span>到<span class="number">20</span>间的一个整数值</span><br><span class="line">random.choice(numbers) 假如numbers是一个列表，则随机跳出列表中的一个元素</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>内置模块与下载模块<br><code>python</code>中有内置模块，当找不到想使用的模块时，可以去<code>pypi.org</code>寻找相应的模块下载命令，然后在终端上用命令下载相应的模块</p>
+</li>
+</ol>
+]]></content>
+      <categories>
+        <category>PYTHON</category>
+      </categories>
+      <tags>
+        <tag>PYTHON语法</tag>
       </tags>
   </entry>
 </search>
